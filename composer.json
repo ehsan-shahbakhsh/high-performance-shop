@@ -8,8 +8,13 @@
     "require": {
         "php": "^8.2",
         "darkaonline/l5-swagger": "^9.0",
+        "hekmatinasser/verta": "^8.5",
         "laravel/framework": "^12.0",
+        "laravel/horizon": "^5.41",
         "laravel/octane": "^2.13",
+        "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.24",
+        "laravel/telescope": "^5.16",
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
