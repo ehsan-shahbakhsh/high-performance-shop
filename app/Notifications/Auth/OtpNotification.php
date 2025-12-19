@@ -42,9 +42,12 @@ class OtpNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->subject("کد ورود به " . config('app.name'))
+            ->greeting('سلام کاربر عزیز!')
+            ->line('برای ورود به حساب کاربری خود، از کد تایید زیر استفاده کنید.')
+            ->line("**{$this->code}**")
+            ->line('این کد تا ۲ دقیقه معتبر است.')
+            ->line('اگر شما این درخواست را ارسال نکردید، لطفاً این ایمیل را نادیده بگیرید.');
     }
 
     /**
