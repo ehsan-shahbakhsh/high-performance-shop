@@ -46,20 +46,10 @@ class OtpRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'identifier' => $this->toEnglishNumbers($this->identifier),
-        ]);
-    }
-
-    private function toEnglishNumbers(mixed $string): ?string
-    {
-        if (!is_string($string)) return null;
-
-        $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        $arabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-        $english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
-        $string = str_replace($persian, $english, $string);
-        return str_replace($arabic, $english, $string);
+        if ($this->has('identifier')) {
+            $this->merge([
+                'identifier' => convert_to_english_digits($this->identifier),
+            ]);
+        }
     }
 }
