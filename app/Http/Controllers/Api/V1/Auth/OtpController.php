@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Events\OtpRequested;
+use App\Events\Auth\OtpRequested;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\OtpRequest;
 use App\Http\Responses\ApiResponse;
@@ -20,7 +20,7 @@ class OtpController extends Controller
         $cacheKey = "otp_{$type}_{$identifier}";
         Cache::put($cacheKey, $code, now()->addMinutes(2));
 
-        OtpRequested::dispatch($identifier, $type, $code);
+        OtpRequested::dispatch($identifier, $code, $type);
 
         return ApiResponse::success(
             message: "کد تایید برای {$identifier} ارسال شد.",

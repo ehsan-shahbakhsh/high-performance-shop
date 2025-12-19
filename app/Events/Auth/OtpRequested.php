@@ -12,6 +12,6 @@ class OtpRequested
     /**
      * Create a new event instance.
      */
-    public function __construct(string $identifier, string $type, string $code)
+    public function __construct(public string $identifier, public string $code, public string $type)
     {}
 }
