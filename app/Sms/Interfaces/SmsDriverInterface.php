@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Sms\Interfaces;
 
-use App\Exceptions\SmsSendingFailedException;
+use App\Sms\Exceptions\SmsSendingFailedException;
 
 interface SmsDriverInterface
 {

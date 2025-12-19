@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\HttpFoundation\Response;
+use App\Sms\Interfaces\SmsDriverInterface;
+use App\Sms\Drivers\LogDriver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +18,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(SmsDriverInterface::class, function () {
+            return new LogDriver;
+        });
     }
 
     /**
