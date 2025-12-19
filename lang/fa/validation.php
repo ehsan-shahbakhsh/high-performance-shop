@@ -195,5 +195,6 @@ return [
     */
     'attributes' => [
         'identifier' => 'ایمیل یا شماره موبایل',
+        'code' => 'کد',
     ],
 ];
