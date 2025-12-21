@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\{
     OtpController,
     VerifyController,
     LogoutController,
+    MeController,
 };
 
 Route::prefix('v1')->group(function () {
@@ -20,7 +21,7 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('auth')->group(function () {
-//            Route::get('me', [MeController::class, 'show']);
+            Route::get('me', MeController::class);
             Route::post('logout', LogoutController::class);
         });
     });
