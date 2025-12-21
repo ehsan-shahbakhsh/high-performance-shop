@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
+use App\Exceptions\BusinessException;
 use Symfony\Component\HttpKernel\Exception\{
     NotFoundHttpException,
     AccessDeniedHttpException,
@@ -28,6 +29,10 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->dontReport([
+            BusinessException::class,
+        ]);
+
         $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e): bool {
             return $request->is('api/*') || $request->wantsJson();
         });
