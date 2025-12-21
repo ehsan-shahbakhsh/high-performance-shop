@@ -2,13 +2,36 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Actions\Auth\Otp\VerifyOtpAction;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Api\V1\Auth\VerifyRequest;
+use App\Http\Resources\UserResource;
+use App\Http\Responses\ApiResponse;
+use Throwable;
 
 class VerifyController extends Controller
 {
-    public function __invoke()
+    /**
+     * @throws Throwable
+     */
+    public function __invoke(VerifyRequest $request, VerifyOtpAction $action)
     {
-        // TODO: Implement __invoke() method.
+        $inputs = $request->validated();
+
+        $identifier = $inputs['identifier'];
+        $type = $request->getFieldType();
+
+        $result = $action->execute(
+            $identifier,
+            $inputs['code'],
+            $type,
+            $request->ip(),
+            $request->userAgent(),
+        );
+
+        return ApiResponse::success([
+            'user' => new UserResource($result->user),
+            'authorization' => $result->authorization,
+        ], $result->message);
     }
 }
