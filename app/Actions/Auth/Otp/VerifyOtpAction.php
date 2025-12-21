@@ -98,7 +98,7 @@ class VerifyOtpAction
                 : 'ورود با موفقیت انجام شد.';
 
             return new AuthResultData(
-                user: new $user,
+                user: $user,
                 authorization: new AuthorizationData(
                     token: $newToken->plainTextToken,
                     type: 'Bearer',
