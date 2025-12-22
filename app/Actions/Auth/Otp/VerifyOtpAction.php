@@ -63,13 +63,9 @@ class VerifyOtpAction
         Cache::forget($attemptsKey);
 
         return DB::transaction(function () use ($type, $identifier, $userIp, $userAgent) {
-            $user = User::query()->firstOrCreate(
-                [$type => $identifier],
-                [
-                    'last_login_at' => now(),
-                    'last_login_ip' => $userIp,
-                ],
-            );
+            $user = User::query()->firstOrCreate([$type => $identifier]);
+
+            $isNewUser = $user->wasRecentlyCreated;
 
             if ($user->isBanned()) {
                 throw new BusinessException(
@@ -77,6 +73,11 @@ class VerifyOtpAction
                     httpCode: Response::HTTP_FORBIDDEN,
                 );
             }
+
+            $user->forceFill([
+                'last_login_at' => now(),
+                'last_login_ip' => $userIp,
+            ])->save();
 
             if ($type === 'mobile' && is_null($user->mobile_verified_at)) {
                 $user->forceFill(['mobile_verified_at' => now()])->save();
@@ -93,7 +94,7 @@ class VerifyOtpAction
 
             $newToken = $user->createToken($tokenName, ['*'], $expirationTime);
 
-            $message = $user->wasRecentlyCreated
+            $message = $isNewUser
                 ? 'ثبت‌نام شما با موفقیت انجام شد.'
                 : 'ورود با موفقیت انجام شد.';
 
