@@ -12,8 +12,10 @@ use App\Http\Controllers\Api\V1\Auth\{
 
 Route::prefix('v1')->group(function () {
     Route::middleware('guest')->prefix('auth')->group(function () {
-        Route::get('google/redirect', [GoogleController::class, 'redirect']);
-        Route::get('google/callback', [GoogleController::class, 'callback']);
+        Route::middleware('throttle:google_login')->group(function () {
+            Route::get('google/redirect', [GoogleController::class, 'redirect']);
+            Route::get('google/callback', [GoogleController::class, 'callback']);
+        });
 
         Route::middleware('throttle:otp')->post('otp/request', OtpController::class);
         Route::post('otp/verify', VerifyController::class);

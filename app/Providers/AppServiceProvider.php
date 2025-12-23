@@ -34,7 +34,8 @@ class AppServiceProvider extends ServiceProvider
             return [
                 Limit::perMinute(10)->by($request->ip()),
 
-                Limit::perMinutes(5, 3)->by($request->input('identifier') ?: $request->ip())
+                Limit::perMinutes(5, 3)
+                    ->by($request->input('identifier') ?: $request->ip())
                     ->response(function (Request $request, array $headers) {
                         return response()->json([
                             'success' => false,
@@ -46,6 +47,21 @@ class AppServiceProvider extends ServiceProvider
                         ], Response::HTTP_TOO_MANY_REQUESTS);
                     }),
             ];
+        });
+
+        RateLimiter::for('login_google', function (Request $request) {
+            return Limit::perMinute(10)
+                ->by($request->ip())
+                ->response(function (Request $request, array $headers) {
+                    return response()->json([
+                        'success' => false,
+                        'code' => Response::HTTP_TOO_MANY_REQUESTS,
+                        'message' => 'تعداد درخواست‌های شما بیش از حد مجاز است.',
+                        'data' => null,
+                        'meta' => ['retry_after' => $headers['Retry-After'] ?? null],
+                        'errors' => null,
+                    ], Response::HTTP_TOO_MANY_REQUESTS);
+                });
         });
     }
 }
