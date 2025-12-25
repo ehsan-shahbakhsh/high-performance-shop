@@ -18,7 +18,7 @@ class ProductCategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->unique()->words(rand(1, 2), true);
+        $name = fake()->unique()->words(rand(1, 2), true);
 
         return [
             'name' => ucfirst($name),
@@ -26,18 +26,18 @@ class ProductCategoryFactory extends Factory
 
             'parent_id' => null,
 
-            'icon' => $this->faker->randomElement(['fa-mobile', 'fa-laptop', 'fa-tshirt', 'fa-home', 'fa-book']),
+            'icon' => fake()->randomElement(['fa-mobile', 'fa-laptop', 'fa-tshirt', 'fa-home', 'fa-book']),
 
             'cover_image' => null,
 
-            'is_active' => $this->faker->boolean(90),
-            'is_featured' => $this->faker->boolean(20),
-            'include_in_menu' => $this->faker->boolean(70),
+            'is_active' => fake()->boolean(90),
+            'is_featured' => fake()->boolean(20),
+            'include_in_menu' => fake()->boolean(70),
 
-            'position' => $this->faker->numberBetween(0, 100),
+            'position' => fake()->numberBetween(0, 100),
 
             'seo_title' => 'خرید آنلاین ' . $name,
-            'seo_description' => $this->faker->sentence(10),
+            'seo_description' => fake()->sentence(10),
         ];
     }
 
