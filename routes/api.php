@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\V1\Auth\{
     LogoutController,
     MeController,
 };
+use App\Http\Controllers\Api\V1\Catalog\{
+    ProductCategoryController,
+};
 
 Route::prefix('v1')->group(function () {
     Route::middleware('guest')->prefix('auth')->group(function () {
@@ -25,6 +28,12 @@ Route::prefix('v1')->group(function () {
         Route::prefix('auth')->group(function () {
             Route::get('me', MeController::class);
             Route::post('logout', LogoutController::class);
+        });
+
+        Route::prefix('shop')->group(function () {
+            Route::controller(ProductCategoryController::class)->group(function () {
+                Route::get('menus/main', 'index');
+            });
         });
     });
 });
