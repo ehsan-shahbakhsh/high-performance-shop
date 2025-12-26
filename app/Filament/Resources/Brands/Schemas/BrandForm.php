@@ -9,6 +9,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class BrandForm
 {
@@ -31,7 +32,11 @@ class BrandForm
                                     ->suffixIcon('heroicon-m-globe-alt')
                                     ->extraAttributes(['dir' => 'ltr'])
                                     ->mutateStateForValidationUsing(function ($state) {
-                                        return str_starts_with($state, 'https://') ? $state : 'https://' . $state;
+                                        if (Str::isUrl($state)) {
+                                            return $state;
+                                        }
+
+                                        return 'https://' . $state;
                                     }),
 
                                 MarkdownEditor::make('description')
