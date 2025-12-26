@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -11,8 +12,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
+use Filament\Models\Contracts\HasName;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasName
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -60,7 +62,7 @@ class User extends Authenticatable
 
     public function isBanned(): bool
     {
-        return ! is_null($this->banned_at);
+        return !is_null($this->banned_at);
     }
 
     public function isVerified(): bool
@@ -76,5 +78,17 @@ class User extends Authenticatable
     public function socialAccounts(): HasMany
     {
         return $this->hasMany(SocialAccount::class);
+    }
+
+    public function fullName(): Attribute
+    {
+        return new Attribute(
+            get: fn() => collect([$this->first_name, $this->last_name])->filter()->implode(' '),
+        );
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->full_name;
     }
 }
