@@ -25,6 +25,12 @@ RUN pecl install redis \
 RUN pecl install openswoole \
     && docker-php-ext-enable openswoole
 
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libzip-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl zip
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY --from=node_source /usr/local/lib/node_modules /usr/local/lib/node_modules
