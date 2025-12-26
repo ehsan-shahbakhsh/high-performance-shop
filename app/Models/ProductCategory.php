@@ -21,7 +21,7 @@ class ProductCategory extends Model
 
     protected $fillable = [
         'parent_id', 'path', 'level', 'name', 'slug',
-        'icon', 'cover_image', 'is_active', 'is_featured',
+        'icon', 'cover', 'is_active', 'is_featured',
         'include_in_menu', 'position', 'seo_title', 'seo_description',
     ];
 
