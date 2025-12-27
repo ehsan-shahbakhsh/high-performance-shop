@@ -12,12 +12,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
+use SolutionForest\FilamentTree\Concern\ModelTree;
 
 class ProductCategory extends Model
 {
     /** @use HasFactory<ProductCategoryFactory> */
     use HasFactory;
     use Sluggable;
+    use ModelTree;
 
     protected $fillable = [
         'parent_id', 'path', 'level', 'name', 'slug',
@@ -123,5 +125,20 @@ class ProductCategory extends Model
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id')->orderBy('position');
+    }
+
+    public function determineOrderColumnName(): string
+    {
+        return 'position';
+    }
+
+    public function determineTitleColumnName(): string
+    {
+        return 'name';
+    }
+
+    public static function defaultParentKey(): null
+    {
+        return null;
     }
 }
