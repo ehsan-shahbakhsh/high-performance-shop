@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ProductCategories\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -54,7 +55,8 @@ class ProductCategoryInfolist
                 Section::make('مدیا')
                     ->columns(2)
                     ->schema([
-                        ImageEntry::make('cover')
+                        SpatieMediaLibraryImageEntry::make('category_cover')
+                            ->collection('category_cover')
                             ->label('تصویر کاور')
                             ->placeholder('بدون تصویر')
                             ->imageHeight(100),

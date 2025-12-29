@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -27,7 +28,8 @@ class ProductCategoriesTable
                     ->label('شناسه')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                ImageColumn::make('cover')
+                SpatieMediaLibraryImageColumn::make('category_cover')
+                    ->collection('category_cover')
                     ->label('تصویر')
                     ->circular()
                     ->toggleable(),

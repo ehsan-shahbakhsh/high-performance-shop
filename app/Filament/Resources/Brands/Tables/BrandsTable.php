@@ -9,6 +9,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TernaryFilter;
@@ -28,9 +29,12 @@ class BrandsTable
                     ->label('شناسه')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                ImageColumn::make('logo')
-                    ->circular()
+                SpatieMediaLibraryImageColumn::make('brand_logo')
+                    ->collection('brand_logo')
                     ->label('لوگو')
+                    ->circular()
+                    ->width(50)
+                    ->imageHeight(50)
                     ->toggleable(),
 
                 TextColumn::make('name')

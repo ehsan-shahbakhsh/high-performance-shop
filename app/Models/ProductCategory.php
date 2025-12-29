@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use SolutionForest\FilamentTree\Concern\ModelTree;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class ProductCategory extends Model
+class ProductCategory extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     /** @use HasFactory<ProductCategoryFactory> */
     use HasFactory;
     use Sluggable;
@@ -23,7 +26,7 @@ class ProductCategory extends Model
 
     protected $fillable = [
         'parent_id', 'path', 'level', 'name', 'slug',
-        'icon', 'cover', 'is_active', 'is_featured',
+        'icon', 'is_active', 'is_featured',
         'include_in_menu', 'position', 'seo_title', 'seo_description',
     ];
 
@@ -32,6 +35,13 @@ class ProductCategory extends Model
         'is_featured' => 'boolean',
         'include_in_menu' => 'boolean',
     ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('category_image')
+            ->singleFile()
+            ->useDisk('public');
+    }
 
     protected static function booted(): void
     {
@@ -64,7 +74,7 @@ class ProductCategory extends Model
                 if ($category->parent_id) {
                     $parent = static::find($category->parent_id);
 
-                    if (! $parent || is_null($parent->path)) {
+                    if (!$parent || is_null($parent->path)) {
                         throw new RuntimeException("Parent category #{$category->parent_id} has invalid path.");
                     }
 
@@ -79,7 +89,7 @@ class ProductCategory extends Model
                 $category->level = $newLevel;
                 $category->saveQuietly();
 
-                if (! empty($oldPath)) {
+                if (!empty($oldPath)) {
                     $levelDelta = $newLevel - $oldLevel;
 
                     DB::table('product_categories')

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Brands\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Group;
@@ -62,15 +63,17 @@ class BrandForm
 
                         Section::make('تصاویر')
                             ->schema([
-                                FileUpload::make('logo')
-                                    ->label('لوگو')
+                                SpatieMediaLibraryFileUpload::make('brand_logo')
+                                    ->collection('brand_logo')
+                                    ->label('لوگوی برند')
                                     ->image()
-                                    ->directory('brands/logos'),
+                                    ->imageEditor(),
 
-                                FileUpload::make('cover')
-                                    ->label('کاور')
+                                SpatieMediaLibraryFileUpload::make('brand_cover')
+                                    ->collection('brand_cover')
+                                    ->label('کاور برند')
                                     ->image()
-                                    ->directory('brands/covers'),
+                                    ->imageEditor(),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),

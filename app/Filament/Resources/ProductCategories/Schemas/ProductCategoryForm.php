@@ -6,6 +6,7 @@ use App\Models\Icon;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -79,11 +80,11 @@ class ProductCategoryForm
                         Section::make('تصویر شاخص')
                             ->icon('heroicon-o-photo')
                             ->schema([
-                                FileUpload::make('cover')
+                                SpatieMediaLibraryFileUpload::make('cover')
+                                    ->collection('category_cover')
                                     ->hiddenLabel()
                                     ->image()
                                     ->imageEditor()
-                                    ->directory('categories/covers')
                                     ->columnSpanFull(),
 
                                 Group::make()

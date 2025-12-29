@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Brand extends Model
+class Brand extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     /** @use HasFactory<BrandFactory> */
     use HasFactory;
     use SoftDeletes;
@@ -21,8 +24,6 @@ class Brand extends Model
         'slug',
         'website',
         'description',
-        'logo',
-        'cover',
         'is_active',
         'is_featured',
         'sort_order',
@@ -40,6 +41,17 @@ class Brand extends Model
                 'source' => 'name',
             ],
         ];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('brand_logo')
+            ->singleFile()
+            ->useDisk('public');
+
+        $this->addMediaCollection('brand_cover')
+            ->singleFile()
+            ->useDisk('public');
     }
 
     protected static function booted(): void
