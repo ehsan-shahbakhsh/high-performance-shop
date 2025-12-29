@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('slug')->unique();
 
             $table->string('icon')->nullable();
-            $table->string('cover')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
             $table->boolean('include_in_menu')->default(false);
