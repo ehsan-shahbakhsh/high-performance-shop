@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\SocialAccountProviderEnum;
+use App\Enums\SocialAccountProvider;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\SocialAccountFactory;
@@ -16,7 +16,7 @@ class SocialAccount extends Model
     protected $fillable = ['user_id', 'provider', 'provider_id', 'token', 'avatar'];
 
     protected $casts = [
-        'provider' => SocialAccountProviderEnum::class,
+        'provider' => SocialAccountProvider::class,
     ];
 
     public function user(): BelongsTo

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\WalletTransactionTypeEnum;
+use App\Enums\WalletTransactionType;
 use Database\Factories\WalletTransactionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +21,7 @@ class WalletTransaction extends Model
     ];
 
     protected $casts = [
-        'type' => WalletTransactionTypeEnum::class,
+        'type' => WalletTransactionType::class,
         'confirmed' => 'boolean',
         'meta' => 'json',// todo: change to laravel data class
     ];

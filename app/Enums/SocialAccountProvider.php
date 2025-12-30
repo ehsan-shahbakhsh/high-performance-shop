@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum SocialAccountProviderEnum: string
+enum SocialAccountProvider: string
 {
     case Google = 'google';
     case Github = 'github';

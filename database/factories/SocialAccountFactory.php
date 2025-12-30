@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\SocialAccountProviderEnum;
+use App\Enums\SocialAccountProvider;
 use App\Models\User;
 use App\Models\SocialAccount;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -22,7 +22,7 @@ class SocialAccountFactory extends Factory
         return [
             'user_id' => User::factory(),
 
-            'provider' => fake()->randomElement(SocialAccountProviderEnum::cases())->value,
+            'provider' => fake()->randomElement(SocialAccountProvider::cases())->value,
             'provider_id' => fake()->unique()->numerify('#####################'),
 
             'token' => fake()->sha256(),
@@ -33,14 +33,14 @@ class SocialAccountFactory extends Factory
     public function google(): static
     {
         return $this->state(fn (array $attributes) => [
-            'provider' => SocialAccountProviderEnum::Google,
+            'provider' => SocialAccountProvider::Google,
         ]);
     }
 
     public function github(): static
     {
         return $this->state(fn (array $attributes) => [
-            'provider' => SocialAccountProviderEnum::Github,
+            'provider' => SocialAccountProvider::Github,
         ]);
     }
 }

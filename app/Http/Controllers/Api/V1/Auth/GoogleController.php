@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Actions\Auth\Otp\HandleSocialLoginAction;
 use App\Data\Auth\SocialUserData;
-use App\Enums\SocialAccountProviderEnum;
+use App\Enums\SocialAccountProvider;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\Auth\AuthUserResource;
 use App\Http\Responses\ApiResponse;
@@ -17,7 +17,7 @@ class GoogleController extends Controller
 {
     public function redirect()
     {
-        return Socialite::driver(SocialAccountProviderEnum::Google->value)->stateless()->redirect();
+        return Socialite::driver(SocialAccountProvider::Google->value)->stateless()->redirect();
     }
 
     /**
@@ -26,11 +26,11 @@ class GoogleController extends Controller
     public function callback(Request $request, HandleSocialLoginAction $action)
     {
         try {
-            $socialiteUser = Socialite::driver(SocialAccountProviderEnum::Google->value)->stateless()->user();
+            $socialiteUser = Socialite::driver(SocialAccountProvider::Google->value)->stateless()->user();
 
             $data = SocialUserData::fromSocialite(
                 $socialiteUser,
-                SocialAccountProviderEnum::Google,
+                SocialAccountProvider::Google,
                 $request->ip(),
             );
 

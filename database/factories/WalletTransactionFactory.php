@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\WalletTransactionTypeEnum;
+use App\Enums\WalletTransactionType;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,7 +24,7 @@ class WalletTransactionFactory extends Factory
             'wallet_id' => Wallet::factory(),
             'uuid' => fake()->uuid(),
 
-            'type' => fake()->randomElement(WalletTransactionTypeEnum::cases())->value,
+            'type' => fake()->randomElement(WalletTransactionType::cases())->value,
 
             'amount' => fake()->numberBetween(10000, 5000000),
 
@@ -48,14 +48,14 @@ class WalletTransactionFactory extends Factory
     public function deposit(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => WalletTransactionTypeEnum::Deposit,
+            'type' => WalletTransactionType::Deposit,
         ]);
     }
 
     public function withdraw(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => WalletTransactionTypeEnum::Withdraw,
+            'type' => WalletTransactionType::Withdraw,
         ]);
     }
 

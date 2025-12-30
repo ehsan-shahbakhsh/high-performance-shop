@@ -2,26 +2,26 @@
 
 namespace App\Data\Auth;
 
-use App\Enums\SocialAccountProviderEnum;
+use App\Enums\SocialAccountProvider;
 use Spatie\LaravelData\Data;
 use Laravel\Socialite\Two\User as SocialiteUser;
 
 class SocialUserData extends Data
 {
     public function __construct(
-        public ?string                   $firstName,
-        public ?string                   $lastName,
-        public string                    $email,
-        public SocialAccountProviderEnum $provider,
-        public string                    $providerId,
-        public ?string                   $avatar,
-        public ?string                   $token,
-        public ?string                   $userIp,
+        public ?string               $firstName,
+        public ?string               $lastName,
+        public string                $email,
+        public SocialAccountProvider $provider,
+        public string                $providerId,
+        public ?string               $avatar,
+        public ?string               $token,
+        public ?string               $userIp,
     )
     {
     }
 
-    public static function fromSocialite(SocialiteUser $socialUser, SocialAccountProviderEnum $provider, ?string $userIp = null): self
+    public static function fromSocialite(SocialiteUser $socialUser, SocialAccountProvider $provider, ?string $userIp = null): self
     {
         return new self(
             firstName: $socialUser->getRaw()['given_name'],
