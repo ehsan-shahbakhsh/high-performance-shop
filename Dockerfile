@@ -31,6 +31,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl zip
 
+RUN docker-php-ext-install exif
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY --from=node_source /usr/local/lib/node_modules /usr/local/lib/node_modules
