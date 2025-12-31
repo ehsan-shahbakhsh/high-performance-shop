@@ -16,21 +16,24 @@ class ProductCategoryController extends Controller
     {
         $categories = Cache::rememberForever('categories_tree', function () {
             return ProductCategory::query()
-                ->select('id', 'parent_id', 'name', 'slug', 'icon', 'position')
+                ->select('id', 'parent_id', 'name', 'slug', 'icon', 'position', 'is_featured')
                 ->whereNull('parent_id')
                 ->where('is_active', true)
                 ->where('include_in_menu', true)
                 ->with([
                     'children' => function (HasMany $query) {
-                        $query->select('id', 'parent_id', 'name', 'slug', 'icon', 'position')
+                        $query->select('id', 'parent_id', 'name', 'slug', 'icon', 'position', 'is_featured')
                             ->where('is_active', true)
-                            ->where('include_in_menu', true);
+                            ->where('include_in_menu', true)
+                            ->with('media');
                     },
                     'children.children' => function (HasMany $query) {
-                        $query->select('id', 'parent_id', 'name', 'slug', 'icon', 'position')
+                        $query->select('id', 'parent_id', 'name', 'slug', 'icon', 'position', 'is_featured')
                             ->where('is_active', true)
-                            ->where('include_in_menu', true);
+                            ->where('include_in_menu', true)
+                            ->with('media');
                     },
+                    'media',
                 ])
                 ->orderBy('position')
                 ->get();

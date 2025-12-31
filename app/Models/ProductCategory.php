@@ -27,7 +27,8 @@ class ProductCategory extends Model implements HasMedia
     protected $fillable = [
         'parent_id', 'path', 'level', 'name', 'slug',
         'icon', 'is_active', 'is_featured',
-        'include_in_menu', 'position', 'seo_title', 'seo_description',
+        'include_in_menu', 'position',
+        'seo_title', 'seo_description',
     ];
 
     protected $casts = [
@@ -38,7 +39,7 @@ class ProductCategory extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('category_image')
+        $this->addMediaCollection('category_cover')
             ->singleFile()
             ->useDisk('public');
     }

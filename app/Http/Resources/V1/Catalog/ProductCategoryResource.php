@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\V1\Catalog;
 
+use App\Http\Resources\V1\MediaResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class ProductCategoryResource extends JsonResource
 {
@@ -25,7 +25,7 @@ class ProductCategoryResource extends JsonResource
             'level' => $this->level,
 
             'icon' => $this->icon,
-            'cover_image' => $this->cover_image ? Storage::url($this->cover_image) : null,
+            'cover' => new MediaResource($this->getFirstMedia('category_cover')),
 
             'is_featured' => $this->is_featured,
 
