@@ -1,0 +1,27 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\AttributeGroup;
+use App\Models\AttributeSet;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<AttributeGroup>
+ */
+class AttributeGroupFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'attribute_set_id' => AttributeSet::factory(),
+            'name' => ucfirst(fake()->unique()->word()),
+            'position' => fake()->numberBetween(0, 100),
+        ];
+    }
+}
