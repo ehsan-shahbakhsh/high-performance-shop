@@ -40,7 +40,7 @@ class ProductCategoryResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with('parent');
+        return parent::getEloquentQuery()->with(['parent', 'media']);
     }
 
     public static function form(Schema $schema): Schema
