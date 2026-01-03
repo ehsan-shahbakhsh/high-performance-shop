@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductCategories\Schemas;
 
+use App\Filament\Components\ShopForm;
 use App\Models\Icon;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -45,7 +46,7 @@ class ProductCategoryForm
                                     ->searchable()
                                     ->preload()
                                     ->placeholder('--- دسته اصلی (ریشه) ---')
-                                    ->helperText('اگر این دسته زیرمجموعه دسته دیگری است، آن را انتخاب کنید.'),
+                                    ->hintIcon('heroicon-m-question-mark-circle', 'اگر این دسته زیرمجموعه دسته دیگری است، آن را انتخاب کنید.'),
 
                                 MarkdownEditor::make('description')
                                     ->label('توضیحات')
@@ -55,19 +56,19 @@ class ProductCategoryForm
 
                         Section::make('بهینه‌سازی موتورهای جستجو (SEO)')
                             ->description('تنظیمات متا تگ‌ها برای گوگل و سایر موتورها')
-                            ->icon('heroicon-o-presentation-chart-line')
+                            ->icon('heroicon-o-globe-alt')
                             ->collapsed()
                             ->schema([
                                 TextInput::make('seo_title')
                                     ->label('عنوان سئو (Title)')
-                                    ->helperText('پیشنهاد: حداکثر ۶۰ کاراکتر. اگر خالی باشد، از عنوان دسته استفاده می‌شود.')
+                                    ->hintIcon('heroicon-m-question-mark-circle', 'پیشنهاد: حداکثر ۶۰ کاراکتر. اگر خالی باشد، از عنوان دسته استفاده می‌شود.')
                                     ->maxLength(60)
                                     ->placeholder(fn(Get $get) => $get('name'))
                                     ->columnSpanFull(),
 
                                 Textarea::make('seo_description')
                                     ->label('توضیحات سئو (Meta Description)')
-                                    ->helperText('پیشنهاد: حداکثر ۱۶۰ کاراکتر. خلاصه‌ای جذاب برای نمایش در نتایج گوگل.')
+                                    ->hintIcon('heroicon-m-question-mark-circle', 'پیشنهاد: حداکثر ۱۶۰ کاراکتر. خلاصه‌ای جذاب برای نمایش در نتایج گوگل.')
                                     ->maxLength(160)
                                     ->rows(3)
                                     ->columnSpanFull(),
@@ -87,92 +88,22 @@ class ProductCategoryForm
                                     ->imageEditor()
                                     ->columnSpanFull(),
 
-                                Group::make()
-                                    ->schema([
-                                        Select::make('icon')
-                                            ->label('آیکون')
-                                            ->searchable()
-                                            ->placeholder('نام آیکون را جستجو کنید (مثلا home)...')
-                                            ->allowHtml()
-                                            ->native(false)
-                                            ->getSearchResultsUsing(function (string $search) {
-                                                return Icon::query()
-                                                    ->where('name', 'like', "%{$search}%")
-                                                    ->orWhere('full_name', 'like', "%{$search}%")
-                                                    ->limit(20)
-                                                    ->get()
-                                                    ->mapWithKeys(function ($icon) {
-                                                        try {
-                                                            $svgHtml = svg($icon->full_name)->toHtml();
-                                                        } catch (\Exception) {
-                                                            $svgHtml = '';
-                                                        }
-
-                                                        $svgHtml = str_replace(
-                                                            '<svg',
-                                                            '<svg style="width: 100% !important; height: 100% !important"',
-                                                            $svgHtml
-                                                        );
-
-                                                        $html = <<<HTML
-                                                            <div class="flex items-center gap-2">
-                                                                <div style="width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
-                                                                {$svgHtml}
-                                                            </div>
-                                                            <span style="font-size: 0.9rem;">{$icon->full_name}</span>
-                                                            </div>
-                                                        HTML;
-
-                                                        return [$icon->full_name => $html];
-                                                    });
-                                            })
-                                            ->getOptionLabelUsing(function ($value) {
-                                                if ($value != strip_tags($value)) {
-                                                    return $value;
-                                                }
-
-                                                try {
-                                                    $svgHtml = svg($value)->toHtml();
-                                                } catch (\Exception) {
-                                                    $svgHtml = '';
-                                                }
-
-                                                $svgHtml = str_replace(
-                                                    '<svg',
-                                                    '<svg style="width: 100% !important; height: 100% !important"',
-                                                    $svgHtml
-                                                );
-
-                                                return <<<HTML
-                                                    <div class="flex items-center gap-2">
-                                                        <div style="width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
-                                                        {$svgHtml}
-                                                    </div>
-                                                        <span style="font-size: 0.9rem;">{$value}</span>
-                                                        </div>
-                                                    HTML;
-                                            }),
-                                    ]),
+                                ShopForm::iconPicker(),
                             ]),
 
                         Section::make('وضعیت نمایش')
                             ->icon('heroicon-o-eye')
                             ->schema([
-                                Toggle::make('is_active')
-                                    ->label('فعال')
-                                    ->helperText('آیا در سایت نمایش داده شود؟')
-                                    ->default(true)
-                                    ->onColor('success')
-                                    ->offColor('danger'),
+                                ShopForm::status('is_active', 'فعال', 'آیا در سایت نمایش داده شود؟'),
 
                                 Toggle::make('is_featured')
                                     ->label('نمایش به عنوان ویژه')
-                                    ->helperText('نمایش در بخش‌های برجسته سایت')
+                                    ->hintIcon('heroicon-m-question-mark-circle', 'نمایش در بخش‌های برجسته سایت')
                                     ->onColor('warning'),
 
                                 Toggle::make('include_in_menu')
                                     ->label('نمایش در منو')
-                                    ->helperText('آیا در منوی اصلی سایت باشد؟')
+                                    ->hintIcon('heroicon-m-question-mark-circle', 'آیا در منوی اصلی سایت باشد؟')
                                     ->onColor('info'),
                             ]),
                     ])
