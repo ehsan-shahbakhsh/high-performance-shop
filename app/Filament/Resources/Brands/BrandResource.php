@@ -40,6 +40,11 @@ class BrandResource extends Resource
         return 'برند ها';
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('media');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return BrandForm::configure($schema);
