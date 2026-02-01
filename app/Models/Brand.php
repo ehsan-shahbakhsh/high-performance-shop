@@ -26,7 +26,7 @@ class Brand extends Model implements HasMedia
         'description',
         'is_active',
         'is_featured',
-        'sort_order',
+        'position',
     ];
 
     protected $casts = [

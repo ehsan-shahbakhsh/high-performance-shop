@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Tags\Schemas;
 
 use App\Enums\TagType;
+use App\Filament\Components\ShopForm;
 use App\Models\Icon;
 use App\Models\Tag;
 use Cviebrock\EloquentSluggable\Services\SlugService;
@@ -112,72 +113,7 @@ class TagForm
                                 ColorPicker::make('color')
                                     ->label('رنگ نشان (Badge)'),
 
-                                Group::make()
-                                    ->schema([
-                                        Select::make('icon')
-                                            ->label('آیکون')
-                                            ->searchable()
-                                            ->placeholder('نام آیکون را جستجو کنید (مثلا home)...')
-                                            ->allowHtml()
-                                            ->native(false)
-                                            ->getSearchResultsUsing(function (string $search) {
-                                                return Icon::query()
-                                                    ->where('name', 'like', "%{$search}%")
-                                                    ->orWhere('full_name', 'like', "%{$search}%")
-                                                    ->limit(20)
-                                                    ->get()
-                                                    ->mapWithKeys(function ($icon) {
-                                                        try {
-                                                            $svgHtml = svg($icon->full_name)->toHtml();
-                                                        } catch (\Exception) {
-                                                            $svgHtml = '';
-                                                        }
-
-                                                        $svgHtml = str_replace(
-                                                            '<svg',
-                                                            '<svg style="width: 100% !important; height: 100% !important"',
-                                                            $svgHtml
-                                                        );
-
-                                                        $html = <<<HTML
-                                                            <div class="flex items-center gap-2">
-                                                                <div style="width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
-                                                                {$svgHtml}
-                                                            </div>
-                                                            <span style="font-size: 0.9rem;">{$icon->full_name}</span>
-                                                            </div>
-                                                        HTML;
-
-                                                        return [$icon->full_name => $html];
-                                                    });
-                                            })
-                                            ->getOptionLabelUsing(function ($value) {
-                                                if ($value != strip_tags($value)) {
-                                                    return $value;
-                                                }
-
-                                                try {
-                                                    $svgHtml = svg($value)->toHtml();
-                                                } catch (\Exception) {
-                                                    $svgHtml = '';
-                                                }
-
-                                                $svgHtml = str_replace(
-                                                    '<svg',
-                                                    '<svg style="width: 100% !important; height: 100% !important"',
-                                                    $svgHtml
-                                                );
-
-                                                return <<<HTML
-                                                    <div class="flex items-center gap-2">
-                                                        <div style="width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
-                                                        {$svgHtml}
-                                                    </div>
-                                                        <span style="font-size: 0.9rem;">{$value}</span>
-                                                        </div>
-                                                    HTML;
-                                            }),
-                                    ]),
+                                ShopForm::iconPicker(),
                             ]),
 
                         Section::make('وضعیت نمایش')

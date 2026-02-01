@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Warehouse;
+use App\Observers\WarehouseObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -63,5 +65,7 @@ class AppServiceProvider extends ServiceProvider
                     ], Response::HTTP_TOO_MANY_REQUESTS);
                 });
         });
+
+        Warehouse::observe(WarehouseObserver::class);
     }
 }

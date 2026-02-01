@@ -3,8 +3,11 @@
 namespace App\Filament\Components;
 
 use App\Models\Icon;
+use Cviebrock\EloquentSluggable\Services\SlugService;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Icons\Heroicon;
 
 final class ShopForm
@@ -92,5 +95,19 @@ final class ShopForm
                         </div>
                     HTML;
             });
+    }
+
+    public static function slug(string $model, string $name = 'slug', string $label = 'نامک (Slug)'): TextInput
+    {
+        return TextInput::make($name)
+            ->label($label)
+            ->hintIcon('heroicon-m-question-mark-circle', 'نامک همان متنی است که در انتهای آدرس مرورگر نمایش داده می‌شود.')
+            ->required()
+            ->prefixIcon('heroicon-m-link')
+            ->maxLength(255)
+            ->unique(ignoreRecord: true)
+            ->live(onBlur: true)
+            ->afterStateUpdated(fn (Set $set, ?string $state) => $set($name, SlugService::createSlug($model, $name, $state ?? '')))
+            ->regex('/^[a-z0-9\-\_]+$/');
     }
 }

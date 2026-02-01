@@ -1,21 +1,23 @@
 FROM node:24-bookworm-slim AS node_source
 
-FROM php:8.2-cli
+FROM php:8.2-cli-bookworm
 
-RUN apt-get update && apt-get install -y \
-    libbrotli-dev \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    supervisor \
-    unzip \
-    git \
-    curl \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    gnupg \
-    procps \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update --allow-releaseinfo-change \
+&& apt-get install -y --no-install-recommends \
+ca-certificates \
+libbrotli-dev \
+libcurl4-openssl-dev \
+libssl-dev \
+supervisor \
+unzip \
+git \
+curl \
+libonig-dev \
+libxml2-dev \
+zip \
+gnupg \
+procps \
+&& rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install pdo_mysql mbstring pcntl bcmath
 

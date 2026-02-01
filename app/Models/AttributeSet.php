@@ -14,11 +14,6 @@ class AttributeSet extends Model
 
     protected $fillable = ['name'];
 
-    public function attributes(): HasMany
-    {
-        return $this->hasMany(Attribute::class);
-    }
-
     public function groups(): HasMany
     {
         return $this->hasMany(AttributeGroup::class)->orderBy('position');
