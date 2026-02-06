@@ -1,0 +1,4340 @@
+[
+  {
+    "name": "اراک",
+    "slug": "اراک",
+    "province_name": "مرکزی",
+    "name_en": "Arak",
+    "slug_en": "arak",
+    "latitude": 34.0917,
+    "longitude": 49.6892
+  },
+  {
+    "name": "آشتیان",
+    "slug": "آشتیان",
+    "province_name": "مرکزی",
+    "name_en": "Ashtian",
+    "slug_en": "ashtian",
+    "latitude": 34.5208,
+    "longitude": 50.0031
+  },
+  {
+    "name": "تفرش",
+    "slug": "تفرش",
+    "province_name": "مرکزی",
+    "name_en": "Tafresh",
+    "slug_en": "tafresh",
+    "latitude": 34.6923,
+    "longitude": 50.0103
+  },
+  {
+    "name": "خمین",
+    "slug": "خمین",
+    "province_name": "مرکزی",
+    "name_en": "Khomein",
+    "slug_en": "khomein",
+    "latitude": 33.6422,
+    "longitude": 50.0789
+  },
+  {
+    "name": "دلیجان",
+    "slug": "دلیجان",
+    "province_name": "مرکزی",
+    "name_en": "Delijan",
+    "slug_en": "delijan",
+    "latitude": 33.9908,
+    "longitude": 50.6836
+  },
+  {
+    "name": "ساوه",
+    "slug": "ساوه",
+    "province_name": "مرکزی",
+    "name_en": "Saveh",
+    "slug_en": "saveh",
+    "latitude": 35.0211,
+    "longitude": 50.3564
+  },
+  {
+    "name": "شازند",
+    "slug": "شازند",
+    "province_name": "مرکزی",
+    "name_en": "Shazand",
+    "slug_en": "shazand",
+    "latitude": 33.9275,
+    "longitude": 49.4125
+  },
+  {
+    "name": "محلات",
+    "slug": "محلات",
+    "province_name": "مرکزی",
+    "name_en": "Mahallat",
+    "slug_en": "mahallat",
+    "latitude": 33.9058,
+    "longitude": 50.4575
+  },
+  {
+    "name": "آستارا",
+    "slug": "آستارا",
+    "province_name": "گیلان",
+    "name_en": "Astara",
+    "slug_en": "astara",
+    "latitude": 38.4293,
+    "longitude": 48.8724
+  },
+  {
+    "name": "آستانه اشرفیه",
+    "slug": "آستانه-اشرفیه",
+    "province_name": "گیلان",
+    "name_en": "Astaneh-ye Ashrafiyeh",
+    "slug_en": "astaneh-ye-ashrafiyeh",
+    "latitude": 37.2636,
+    "longitude": 49.945
+  },
+  {
+    "name": "بندرانزلی",
+    "slug": "بندرانزلی",
+    "province_name": "گیلان",
+    "name_en": "Bandar-e Anzali",
+    "slug_en": "bandar-e-anzali",
+    "latitude": 37.4735,
+    "longitude": 49.4633
+  },
+  {
+    "name": "طوالش",
+    "slug": "طوالش",
+    "province_name": "گیلان",
+    "name_en": "Talesh",
+    "slug_en": "talesh",
+    "latitude": 37.8016,
+    "longitude": 48.9038
+  },
+  {
+    "name": "رشت",
+    "slug": "رشت",
+    "province_name": "گیلان",
+    "name_en": "Rasht",
+    "slug_en": "rasht",
+    "latitude": 37.2808,
+    "longitude": 49.5831
+  },
+  {
+    "name": "رودبار",
+    "slug": "رودبار",
+    "province_name": "گیلان",
+    "name_en": "Rudbar",
+    "slug_en": "rudbar",
+    "latitude": 36.8222,
+    "longitude": 49.4072
+  },
+  {
+    "name": "رودسر",
+    "slug": "رودسر",
+    "province_name": "گیلان",
+    "name_en": "Rudsar",
+    "slug_en": "rudsar",
+    "latitude": 37.1373,
+    "longitude": 50.2883
+  },
+  {
+    "name": "صومعه سرا",
+    "slug": "صومعه-سرا",
+    "province_name": "گیلان",
+    "name_en": "Sowme'eh Sara",
+    "slug_en": "sowmeeh-sara",
+    "latitude": 37.3061,
+    "longitude": 49.3242
+  },
+  {
+    "name": "فومن",
+    "slug": "فومن",
+    "province_name": "گیلان",
+    "name_en": "Fuman",
+    "slug_en": "fuman",
+    "latitude": 37.2272,
+    "longitude": 49.3131
+  },
+  {
+    "name": "آمل",
+    "slug": "آمل",
+    "province_name": "مازندران",
+    "name_en": "Amol",
+    "slug_en": "amol",
+    "latitude": 36.4697,
+    "longitude": 52.3556
+  },
+  {
+    "name": "بابل",
+    "slug": "بابل",
+    "province_name": "مازندران",
+    "name_en": "Babol",
+    "slug_en": "babol",
+    "latitude": 36.5511,
+    "longitude": 52.6775
+  },
+  {
+    "name": "بهشهر",
+    "slug": "بهشهر",
+    "province_name": "مازندران",
+    "name_en": "Behshahr",
+    "slug_en": "behshahr",
+    "latitude": 36.6922,
+    "longitude": 53.5533
+  },
+  {
+    "name": "تنکابن",
+    "slug": "تنکابن",
+    "province_name": "مازندران",
+    "name_en": "Tonekabon",
+    "slug_en": "tonekabon",
+    "latitude": 36.8164,
+    "longitude": 50.8753
+  },
+  {
+    "name": "رامسر",
+    "slug": "رامسر",
+    "province_name": "مازندران",
+    "name_en": "Ramsar",
+    "slug_en": "ramsar",
+    "latitude": 36.9172,
+    "longitude": 50.6739
+  },
+  {
+    "name": "ساری",
+    "slug": "ساری",
+    "province_name": "مازندران",
+    "name_en": "Sari",
+    "slug_en": "sari",
+    "latitude": 36.5658,
+    "longitude": 53.0586
+  },
+  {
+    "name": "سوادکوه",
+    "slug": "سوادکوه",
+    "province_name": "مازندران",
+    "name_en": "Savadkuh",
+    "slug_en": "savadkuh",
+    "latitude": 36.1172,
+    "longitude": 53.0539
+  },
+  {
+    "name": "اهر",
+    "slug": "اهر",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Ahar",
+    "slug_en": "ahar",
+    "latitude": 38.4775,
+    "longitude": 47.07
+  },
+  {
+    "name": "تبریز",
+    "slug": "تبریز",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Tabriz",
+    "slug_en": "tabriz",
+    "latitude": 38.0742,
+    "longitude": 46.2997
+  },
+  {
+    "name": "سراب",
+    "slug": "سراب",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Sarab",
+    "slug_en": "sarab",
+    "latitude": 37.9392,
+    "longitude": 47.5367
+  },
+  {
+    "name": "مراغه",
+    "slug": "مراغه",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Maragheh",
+    "slug_en": "maragheh",
+    "latitude": 37.3919,
+    "longitude": 46.2411
+  },
+  {
+    "name": "مرند",
+    "slug": "مرند",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Marand",
+    "slug_en": "marand",
+    "latitude": 38.4328,
+    "longitude": 45.7725
+  },
+  {
+    "name": "ارومیه",
+    "slug": "ارومیه",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Urmia",
+    "slug_en": "urmia",
+    "latitude": 37.5528,
+    "longitude": 45.0758
+  },
+  {
+    "name": "پیرانشهر",
+    "slug": "پیرانشهر",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Piranshahr",
+    "slug_en": "piranshahr",
+    "latitude": 36.6942,
+    "longitude": 45.1417
+  },
+  {
+    "name": "خوی",
+    "slug": "خوی",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Khoy",
+    "slug_en": "khoy",
+    "latitude": 38.5503,
+    "longitude": 44.9531
+  },
+  {
+    "name": "سردشت",
+    "slug": "سردشت",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Sardasht",
+    "slug_en": "sardasht",
+    "latitude": 36.1553,
+    "longitude": 45.4789
+  },
+  {
+    "name": "سلماس",
+    "slug": "سلماس",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Salmas",
+    "slug_en": "salmas",
+    "latitude": 38.1972,
+    "longitude": 44.7653
+  },
+  {
+    "name": "ماکو",
+    "slug": "ماکو",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Maku",
+    "slug_en": "maku",
+    "latitude": 39.2953,
+    "longitude": 44.5122
+  },
+  {
+    "name": "مهاباد",
+    "slug": "مهاباد",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Mahabad",
+    "slug_en": "mahabad",
+    "latitude": 36.7644,
+    "longitude": 45.7208
+  },
+  {
+    "name": "میاندوآب",
+    "slug": "میاندوآب",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Miandoab",
+    "slug_en": "miandoab",
+    "latitude": 36.9692,
+    "longitude": 46.1089
+  },
+  {
+    "name": "نقده",
+    "slug": "نقده",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Naqadeh",
+    "slug_en": "naqadeh",
+    "latitude": 36.9558,
+    "longitude": 45.3886
+  },
+  {
+    "name": "اسلام آبادغرب",
+    "slug": "اسلام-آبادغرب",
+    "province_name": "کرمانشاه",
+    "name_en": "Islamabad-e Gharb",
+    "slug_en": "islamabad-e-gharb",
+    "latitude": 34.1136,
+    "longitude": 46.5297
+  },
+  {
+    "name": "کرمانشاه",
+    "slug": "کرمانشاه",
+    "province_name": "کرمانشاه",
+    "name_en": "Kermanshah",
+    "slug_en": "kermanshah",
+    "latitude": 34.3277,
+    "longitude": 47.0778
+  },
+  {
+    "name": "پاوه",
+    "slug": "پاوه",
+    "province_name": "کرمانشاه",
+    "name_en": "Paveh",
+    "slug_en": "paveh",
+    "latitude": 35.0442,
+    "longitude": 46.3572
+  },
+  {
+    "name": "سرپل ذهاب",
+    "slug": "سرپل-ذهاب",
+    "province_name": "کرمانشاه",
+    "name_en": "Sarpol-e Zahab",
+    "slug_en": "sarpol-e-zahab",
+    "latitude": 34.4614,
+    "longitude": 45.8647
+  },
+  {
+    "name": "سنقر",
+    "slug": "سنقر",
+    "province_name": "کرمانشاه",
+    "name_en": "Sonqor",
+    "slug_en": "sonqor",
+    "latitude": 34.7836,
+    "longitude": 47.6003
+  },
+  {
+    "name": "قصرشیرین",
+    "slug": "قصرشیرین",
+    "province_name": "کرمانشاه",
+    "name_en": "Qasr-e Shirin",
+    "slug_en": "qasr-e-shirin",
+    "latitude": 34.5147,
+    "longitude": 45.58
+  },
+  {
+    "name": "کنگاور",
+    "slug": "کنگاور",
+    "province_name": "کرمانشاه",
+    "name_en": "Kangavar",
+    "slug_en": "kangavar",
+    "latitude": 34.5042,
+    "longitude": 47.9653
+  },
+  {
+    "name": "گیلانغرب",
+    "slug": "گیلانغرب",
+    "province_name": "کرمانشاه",
+    "name_en": "Gilan-e Gharb",
+    "slug_en": "gilan-e-gharb",
+    "latitude": 34.1419,
+    "longitude": 45.92
+  },
+  {
+    "name": "جوانرود",
+    "slug": "جوانرود",
+    "province_name": "کرمانشاه",
+    "name_en": "Javanrud",
+    "slug_en": "javanrud",
+    "latitude": 34.7961,
+    "longitude": 46.4967
+  },
+  {
+    "name": "آبادان",
+    "slug": "آبادان",
+    "province_name": "خوزستان",
+    "name_en": "Abadan",
+    "slug_en": "abadan",
+    "latitude": 30.3392,
+    "longitude": 48.3043
+  },
+  {
+    "name": "اندیمشک",
+    "slug": "اندیمشک",
+    "province_name": "خوزستان",
+    "name_en": "Andimeshk",
+    "slug_en": "andimeshk",
+    "latitude": 32.4578,
+    "longitude": 48.3558
+  },
+  {
+    "name": "اهواز",
+    "slug": "اهواز",
+    "province_name": "خوزستان",
+    "name_en": "Ahvaz",
+    "slug_en": "ahvaz",
+    "latitude": 31.3183,
+    "longitude": 48.6706
+  },
+  {
+    "name": "ایذه",
+    "slug": "ایذه",
+    "province_name": "خوزستان",
+    "name_en": "Izeh",
+    "slug_en": "izeh",
+    "latitude": 31.8342,
+    "longitude": 49.8669
+  },
+  {
+    "name": "بندرماهشهر",
+    "slug": "بندرماهشهر",
+    "province_name": "خوزستان",
+    "name_en": "Bandar-e Mahshahr",
+    "slug_en": "bandar-e-mahshahr",
+    "latitude": 30.5589,
+    "longitude": 49.1981
+  },
+  {
+    "name": "بهبهان",
+    "slug": "بهبهان",
+    "province_name": "خوزستان",
+    "name_en": "Behbahan",
+    "slug_en": "behbahan",
+    "latitude": 30.5958,
+    "longitude": 50.2417
+  },
+  {
+    "name": "خرمشهر",
+    "slug": "خرمشهر",
+    "province_name": "خوزستان",
+    "name_en": "Khorramshahr",
+    "slug_en": "khorramshahr",
+    "latitude": 30.4397,
+    "longitude": 48.1664
+  },
+  {
+    "name": "دزفول",
+    "slug": "دزفول",
+    "province_name": "خوزستان",
+    "name_en": "Dezful",
+    "slug_en": "dezful",
+    "latitude": 32.3842,
+    "longitude": 48.4025
+  },
+  {
+    "name": "دشت آزادگان",
+    "slug": "دشت-آزادگان",
+    "province_name": "خوزستان",
+    "name_en": "Dasht-e Azadegan",
+    "slug_en": "dasht-e-azadegan",
+    "latitude": 31.5608,
+    "longitude": 48.1831
+  },
+  {
+    "name": "آباده",
+    "slug": "آباده",
+    "province_name": "فارس",
+    "name_en": "Abadeh",
+    "slug_en": "abadeh",
+    "latitude": 31.1608,
+    "longitude": 52.6506
+  },
+  {
+    "name": "استهبان",
+    "slug": "استهبان",
+    "province_name": "فارس",
+    "name_en": "Estahban",
+    "slug_en": "estahban",
+    "latitude": 29.1264,
+    "longitude": 54.0419
+  },
+  {
+    "name": "اقلید",
+    "slug": "اقلید",
+    "province_name": "فارس",
+    "name_en": "Eqlid",
+    "slug_en": "eqlid",
+    "latitude": 30.8881,
+    "longitude": 52.6869
+  },
+  {
+    "name": "جهرم",
+    "slug": "جهرم",
+    "province_name": "فارس",
+    "name_en": "Jahrom",
+    "slug_en": "jahrom",
+    "latitude": 28.5083,
+    "longitude": 53.5603
+  },
+  {
+    "name": "داراب",
+    "slug": "داراب",
+    "province_name": "فارس",
+    "name_en": "Darab",
+    "slug_en": "darab",
+    "latitude": 28.7519,
+    "longitude": 54.5444
+  },
+  {
+    "name": "سپیدان",
+    "slug": "سپیدان",
+    "province_name": "فارس",
+    "name_en": "Sepidan",
+    "slug_en": "sepidan",
+    "latitude": 30.2736,
+    "longitude": 51.9786
+  },
+  {
+    "name": "شیراز",
+    "slug": "شیراز",
+    "province_name": "فارس",
+    "name_en": "Shiraz",
+    "slug_en": "shiraz",
+    "latitude": 29.5918,
+    "longitude": 52.5837
+  },
+  {
+    "name": "فسا",
+    "slug": "فسا",
+    "province_name": "فارس",
+    "name_en": "Fasa",
+    "slug_en": "fasa",
+    "latitude": 28.9381,
+    "longitude": 53.6481
+  },
+  {
+    "name": "فیروزآباد",
+    "slug": "فیروزآباد",
+    "province_name": "فارس",
+    "name_en": "Firuzabad",
+    "slug_en": "firuzabad",
+    "latitude": 28.8439,
+    "longitude": 52.5706
+  },
+  {
+    "name": "بافت",
+    "slug": "بافت",
+    "province_name": "کرمان",
+    "name_en": "Baft",
+    "slug_en": "baft",
+    "latitude": 29.2339,
+    "longitude": 56.6058
+  },
+  {
+    "name": "بم",
+    "slug": "بم",
+    "province_name": "کرمان",
+    "name_en": "Bam",
+    "slug_en": "bam",
+    "latitude": 29.1061,
+    "longitude": 58.3569
+  },
+  {
+    "name": "جیرفت",
+    "slug": "جیرفت",
+    "province_name": "کرمان",
+    "name_en": "Jiroft",
+    "slug_en": "jiroft",
+    "latitude": 28.6781,
+    "longitude": 57.7406
+  },
+  {
+    "name": "رفسنجان",
+    "slug": "رفسنجان",
+    "province_name": "کرمان",
+    "name_en": "Rafsanjan",
+    "slug_en": "rafsanjan",
+    "latitude": 30.4069,
+    "longitude": 55.9939
+  },
+  {
+    "name": "زرند",
+    "slug": "زرند",
+    "province_name": "کرمان",
+    "name_en": "Zarand",
+    "slug_en": "zarand",
+    "latitude": 30.8128,
+    "longitude": 56.5639
+  },
+  {
+    "name": "سیرجان",
+    "slug": "سیرجان",
+    "province_name": "کرمان",
+    "name_en": "Sirjan",
+    "slug_en": "sirjan",
+    "latitude": 29.4519,
+    "longitude": 55.6814
+  },
+  {
+    "name": "شهربابک",
+    "slug": "شهربابک",
+    "province_name": "کرمان",
+    "name_en": "Shahr-e Babak",
+    "slug_en": "shahr-e-babak",
+    "latitude": 30.1164,
+    "longitude": 55.1186
+  },
+  {
+    "name": "کرمان",
+    "slug": "کرمان",
+    "province_name": "کرمان",
+    "name_en": "Kerman",
+    "slug_en": "kerman",
+    "latitude": 30.2839,
+    "longitude": 57.0834
+  },
+  {
+    "name": "کهنوج",
+    "slug": "کهنوج",
+    "province_name": "کرمان",
+    "name_en": "Kahnuj",
+    "slug_en": "kahnuj",
+    "latitude": 27.9514,
+    "longitude": 57.7036
+  },
+  {
+    "name": "تایباد",
+    "slug": "تایباد",
+    "province_name": "خراسان رضوی",
+    "name_en": "Taybad",
+    "slug_en": "taybad",
+    "latitude": 34.7417,
+    "longitude": 60.7761
+  },
+  {
+    "name": "تربت حیدریه",
+    "slug": "تربت-حیدریه",
+    "province_name": "خراسان رضوی",
+    "name_en": "Torbat-e Heydarieh",
+    "slug_en": "torbat-e-heydarieh",
+    "latitude": 35.2739,
+    "longitude": 59.2194
+  },
+  {
+    "name": "تربت جام",
+    "slug": "تربت-جام",
+    "province_name": "خراسان رضوی",
+    "name_en": "Torbat-e Jam",
+    "slug_en": "torbat-e-jam",
+    "latitude": 35.2436,
+    "longitude": 60.6225
+  },
+  {
+    "name": "درگز",
+    "slug": "درگز",
+    "province_name": "خراسان رضوی",
+    "name_en": "Dargaz",
+    "slug_en": "dargaz",
+    "latitude": 37.4436,
+    "longitude": 59.1081
+  },
+  {
+    "name": "سبزوار",
+    "slug": "سبزوار",
+    "province_name": "خراسان رضوی",
+    "name_en": "Sabzevar",
+    "slug_en": "sabzevar",
+    "latitude": 36.2125,
+    "longitude": 57.6778
+  },
+  {
+    "name": "اردستان",
+    "slug": "اردستان",
+    "province_name": "اصفهان",
+    "name_en": "Ardestan",
+    "slug_en": "ardestan",
+    "latitude": 33.3761,
+    "longitude": 52.3725
+  },
+  {
+    "name": "اصفهان",
+    "slug": "اصفهان",
+    "province_name": "اصفهان",
+    "name_en": "Isfahan",
+    "slug_en": "isfahan",
+    "latitude": 32.6539,
+    "longitude": 51.666
+  },
+  {
+    "name": "خمینی شهر",
+    "slug": "خمینی-شهر",
+    "province_name": "اصفهان",
+    "name_en": "Khomeyni Shahr",
+    "slug_en": "khomeyni-shahr",
+    "latitude": 32.6881,
+    "longitude": 51.5217
+  },
+  {
+    "name": "خوانسار",
+    "slug": "خوانسار",
+    "province_name": "اصفهان",
+    "name_en": "Khansar",
+    "slug_en": "khansar",
+    "latitude": 33.2208,
+    "longitude": 50.315
+  },
+  {
+    "name": "سمیرم",
+    "slug": "سمیرم",
+    "province_name": "اصفهان",
+    "name_en": "Semirom",
+    "slug_en": "semirom",
+    "latitude": 31.4142,
+    "longitude": 51.5694
+  },
+  {
+    "name": "فریدن",
+    "slug": "فریدن",
+    "province_name": "اصفهان",
+    "name_en": "Fereydan",
+    "slug_en": "fereydan",
+    "latitude": 32.9869,
+    "longitude": 50.4072
+  },
+  {
+    "name": "فریدونشهر",
+    "slug": "فریدونشهر",
+    "province_name": "اصفهان",
+    "name_en": "Fereydunshahr",
+    "slug_en": "fereydunshahr",
+    "latitude": 32.9411,
+    "longitude": 50.1211
+  },
+  {
+    "name": "فلاورجان",
+    "slug": "فلاورجان",
+    "province_name": "اصفهان",
+    "name_en": "Falavarjan",
+    "slug_en": "falavarjan",
+    "latitude": 32.5553,
+    "longitude": 51.5097
+  },
+  {
+    "name": "شهرضا",
+    "slug": "شهرضا",
+    "province_name": "اصفهان",
+    "name_en": "Shahreza",
+    "slug_en": "shahreza",
+    "latitude": 32.0089,
+    "longitude": 51.8614
+  },
+  {
+    "name": "ایرانشهر",
+    "slug": "ایرانشهر",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Iranshahr",
+    "slug_en": "iranshahr",
+    "latitude": 27.2025,
+    "longitude": 60.6858
+  },
+  {
+    "name": "چاه بهار",
+    "slug": "چاه-بهار",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Chabahar",
+    "slug_en": "chabahar",
+    "latitude": 25.2919,
+    "longitude": 60.6433
+  },
+  {
+    "name": "خاش",
+    "slug": "خاش",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Khash",
+    "slug_en": "khash",
+    "latitude": 28.2211,
+    "longitude": 61.2158
+  },
+  {
+    "name": "زابل",
+    "slug": "زابل",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Zabol",
+    "slug_en": "zabol",
+    "latitude": 31.0308,
+    "longitude": 61.4972
+  },
+  {
+    "name": "زاهدان",
+    "slug": "زاهدان",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Zahedan",
+    "slug_en": "zahedan",
+    "latitude": 29.4964,
+    "longitude": 60.8628
+  },
+  {
+    "name": "سراوان",
+    "slug": "سراوان",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Saravan",
+    "slug_en": "saravan",
+    "latitude": 27.3703,
+    "longitude": 62.3353
+  },
+  {
+    "name": "نیک شهر",
+    "slug": "نیک-شهر",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Nik Shahr",
+    "slug_en": "nik-shahr",
+    "latitude": 26.2258,
+    "longitude": 60.2131
+  },
+  {
+    "name": "راسک",
+    "slug": "راسک",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Rask",
+    "slug_en": "rask",
+    "latitude": 26.2361,
+    "longitude": 61.3986
+  },
+  {
+    "name": "کنارک",
+    "slug": "کنارک",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Konarak",
+    "slug_en": "konarak",
+    "latitude": 25.3603,
+    "longitude": 60.3994
+  },
+  {
+    "name": "بانه",
+    "slug": "بانه",
+    "province_name": "کردستان",
+    "name_en": "Baneh",
+    "slug_en": "baneh",
+    "latitude": 35.9975,
+    "longitude": 45.8853
+  },
+  {
+    "name": "بیجار",
+    "slug": "بیجار",
+    "province_name": "کردستان",
+    "name_en": "Bijar",
+    "slug_en": "bijar",
+    "latitude": 35.8739,
+    "longitude": 47.6031
+  },
+  {
+    "name": "سقز",
+    "slug": "سقز",
+    "province_name": "کردستان",
+    "name_en": "Saqqez",
+    "slug_en": "saqqez",
+    "latitude": 36.2497,
+    "longitude": 46.2736
+  },
+  {
+    "name": "سنندج",
+    "slug": "سنندج",
+    "province_name": "کردستان",
+    "name_en": "Sanandaj",
+    "slug_en": "sanandaj",
+    "latitude": 35.3142,
+    "longitude": 46.9961
+  },
+  {
+    "name": "قروه",
+    "slug": "قروه",
+    "province_name": "کردستان",
+    "name_en": "Qorveh",
+    "slug_en": "qorveh",
+    "latitude": 35.1664,
+    "longitude": 47.8011
+  },
+  {
+    "name": "مریوان",
+    "slug": "مریوان",
+    "province_name": "کردستان",
+    "name_en": "Marivan",
+    "slug_en": "marivan",
+    "latitude": 35.5269,
+    "longitude": 46.1758
+  },
+  {
+    "name": "دیواندره",
+    "slug": "دیواندره",
+    "province_name": "کردستان",
+    "name_en": "Divandarreh",
+    "slug_en": "divandarreh",
+    "latitude": 35.9139,
+    "longitude": 47.0239
+  },
+  {
+    "name": "کامیاران",
+    "slug": "کامیاران",
+    "province_name": "کردستان",
+    "name_en": "Kamyaran",
+    "slug_en": "kamyaran",
+    "latitude": 34.7953,
+    "longitude": 46.9356
+  },
+  {
+    "name": "سروآباد",
+    "slug": "سروآباد",
+    "province_name": "کردستان",
+    "name_en": "Sarvabad",
+    "slug_en": "sarvabad",
+    "latitude": 35.3117,
+    "longitude": 46.3653
+  },
+  {
+    "name": "تویسرکان",
+    "slug": "تویسرکان",
+    "province_name": "همدان",
+    "name_en": "Tuyserkan",
+    "slug_en": "tuyserkan",
+    "latitude": 34.5483,
+    "longitude": 48.4464
+  },
+  {
+    "name": "ملایر",
+    "slug": "ملایر",
+    "province_name": "همدان",
+    "name_en": "Malayer",
+    "slug_en": "malayer",
+    "latitude": 34.2956,
+    "longitude": 48.8197
+  },
+  {
+    "name": "نهاوند",
+    "slug": "نهاوند",
+    "province_name": "همدان",
+    "name_en": "Nahavand",
+    "slug_en": "nahavand",
+    "latitude": 34.1883,
+    "longitude": 48.3756
+  },
+  {
+    "name": "همدان",
+    "slug": "همدان",
+    "province_name": "همدان",
+    "name_en": "Hamadan",
+    "slug_en": "hamadan",
+    "latitude": 34.7983,
+    "longitude": 48.5147
+  },
+  {
+    "name": "کبودرآهنگ",
+    "slug": "کبودرآهنگ",
+    "province_name": "همدان",
+    "name_en": "Kabudarahang",
+    "slug_en": "kabudarahang",
+    "latitude": 35.2083,
+    "longitude": 48.7239
+  },
+  {
+    "name": "اسدآباد",
+    "slug": "اسدآباد",
+    "province_name": "همدان",
+    "name_en": "Asadabad",
+    "slug_en": "asadabad",
+    "latitude": 34.7822,
+    "longitude": 48.1183
+  },
+  {
+    "name": "بهار",
+    "slug": "بهار",
+    "province_name": "همدان",
+    "name_en": "Bahar",
+    "slug_en": "bahar",
+    "latitude": 34.9069,
+    "longitude": 48.4414
+  },
+  {
+    "name": "رزن",
+    "slug": "رزن",
+    "province_name": "همدان",
+    "name_en": "Razan",
+    "slug_en": "razan",
+    "latitude": 35.3869,
+    "longitude": 49.0336
+  },
+  {
+    "name": "فامنین",
+    "slug": "فامنین",
+    "province_name": "همدان",
+    "name_en": "Famenin",
+    "slug_en": "famenin",
+    "latitude": 35.1147,
+    "longitude": 48.9719
+  },
+  {
+    "name": "بروجن",
+    "slug": "بروجن",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Borujen",
+    "slug_en": "borujen",
+    "latitude": 31.9686,
+    "longitude": 51.2883
+  },
+  {
+    "name": "شهرکرد",
+    "slug": "شهرکرد",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Shahr-e Kord",
+    "slug_en": "shahr-e-kord",
+    "latitude": 32.3256,
+    "longitude": 50.8644
+  },
+  {
+    "name": "فارسان",
+    "slug": "فارسان",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Farsan",
+    "slug_en": "farsan",
+    "latitude": 32.2575,
+    "longitude": 50.5636
+  },
+  {
+    "name": "لردگان",
+    "slug": "لردگان",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Lordegan",
+    "slug_en": "lordegan",
+    "latitude": 31.5097,
+    "longitude": 50.8286
+  },
+  {
+    "name": "اردل",
+    "slug": "اردل",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Ardal",
+    "slug_en": "ardal",
+    "latitude": 31.9969,
+    "longitude": 50.6558
+  },
+  {
+    "name": "کوهرنگ",
+    "slug": "کوهرنگ",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Kuhrang",
+    "slug_en": "kuhrang",
+    "latitude": 32.4439,
+    "longitude": 50.1256
+  },
+  {
+    "name": "کیار",
+    "slug": "کیار",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Kiar",
+    "slug_en": "kiar",
+    "latitude": 32.045,
+    "longitude": 50.8167
+  },
+  {
+    "name": "سامان",
+    "slug": "سامان",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Saman",
+    "slug_en": "saman",
+    "latitude": 32.4536,
+    "longitude": 50.9103
+  },
+  {
+    "name": "بن",
+    "slug": "بن",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Ben",
+    "slug_en": "ben",
+    "latitude": 32.5422,
+    "longitude": 50.745
+  },
+  {
+    "name": "الیگودرز",
+    "slug": "الیگودرز",
+    "province_name": "لرستان",
+    "name_en": "Aligudarz",
+    "slug_en": "aligudarz",
+    "latitude": 33.4006,
+    "longitude": 49.6947
+  },
+  {
+    "name": "بروجرد",
+    "slug": "بروجرد",
+    "province_name": "لرستان",
+    "name_en": "Borujerd",
+    "slug_en": "borujerd",
+    "latitude": 33.8972,
+    "longitude": 48.7514
+  },
+  {
+    "name": "خرم آباد",
+    "slug": "خرم-آباد",
+    "province_name": "لرستان",
+    "name_en": "Khorramabad",
+    "slug_en": "khorramabad",
+    "latitude": 33.4878,
+    "longitude": 48.3558
+  },
+  {
+    "name": "دلفان",
+    "slug": "دلفان",
+    "province_name": "لرستان",
+    "name_en": "Delfan",
+    "slug_en": "delfan",
+    "latitude": 34.0736,
+    "longitude": 47.9731
+  },
+  {
+    "name": "دورود",
+    "slug": "دورود",
+    "province_name": "لرستان",
+    "name_en": "Dorud",
+    "slug_en": "dorud",
+    "latitude": 33.4594,
+    "longitude": 49.0753
+  },
+  {
+    "name": "کوهدشت",
+    "slug": "کوهدشت",
+    "province_name": "لرستان",
+    "name_en": "Kuhdasht",
+    "slug_en": "kuhdasht",
+    "latitude": 33.535,
+    "longitude": 47.6061
+  },
+  {
+    "name": "ازنا",
+    "slug": "ازنا",
+    "province_name": "لرستان",
+    "name_en": "Azna",
+    "slug_en": "azna",
+    "latitude": 33.4539,
+    "longitude": 49.4561
+  },
+  {
+    "name": "پلدختر",
+    "slug": "پلدختر",
+    "province_name": "لرستان",
+    "name_en": "Poldokhtar",
+    "slug_en": "poldokhtar",
+    "latitude": 33.1536,
+    "longitude": 47.7136
+  },
+  {
+    "name": "سلسله",
+    "slug": "سلسله",
+    "province_name": "لرستان",
+    "name_en": "Selseleh",
+    "slug_en": "selseleh",
+    "latitude": 33.8631,
+    "longitude": 48.2619
+  },
+  {
+    "name": "ایلام",
+    "slug": "ایلام",
+    "province_name": "ایلام",
+    "name_en": "Ilam",
+    "slug_en": "ilam",
+    "latitude": 33.6375,
+    "longitude": 46.4225
+  },
+  {
+    "name": "دره شهر",
+    "slug": "دره-شهر",
+    "province_name": "ایلام",
+    "name_en": "Darreh Shahr",
+    "slug_en": "darreh-shahr",
+    "latitude": 33.1397,
+    "longitude": 47.3761
+  },
+  {
+    "name": "دهلران",
+    "slug": "دهلران",
+    "province_name": "ایلام",
+    "name_en": "Dehloran",
+    "slug_en": "dehloran",
+    "latitude": 32.6942,
+    "longitude": 47.2678
+  },
+  {
+    "name": "چرداول",
+    "slug": "چرداول",
+    "province_name": "ایلام",
+    "name_en": "Chardavol",
+    "slug_en": "chardavol",
+    "latitude": 33.7667,
+    "longitude": 46.5667
+  },
+  {
+    "name": "مهران",
+    "slug": "مهران",
+    "province_name": "ایلام",
+    "name_en": "Mehran",
+    "slug_en": "mehran",
+    "latitude": 33.1222,
+    "longitude": 46.1647
+  },
+  {
+    "name": "آبدانان",
+    "slug": "آبدانان",
+    "province_name": "ایلام",
+    "name_en": "Abdanan",
+    "slug_en": "abdanan",
+    "latitude": 32.9928,
+    "longitude": 47.4194
+  },
+  {
+    "name": "ایوان",
+    "slug": "ایوان",
+    "province_name": "ایلام",
+    "name_en": "Eyvan",
+    "slug_en": "eyvan",
+    "latitude": 33.8267,
+    "longitude": 46.3106
+  },
+  {
+    "name": "ملکشاهی",
+    "slug": "ملکشاهی",
+    "province_name": "ایلام",
+    "name_en": "Malekshahi",
+    "slug_en": "malekshahi",
+    "latitude": 33.3808,
+    "longitude": 46.3986
+  },
+  {
+    "name": "سیروان",
+    "slug": "سیروان",
+    "province_name": "ایلام",
+    "name_en": "Sirvan",
+    "slug_en": "sirvan",
+    "latitude": 33.5417,
+    "longitude": 46.85
+  },
+  {
+    "name": "بویراحمد",
+    "slug": "بویراحمد",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Boyer-Ahmad",
+    "slug_en": "boyer-ahmad",
+    "latitude": 30.6683,
+    "longitude": 51.5875
+  },
+  {
+    "name": "کهگیلویه",
+    "slug": "کهگیلویه",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Kohgiluyeh",
+    "slug_en": "kohgiluyeh",
+    "latitude": 30.7919,
+    "longitude": 50.5603
+  },
+  {
+    "name": "گچساران",
+    "slug": "گچساران",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Gachsaran",
+    "slug_en": "gachsaran",
+    "latitude": 30.3586,
+    "longitude": 50.7944
+  },
+  {
+    "name": "دنا",
+    "slug": "دنا",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Dena",
+    "slug_en": "dena",
+    "latitude": 30.9331,
+    "longitude": 51.455
+  },
+  {
+    "name": "بهمیی",
+    "slug": "بهمیی",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Bahmai",
+    "slug_en": "bahmai",
+    "latitude": 31.0267,
+    "longitude": 50.2175
+  },
+  {
+    "name": "چرام",
+    "slug": "چرام",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Charam",
+    "slug_en": "charam",
+    "latitude": 30.7447,
+    "longitude": 50.7461
+  },
+  {
+    "name": "باشت",
+    "slug": "باشت",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Basht",
+    "slug_en": "basht",
+    "latitude": 30.3606,
+    "longitude": 51.1611
+  },
+  {
+    "name": "لنده",
+    "slug": "لنده",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Landeh",
+    "slug_en": "landeh",
+    "latitude": 30.9703,
+    "longitude": 50.4358
+  },
+  {
+    "name": "مارگون",
+    "slug": "مارگون",
+    "province_name": "کهگیلویه و بویراحمد",
+    "name_en": "Margon",
+    "slug_en": "margon",
+    "latitude": 31.0664,
+    "longitude": 50.9317
+  },
+  {
+    "name": "بوشهر",
+    "slug": "بوشهر",
+    "province_name": "بوشهر",
+    "name_en": "Bushehr",
+    "slug_en": "bushehr",
+    "latitude": 28.9225,
+    "longitude": 50.8383
+  },
+  {
+    "name": "تنگستان",
+    "slug": "تنگستان",
+    "province_name": "بوشهر",
+    "name_en": "Tangestan",
+    "slug_en": "tangestan",
+    "latitude": 28.8925,
+    "longitude": 51.2725
+  },
+  {
+    "name": "دشتستان",
+    "slug": "دشتستان",
+    "province_name": "بوشهر",
+    "name_en": "Dashtestan",
+    "slug_en": "dashtestan",
+    "latitude": 29.2708,
+    "longitude": 51.2136
+  },
+  {
+    "name": "دشتی",
+    "slug": "دشتی",
+    "province_name": "بوشهر",
+    "name_en": "Dashti",
+    "slug_en": "dashti",
+    "latitude": 28.3683,
+    "longitude": 51.5233
+  },
+  {
+    "name": "دیر",
+    "slug": "دیر",
+    "province_name": "بوشهر",
+    "name_en": "Deyr",
+    "slug_en": "deyr",
+    "latitude": 27.8397,
+    "longitude": 51.9367
+  },
+  {
+    "name": "کنگان",
+    "slug": "کنگان",
+    "province_name": "بوشهر",
+    "name_en": "Kangan",
+    "slug_en": "kangan",
+    "latitude": 27.8336,
+    "longitude": 52.0628
+  },
+  {
+    "name": "گناوه",
+    "slug": "گناوه",
+    "province_name": "بوشهر",
+    "name_en": "Ganaveh",
+    "slug_en": "ganaveh",
+    "latitude": 29.5786,
+    "longitude": 50.5186
+  },
+  {
+    "name": "دیلم",
+    "slug": "دیلم",
+    "province_name": "بوشهر",
+    "name_en": "Deylam",
+    "slug_en": "deylam",
+    "latitude": 30.0558,
+    "longitude": 50.1583
+  },
+  {
+    "name": "جم",
+    "slug": "جم",
+    "province_name": "بوشهر",
+    "name_en": "Jam",
+    "slug_en": "jam",
+    "latitude": 27.8286,
+    "longitude": 52.3253
+  },
+  {
+    "name": "ابهر",
+    "slug": "ابهر",
+    "province_name": "زنجان",
+    "name_en": "Abhar",
+    "slug_en": "abhar",
+    "latitude": 36.1469,
+    "longitude": 49.2181
+  },
+  {
+    "name": "خدابنده",
+    "slug": "خدابنده",
+    "province_name": "زنجان",
+    "name_en": "Khodabandeh",
+    "slug_en": "khodabandeh",
+    "latitude": 36.1172,
+    "longitude": 48.5886
+  },
+  {
+    "name": "زنجان",
+    "slug": "زنجان",
+    "province_name": "زنجان",
+    "name_en": "Zanjan",
+    "slug_en": "zanjan",
+    "latitude": 36.6736,
+    "longitude": 48.4953
+  },
+  {
+    "name": "ایجرود",
+    "slug": "ایجرود",
+    "province_name": "زنجان",
+    "name_en": "Ijrud",
+    "slug_en": "ijrud",
+    "latitude": 36.3986,
+    "longitude": 48.2439
+  },
+  {
+    "name": "خرمدره",
+    "slug": "خرمدره",
+    "province_name": "زنجان",
+    "name_en": "Khorramdarreh",
+    "slug_en": "khorramdarreh",
+    "latitude": 36.2047,
+    "longitude": 49.1914
+  },
+  {
+    "name": "طارم",
+    "slug": "طارم",
+    "province_name": "زنجان",
+    "name_en": "Tarom",
+    "slug_en": "tarom",
+    "latitude": 36.8775,
+    "longitude": 48.9103
+  },
+  {
+    "name": "ماهنشان",
+    "slug": "ماهنشان",
+    "province_name": "زنجان",
+    "name_en": "Mahneshan",
+    "slug_en": "mahneshan",
+    "latitude": 36.7442,
+    "longitude": 47.6711
+  },
+  {
+    "name": "دامغان",
+    "slug": "دامغان",
+    "province_name": "سمنان",
+    "name_en": "Damghan",
+    "slug_en": "damghan",
+    "latitude": 36.1681,
+    "longitude": 54.3481
+  },
+  {
+    "name": "سمنان",
+    "slug": "سمنان",
+    "province_name": "سمنان",
+    "name_en": "Semnan",
+    "slug_en": "semnan",
+    "latitude": 35.5769,
+    "longitude": 53.3953
+  },
+  {
+    "name": "شاهرود",
+    "slug": "شاهرود",
+    "province_name": "سمنان",
+    "name_en": "Shahrud",
+    "slug_en": "shahrud",
+    "latitude": 36.4183,
+    "longitude": 54.9664
+  },
+  {
+    "name": "گرمسار",
+    "slug": "گرمسار",
+    "province_name": "سمنان",
+    "name_en": "Garmsar",
+    "slug_en": "garmsar",
+    "latitude": 35.2167,
+    "longitude": 52.3414
+  },
+  {
+    "name": "مهدی شهر",
+    "slug": "مهدی-شهر",
+    "province_name": "سمنان",
+    "name_en": "Mehdishahr",
+    "slug_en": "mehdishahr",
+    "latitude": 35.7117,
+    "longitude": 53.3517
+  },
+  {
+    "name": "آرادان",
+    "slug": "آرادان",
+    "province_name": "سمنان",
+    "name_en": "Aradan",
+    "slug_en": "aradan",
+    "latitude": 35.2492,
+    "longitude": 52.4939
+  },
+  {
+    "name": "میامی",
+    "slug": "میامی",
+    "province_name": "سمنان",
+    "name_en": "Mayamey",
+    "slug_en": "mayamey",
+    "latitude": 36.4108,
+    "longitude": 55.6508
+  },
+  {
+    "name": "سرخه",
+    "slug": "سرخه",
+    "province_name": "سمنان",
+    "name_en": "Sorkheh",
+    "slug_en": "sorkheh",
+    "latitude": 35.4617,
+    "longitude": 53.2139
+  },
+  {
+    "name": "اردکان",
+    "slug": "اردکان",
+    "province_name": "یزد",
+    "name_en": "Ardakan",
+    "slug_en": "ardakan",
+    "latitude": 32.3089,
+    "longitude": 54.0186
+  },
+  {
+    "name": "بافق",
+    "slug": "بافق",
+    "province_name": "یزد",
+    "name_en": "Bafq",
+    "slug_en": "bafq",
+    "latitude": 31.6033,
+    "longitude": 55.4025
+  },
+  {
+    "name": "تفت",
+    "slug": "تفت",
+    "province_name": "یزد",
+    "name_en": "Taft",
+    "slug_en": "taft",
+    "latitude": 31.7456,
+    "longitude": 54.2056
+  },
+  {
+    "name": "مهریز",
+    "slug": "مهریز",
+    "province_name": "یزد",
+    "name_en": "Mehriz",
+    "slug_en": "mehriz",
+    "latitude": 31.5861,
+    "longitude": 54.4372
+  },
+  {
+    "name": "یزد",
+    "slug": "یزد",
+    "province_name": "یزد",
+    "name_en": "Yazd",
+    "slug_en": "yazd",
+    "latitude": 31.8972,
+    "longitude": 54.3675
+  },
+  {
+    "name": "میبد",
+    "slug": "میبد",
+    "province_name": "یزد",
+    "name_en": "Meybod",
+    "slug_en": "meybod",
+    "latitude": 32.25,
+    "longitude": 54.0167
+  },
+  {
+    "name": "ابرکوه",
+    "slug": "ابرکوه",
+    "province_name": "یزد",
+    "name_en": "Abarkuh",
+    "slug_en": "abarkuh",
+    "latitude": 31.1289,
+    "longitude": 53.2825
+  },
+  {
+    "name": "اشکذر",
+    "slug": "اشکذر",
+    "province_name": "یزد",
+    "name_en": "Ashkezar",
+    "slug_en": "ashkezar",
+    "latitude": 31.9961,
+    "longitude": 54.2153
+  },
+  {
+    "name": "خاتم",
+    "slug": "خاتم",
+    "province_name": "یزد",
+    "name_en": "Khatam",
+    "slug_en": "khatam",
+    "latitude": 30.0381,
+    "longitude": 54.2694
+  },
+  {
+    "name": "ابوموسی",
+    "slug": "ابوموسی",
+    "province_name": "هرمزگان",
+    "name_en": "Abu Musa",
+    "slug_en": "abu-musa",
+    "latitude": 25.8775,
+    "longitude": 55.0331
+  },
+  {
+    "name": "بندر عباس",
+    "slug": "بندر-عباس",
+    "province_name": "هرمزگان",
+    "name_en": "Bandar Abbas",
+    "slug_en": "bandar-abbas",
+    "latitude": 27.1833,
+    "longitude": 56.2667
+  },
+  {
+    "name": "بندر لنگه",
+    "slug": "بندر-لنگه",
+    "province_name": "هرمزگان",
+    "name_en": "Bandar Lengeh",
+    "slug_en": "bandar-lengeh",
+    "latitude": 26.5578,
+    "longitude": 54.8806
+  },
+  {
+    "name": "قشم",
+    "slug": "قشم",
+    "province_name": "هرمزگان",
+    "name_en": "Qeshm",
+    "slug_en": "qeshm",
+    "latitude": 26.9581,
+    "longitude": 56.2717
+  },
+  {
+    "name": "میناب",
+    "slug": "میناب",
+    "province_name": "هرمزگان",
+    "name_en": "Minab",
+    "slug_en": "minab",
+    "latitude": 27.1467,
+    "longitude": 57.0803
+  },
+  {
+    "name": "جاسک",
+    "slug": "جاسک",
+    "province_name": "هرمزگان",
+    "name_en": "Jask",
+    "slug_en": "jask",
+    "latitude": 25.6531,
+    "longitude": 57.7725
+  },
+  {
+    "name": "رودان",
+    "slug": "رودان",
+    "province_name": "هرمزگان",
+    "name_en": "Rudan",
+    "slug_en": "rudan",
+    "latitude": 27.4428,
+    "longitude": 57.1925
+  },
+  {
+    "name": "حاجی آباد",
+    "slug": "حاجی-آباد",
+    "province_name": "هرمزگان",
+    "name_en": "Hajiabad",
+    "slug_en": "hajiabad",
+    "latitude": 28.3094,
+    "longitude": 55.9017
+  },
+  {
+    "name": "بستک",
+    "slug": "بستک",
+    "province_name": "هرمزگان",
+    "name_en": "Bastak",
+    "slug_en": "bastak",
+    "latitude": 27.1994,
+    "longitude": 54.3667
+  },
+  {
+    "name": "تهران",
+    "slug": "تهران",
+    "province_name": "تهران",
+    "name_en": "Tehran",
+    "slug_en": "tehran",
+    "latitude": 35.6892,
+    "longitude": 51.389
+  },
+  {
+    "name": "دماوند",
+    "slug": "دماوند",
+    "province_name": "تهران",
+    "name_en": "Damavand",
+    "slug_en": "damavand",
+    "latitude": 35.7178,
+    "longitude": 52.065
+  },
+  {
+    "name": "ری",
+    "slug": "ری",
+    "province_name": "تهران",
+    "name_en": "Ray",
+    "slug_en": "ray",
+    "latitude": 35.5933,
+    "longitude": 51.4286
+  },
+  {
+    "name": "شمیرانات",
+    "slug": "شمیرانات",
+    "province_name": "تهران",
+    "name_en": "Shemiranat",
+    "slug_en": "shemiranat",
+    "latitude": 35.8064,
+    "longitude": 51.4283
+  },
+  {
+    "name": "ورامین",
+    "slug": "ورامین",
+    "province_name": "تهران",
+    "name_en": "Varamin",
+    "slug_en": "varamin",
+    "latitude": 35.3267,
+    "longitude": 51.6456
+  },
+  {
+    "name": "شهریار",
+    "slug": "شهریار",
+    "province_name": "تهران",
+    "name_en": "Shahriar",
+    "slug_en": "shahriar",
+    "latitude": 35.6594,
+    "longitude": 51.0583
+  },
+  {
+    "name": "اردبیل",
+    "slug": "اردبیل",
+    "province_name": "اردبیل",
+    "name_en": "Ardabil",
+    "slug_en": "ardabil",
+    "latitude": 38.2498,
+    "longitude": 48.2933
+  },
+  {
+    "name": "بیله سوار",
+    "slug": "بیله-سوار",
+    "province_name": "اردبیل",
+    "name_en": "Bileh Savar",
+    "slug_en": "bileh-savar",
+    "latitude": 39.3794,
+    "longitude": 48.3547
+  },
+  {
+    "name": "خلخال",
+    "slug": "خلخال",
+    "province_name": "اردبیل",
+    "name_en": "Khalkhal",
+    "slug_en": "khalkhal",
+    "latitude": 37.6189,
+    "longitude": 48.5258
+  },
+  {
+    "name": "مشگین شهر",
+    "slug": "مشگین-شهر",
+    "province_name": "اردبیل",
+    "name_en": "Meshgin Shahr",
+    "slug_en": "meshgin-shahr",
+    "latitude": 38.3992,
+    "longitude": 47.6694
+  },
+  {
+    "name": "گرمی",
+    "slug": "گرمی",
+    "province_name": "اردبیل",
+    "name_en": "Germi",
+    "slug_en": "germi",
+    "latitude": 39.0214,
+    "longitude": 48.08
+  },
+  {
+    "name": "پارس آباد",
+    "slug": "پارس-آباد",
+    "province_name": "اردبیل",
+    "name_en": "Parsabad",
+    "slug_en": "parsabad",
+    "latitude": 39.6481,
+    "longitude": 47.9172
+  },
+  {
+    "name": "کوثر",
+    "slug": "کوثر",
+    "province_name": "اردبیل",
+    "name_en": "Kowsar",
+    "slug_en": "kowsar",
+    "latitude": 37.6833,
+    "longitude": 48.35
+  },
+  {
+    "name": "نمین",
+    "slug": "نمین",
+    "province_name": "اردبیل",
+    "name_en": "Namin",
+    "slug_en": "namin",
+    "latitude": 38.4267,
+    "longitude": 48.4844
+  },
+  {
+    "name": "نیر",
+    "slug": "نیر",
+    "province_name": "اردبیل",
+    "name_en": "Nir",
+    "slug_en": "nir",
+    "latitude": 38.0347,
+    "longitude": 47.9864
+  },
+  {
+    "name": "قم",
+    "slug": "قم",
+    "province_name": "قم",
+    "name_en": "Qom",
+    "slug_en": "qom",
+    "latitude": 34.6401,
+    "longitude": 50.8764
+  },
+  {
+    "name": "جعفرآباد",
+    "slug": "جعفرآباد",
+    "province_name": "قم",
+    "name_en": "Jafarabad",
+    "slug_en": "jafarabad",
+    "latitude": 34.7828,
+    "longitude": 50.5186
+  },
+  {
+    "name": "کهک",
+    "slug": "کهک",
+    "province_name": "قم",
+    "name_en": "Kahak",
+    "slug_en": "kahak",
+    "latitude": 34.4022,
+    "longitude": 50.8653
+  },
+  {
+    "name": "بویین زهرا",
+    "slug": "بویین-زهرا",
+    "province_name": "قزوین",
+    "name_en": "Buin Zahra",
+    "slug_en": "buin-zahra",
+    "latitude": 35.7669,
+    "longitude": 50.0578
+  },
+  {
+    "name": "تاکستان",
+    "slug": "تاکستان",
+    "province_name": "قزوین",
+    "name_en": "Takestan",
+    "slug_en": "takestan",
+    "latitude": 36.0694,
+    "longitude": 49.6958
+  },
+  {
+    "name": "قزوین",
+    "slug": "قزوین",
+    "province_name": "قزوین",
+    "name_en": "Qazvin",
+    "slug_en": "qazvin",
+    "latitude": 36.2797,
+    "longitude": 50.0033
+  },
+  {
+    "name": "آبیک",
+    "slug": "آبیک",
+    "province_name": "قزوین",
+    "name_en": "Abyek",
+    "slug_en": "abyek",
+    "latitude": 36.0539,
+    "longitude": 50.5517
+  },
+  {
+    "name": "البرز",
+    "slug": "البرز",
+    "province_name": "قزوین",
+    "name_en": "Alborz",
+    "slug_en": "alborz",
+    "latitude": 36.1833,
+    "longitude": 50.05
+  },
+  {
+    "name": "آوج",
+    "slug": "آوج",
+    "province_name": "قزوین",
+    "name_en": "Avaj",
+    "slug_en": "avaj",
+    "latitude": 35.5761,
+    "longitude": 49.2311
+  },
+  {
+    "name": "بندرگز",
+    "slug": "بندرگز",
+    "province_name": "گلستان",
+    "name_en": "Bandar-e Gaz",
+    "slug_en": "bandar-e-gaz",
+    "latitude": 36.7744,
+    "longitude": 53.9458
+  },
+  {
+    "name": "ترکمن",
+    "slug": "ترکمن",
+    "province_name": "گلستان",
+    "name_en": "Torkaman",
+    "slug_en": "torkaman",
+    "latitude": 36.8922,
+    "longitude": 54.0433
+  },
+  {
+    "name": "علی آباد کتول",
+    "slug": "علی-آباد-کتول",
+    "province_name": "گلستان",
+    "name_en": "Aliabad-e Katul",
+    "slug_en": "aliabad-e-katul",
+    "latitude": 36.9103,
+    "longitude": 54.8672
+  },
+  {
+    "name": "کردکوی",
+    "slug": "کردکوی",
+    "province_name": "گلستان",
+    "name_en": "Kordkuy",
+    "slug_en": "kordkuy",
+    "latitude": 36.7931,
+    "longitude": 54.1122
+  },
+  {
+    "name": "گرگان",
+    "slug": "گرگان",
+    "province_name": "گلستان",
+    "name_en": "Gorgan",
+    "slug_en": "gorgan",
+    "latitude": 36.8456,
+    "longitude": 54.4394
+  },
+  {
+    "name": "گنبدکاووس",
+    "slug": "گنبدکاووس",
+    "province_name": "گلستان",
+    "name_en": "Gonbad-e Kavus",
+    "slug_en": "gonbad-e-kavus",
+    "latitude": 37.25,
+    "longitude": 55.1672
+  },
+  {
+    "name": "مینودشت",
+    "slug": "مینودشت",
+    "province_name": "گلستان",
+    "name_en": "Minudasht",
+    "slug_en": "minudasht",
+    "latitude": 37.2289,
+    "longitude": 55.3747
+  },
+  {
+    "name": "آق قلا",
+    "slug": "آق-قلا",
+    "province_name": "گلستان",
+    "name_en": "Aqqala",
+    "slug_en": "aqqala",
+    "latitude": 37.0133,
+    "longitude": 54.4558
+  },
+  {
+    "name": "کلاله",
+    "slug": "کلاله",
+    "province_name": "گلستان",
+    "name_en": "Kalaleh",
+    "slug_en": "kalaleh",
+    "latitude": 37.3808,
+    "longitude": 55.4917
+  },
+  {
+    "name": "اسفراین",
+    "slug": "اسفراین",
+    "province_name": "خراسان شمالی",
+    "name_en": "Esfarayen",
+    "slug_en": "esfarayen",
+    "latitude": 37.0764,
+    "longitude": 57.5103
+  },
+  {
+    "name": "بجنورد",
+    "slug": "بجنورد",
+    "province_name": "خراسان شمالی",
+    "name_en": "Bojnord",
+    "slug_en": "bojnord",
+    "latitude": 37.4747,
+    "longitude": 57.3253
+  },
+  {
+    "name": "جاجرم",
+    "slug": "جاجرم",
+    "province_name": "خراسان شمالی",
+    "name_en": "Jajarm",
+    "slug_en": "jajarm",
+    "latitude": 36.95,
+    "longitude": 56.3806
+  },
+  {
+    "name": "شیروان",
+    "slug": "شیروان",
+    "province_name": "خراسان شمالی",
+    "name_en": "Shirvan",
+    "slug_en": "shirvan",
+    "latitude": 37.3972,
+    "longitude": 57.9294
+  },
+  {
+    "name": "فاروج",
+    "slug": "فاروج",
+    "province_name": "خراسان شمالی",
+    "name_en": "Faruj",
+    "slug_en": "faruj",
+    "latitude": 37.2308,
+    "longitude": 58.2192
+  },
+  {
+    "name": "سملقان",
+    "slug": "سملقان",
+    "province_name": "خراسان شمالی",
+    "name_en": "Samalqan",
+    "slug_en": "samalqan",
+    "latitude": 37.5611,
+    "longitude": 56.9286
+  },
+  {
+    "name": "گرمه",
+    "slug": "گرمه",
+    "province_name": "خراسان شمالی",
+    "name_en": "Garmeh",
+    "slug_en": "garmeh",
+    "latitude": 36.9658,
+    "longitude": 56.28
+  },
+  {
+    "name": "راز و جرگلان",
+    "slug": "راز-و-جرگلان",
+    "province_name": "خراسان شمالی",
+    "name_en": "Raz and Jargalan",
+    "slug_en": "raz-and-jargalan",
+    "latitude": 37.9333,
+    "longitude": 57.1
+  },
+  {
+    "name": "بام و صفی آباد",
+    "slug": "بام-و-صفی-آباد",
+    "province_name": "خراسان شمالی",
+    "name_en": "Bam and Safiabad",
+    "slug_en": "bam-and-safiabad",
+    "latitude": 36.9167,
+    "longitude": 57.7333
+  },
+  {
+    "name": "بیرجند",
+    "slug": "بیرجند",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Birjand",
+    "slug_en": "birjand",
+    "latitude": 32.8664,
+    "longitude": 59.2211
+  },
+  {
+    "name": "درمیان",
+    "slug": "درمیان",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Darmian",
+    "slug_en": "darmian",
+    "latitude": 32.9231,
+    "longitude": 59.7317
+  },
+  {
+    "name": "سربیشه",
+    "slug": "سربیشه",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Sarbisheh",
+    "slug_en": "sarbisheh",
+    "latitude": 32.5756,
+    "longitude": 59.7972
+  },
+  {
+    "name": "قاینات",
+    "slug": "قاینات",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Qaenat",
+    "slug_en": "qaenat",
+    "latitude": 33.7258,
+    "longitude": 59.1869
+  },
+  {
+    "name": "نهبندان",
+    "slug": "نهبندان",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Nehbandan",
+    "slug_en": "nehbandan",
+    "latitude": 31.5422,
+    "longitude": 60.0383
+  },
+  {
+    "name": "سرایان",
+    "slug": "سرایان",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Sarayan",
+    "slug_en": "sarayan",
+    "latitude": 33.8569,
+    "longitude": 58.5186
+  },
+  {
+    "name": "فردوس",
+    "slug": "فردوس",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Ferdows",
+    "slug_en": "ferdows",
+    "latitude": 34.0186,
+    "longitude": 58.1722
+  },
+  {
+    "name": "بشرویه",
+    "slug": "بشرویه",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Boshruyeh",
+    "slug_en": "boshruyeh",
+    "latitude": 33.8683,
+    "longitude": 57.4286
+  },
+  {
+    "name": "زیرکوه",
+    "slug": "زیرکوه",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Zirkuh",
+    "slug_en": "zirkuh",
+    "latitude": 33.6061,
+    "longitude": 59.9822
+  },
+  {
+    "name": "کرج",
+    "slug": "کرج",
+    "province_name": "البرز",
+    "name_en": "Karaj",
+    "slug_en": "karaj",
+    "latitude": 35.8356,
+    "longitude": 51.0103
+  },
+  {
+    "name": "ساوجبلاغ",
+    "slug": "ساوجبلاغ",
+    "province_name": "البرز",
+    "name_en": "Savojbolagh",
+    "slug_en": "savojbolagh",
+    "latitude": 35.9556,
+    "longitude": 50.7619
+  },
+  {
+    "name": "نظرآباد",
+    "slug": "نظرآباد",
+    "province_name": "البرز",
+    "name_en": "Nazarabad",
+    "slug_en": "nazarabad",
+    "latitude": 35.9525,
+    "longitude": 50.6075
+  },
+  {
+    "name": "طالقان",
+    "slug": "طالقان",
+    "province_name": "البرز",
+    "name_en": "Taleqan",
+    "slug_en": "taleqan",
+    "latitude": 36.1736,
+    "longitude": 50.7667
+  },
+  {
+    "name": "اشتهارد",
+    "slug": "اشتهارد",
+    "province_name": "البرز",
+    "name_en": "Eshtehard",
+    "slug_en": "eshtehard",
+    "latitude": 35.7256,
+    "longitude": 50.3703
+  },
+  {
+    "name": "فردیس",
+    "slug": "فردیس",
+    "province_name": "البرز",
+    "name_en": "Fardis",
+    "slug_en": "fardis",
+    "latitude": 35.7233,
+    "longitude": 50.9856
+  },
+  {
+    "name": "چهارباغ",
+    "slug": "چهارباغ",
+    "province_name": "البرز",
+    "name_en": "Chaharbagh",
+    "slug_en": "chaharbagh",
+    "latitude": 35.8456,
+    "longitude": 50.8417
+  },
+  {
+    "name": "زرندیه",
+    "slug": "زرندیه",
+    "province_name": "مرکزی",
+    "name_en": "Zarandieh",
+    "slug_en": "zarandieh",
+    "latitude": 35.3,
+    "longitude": 50.5833
+  },
+  {
+    "name": "کمیجان",
+    "slug": "کمیجان",
+    "province_name": "مرکزی",
+    "name_en": "Komijan",
+    "slug_en": "komijan",
+    "latitude": 34.7172,
+    "longitude": 49.3242
+  },
+  {
+    "name": "خنداب",
+    "slug": "خنداب",
+    "province_name": "مرکزی",
+    "name_en": "Khondab",
+    "slug_en": "khondab",
+    "latitude": 34.3942,
+    "longitude": 49.1836
+  },
+  {
+    "name": "فراهان",
+    "slug": "فراهان",
+    "province_name": "مرکزی",
+    "name_en": "Farahan",
+    "slug_en": "farahan",
+    "latitude": 34.5008,
+    "longitude": 49.6869
+  },
+  {
+    "name": "لنگرود",
+    "slug": "لنگرود",
+    "province_name": "گیلان",
+    "name_en": "Langarud",
+    "slug_en": "langarud",
+    "latitude": 37.1956,
+    "longitude": 50.1553
+  },
+  {
+    "name": "لاهیجان",
+    "slug": "لاهیجان",
+    "province_name": "گیلان",
+    "name_en": "Lahijan",
+    "slug_en": "lahijan",
+    "latitude": 37.2072,
+    "longitude": 50.0033
+  },
+  {
+    "name": "شفت",
+    "slug": "شفت",
+    "province_name": "گیلان",
+    "name_en": "Shaft",
+    "slug_en": "shaft",
+    "latitude": 37.1614,
+    "longitude": 49.4
+  },
+  {
+    "name": "املش",
+    "slug": "املش",
+    "province_name": "گیلان",
+    "name_en": "Amlash",
+    "slug_en": "amlash",
+    "latitude": 37.0983,
+    "longitude": 50.1856
+  },
+  {
+    "name": "رضوانشهر",
+    "slug": "رضوانشهر",
+    "province_name": "گیلان",
+    "name_en": "Rezvanshahr",
+    "slug_en": "rezvanshahr",
+    "latitude": 37.5517,
+    "longitude": 49.1394
+  },
+  {
+    "name": "سیاهکل",
+    "slug": "سیاهکل",
+    "province_name": "گیلان",
+    "name_en": "Siahkal",
+    "slug_en": "siahkal",
+    "latitude": 37.1539,
+    "longitude": 49.8703
+  },
+  {
+    "name": "ماسال",
+    "slug": "ماسال",
+    "province_name": "گیلان",
+    "name_en": "Masal",
+    "slug_en": "masal",
+    "latitude": 37.3631,
+    "longitude": 49.1325
+  },
+  {
+    "name": "خمام",
+    "slug": "خمام",
+    "province_name": "گیلان",
+    "name_en": "Khomam",
+    "slug_en": "khomam",
+    "latitude": 37.3889,
+    "longitude": 49.6586
+  },
+  {
+    "name": "قایم شهر",
+    "slug": "قایم-شهر",
+    "province_name": "مازندران",
+    "name_en": "Qaem Shahr",
+    "slug_en": "qaem-shahr",
+    "latitude": 36.4633,
+    "longitude": 52.8589
+  },
+  {
+    "name": "نور",
+    "slug": "نور",
+    "province_name": "مازندران",
+    "name_en": "Nur",
+    "slug_en": "nur",
+    "latitude": 36.5717,
+    "longitude": 52.0153
+  },
+  {
+    "name": "نوشهر",
+    "slug": "نوشهر",
+    "province_name": "مازندران",
+    "name_en": "Nowshahr",
+    "slug_en": "nowshahr",
+    "latitude": 36.655,
+    "longitude": 51.5025
+  },
+  {
+    "name": "بابلسر",
+    "slug": "بابلسر",
+    "province_name": "مازندران",
+    "name_en": "Babolsar",
+    "slug_en": "babolsar",
+    "latitude": 36.7019,
+    "longitude": 52.6581
+  },
+  {
+    "name": "محمودآباد",
+    "slug": "محمودآباد",
+    "province_name": "مازندران",
+    "name_en": "Mahmudabad",
+    "slug_en": "mahmudabad",
+    "latitude": 36.6319,
+    "longitude": 52.2619
+  },
+  {
+    "name": "نکا",
+    "slug": "نکا",
+    "province_name": "مازندران",
+    "name_en": "Neka",
+    "slug_en": "neka",
+    "latitude": 36.6508,
+    "longitude": 53.2989
+  },
+  {
+    "name": "چالوس",
+    "slug": "چالوس",
+    "province_name": "مازندران",
+    "name_en": "Chalus",
+    "slug_en": "chalus",
+    "latitude": 36.655,
+    "longitude": 51.4206
+  },
+  {
+    "name": "جویبار",
+    "slug": "جویبار",
+    "province_name": "مازندران",
+    "name_en": "Juybar",
+    "slug_en": "juybar",
+    "latitude": 36.6414,
+    "longitude": 52.9122
+  },
+  {
+    "name": "گلوگاه",
+    "slug": "گلوگاه",
+    "province_name": "مازندران",
+    "name_en": "Galugah",
+    "slug_en": "galugah",
+    "latitude": 36.7267,
+    "longitude": 53.8039
+  },
+  {
+    "name": "فریدونکنار",
+    "slug": "فریدونکنار",
+    "province_name": "مازندران",
+    "name_en": "Fereydunkenar",
+    "slug_en": "fereydunkenar",
+    "latitude": 36.6853,
+    "longitude": 52.5208
+  },
+  {
+    "name": "عباس آباد",
+    "slug": "عباس-آباد",
+    "province_name": "مازندران",
+    "name_en": "Abbasabad",
+    "slug_en": "abbasabad",
+    "latitude": 36.7269,
+    "longitude": 51.1086
+  },
+  {
+    "name": "میاندورود",
+    "slug": "میاندورود",
+    "province_name": "مازندران",
+    "name_en": "Miandorud",
+    "slug_en": "miandorud",
+    "latitude": 36.65,
+    "longitude": 53.1833
+  },
+  {
+    "name": "سیمرغ",
+    "slug": "سیمرغ",
+    "province_name": "مازندران",
+    "name_en": "Simorgh",
+    "slug_en": "simorgh",
+    "latitude": 36.5775,
+    "longitude": 52.8125
+  },
+  {
+    "name": "سوادکوه شمالی",
+    "slug": "سوادکوه-شمالی",
+    "province_name": "مازندران",
+    "name_en": "North Savadkuh",
+    "slug_en": "north-savadkuh",
+    "latitude": 36.275,
+    "longitude": 52.925
+  },
+  {
+    "name": "کلاردشت",
+    "slug": "کلاردشت",
+    "province_name": "مازندران",
+    "name_en": "Kelardasht",
+    "slug_en": "kelardasht",
+    "latitude": 36.4967,
+    "longitude": 51.1558
+  },
+  {
+    "name": "میانه",
+    "slug": "میانه",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Mianeh",
+    "slug_en": "mianeh",
+    "latitude": 37.4208,
+    "longitude": 47.7125
+  },
+  {
+    "name": "هشترود",
+    "slug": "هشترود",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Hashtrud",
+    "slug_en": "hashtrud",
+    "latitude": 37.4781,
+    "longitude": 47.0506
+  },
+  {
+    "name": "بناب",
+    "slug": "بناب",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Bonab",
+    "slug_en": "bonab",
+    "latitude": 37.3403,
+    "longitude": 46.0561
+  },
+  {
+    "name": "بستان آباد",
+    "slug": "بستان-آباد",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Bostanabad",
+    "slug_en": "bostanabad",
+    "latitude": 37.8464,
+    "longitude": 46.8353
+  },
+  {
+    "name": "شبستر",
+    "slug": "شبستر",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Shabestar",
+    "slug_en": "shabestar",
+    "latitude": 38.1803,
+    "longitude": 45.7028
+  },
+  {
+    "name": "کلیبر",
+    "slug": "کلیبر",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Kaleybar",
+    "slug_en": "kaleybar",
+    "latitude": 38.8667,
+    "longitude": 47.0456
+  },
+  {
+    "name": "هریس",
+    "slug": "هریس",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Heris",
+    "slug_en": "heris",
+    "latitude": 38.2481,
+    "longitude": 47.1167
+  },
+  {
+    "name": "جلفا",
+    "slug": "جلفا",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Jolfa",
+    "slug_en": "jolfa",
+    "latitude": 38.9367,
+    "longitude": 45.63
+  },
+  {
+    "name": "ملکان",
+    "slug": "ملکان",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Malekan",
+    "slug_en": "malekan",
+    "latitude": 37.1444,
+    "longitude": 46.1022
+  },
+  {
+    "name": "آذرشهر",
+    "slug": "آذرشهر",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Azarshahr",
+    "slug_en": "azarshahr",
+    "latitude": 37.7578,
+    "longitude": 45.9525
+  },
+  {
+    "name": "اسکو",
+    "slug": "اسکو",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Osku",
+    "slug_en": "osku",
+    "latitude": 37.915,
+    "longitude": 46.1225
+  },
+  {
+    "name": "چاراویماق",
+    "slug": "چاراویماق",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Charuymaq",
+    "slug_en": "charuymaq",
+    "latitude": 37.2189,
+    "longitude": 47.2186
+  },
+  {
+    "name": "ورزقان",
+    "slug": "ورزقان",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Varzaqan",
+    "slug_en": "varzaqan",
+    "latitude": 38.5111,
+    "longitude": 46.6453
+  },
+  {
+    "name": "عجب شیر",
+    "slug": "عجب-شیر",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Ajab Shir",
+    "slug_en": "ajab-shir",
+    "latitude": 37.4764,
+    "longitude": 45.9019
+  },
+  {
+    "name": "خداآفرین",
+    "slug": "خداآفرین",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Khoda Afarin",
+    "slug_en": "khoda-afarin",
+    "latitude": 39.1481,
+    "longitude": 46.8833
+  },
+  {
+    "name": "هوراند",
+    "slug": "هوراند",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Hurand",
+    "slug_en": "hurand",
+    "latitude": 38.8667,
+    "longitude": 47.3667
+  },
+  {
+    "name": "لیلان",
+    "slug": "لیلان",
+    "province_name": "آذربایجان شرقی",
+    "name_en": "Leylan",
+    "slug_en": "leylan",
+    "latitude": 37.0094,
+    "longitude": 46.2081
+  },
+  {
+    "name": "بوکان",
+    "slug": "بوکان",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Bukan",
+    "slug_en": "bukan",
+    "latitude": 36.5208,
+    "longitude": 46.2117
+  },
+  {
+    "name": "شاهین دژ",
+    "slug": "شاهین-دژ",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Shahin Dezh",
+    "slug_en": "shahin-dezh",
+    "latitude": 36.6781,
+    "longitude": 46.5667
+  },
+  {
+    "name": "تکاب",
+    "slug": "تکاب",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Takab",
+    "slug_en": "takab",
+    "latitude": 36.4008,
+    "longitude": 47.1131
+  },
+  {
+    "name": "اشنویه",
+    "slug": "اشنویه",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Oshnavieh",
+    "slug_en": "oshnavieh",
+    "latitude": 37.0397,
+    "longitude": 45.0992
+  },
+  {
+    "name": "چالدران",
+    "slug": "چالدران",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Chaldoran",
+    "slug_en": "chaldoran",
+    "latitude": 39.0664,
+    "longitude": 44.3956
+  },
+  {
+    "name": "پلدشت",
+    "slug": "پلدشت",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Poldasht",
+    "slug_en": "poldasht",
+    "latitude": 39.3477,
+    "longitude": 45.0712
+  },
+  {
+    "name": "چایپاره",
+    "slug": "چایپاره",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Chaypareh",
+    "slug_en": "chaypareh",
+    "latitude": 38.8928,
+    "longitude": 45.0256
+  },
+  {
+    "name": "شوط",
+    "slug": "شوط",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Showt",
+    "slug_en": "showt",
+    "latitude": 39.2192,
+    "longitude": 44.77
+  },
+  {
+    "name": "چهاربرج",
+    "slug": "چهاربرج",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Chaharborj",
+    "slug_en": "chaharborj",
+    "latitude": 37.214,
+    "longitude": 46.0713
+  },
+  {
+    "name": "باروق",
+    "slug": "باروق",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Baruq",
+    "slug_en": "baruq",
+    "latitude": 37.0569,
+    "longitude": 46.223
+  },
+  {
+    "name": "میرآباد",
+    "slug": "میرآباد",
+    "province_name": "آذربایجان غربی",
+    "name_en": "Mirabad",
+    "slug_en": "mirabad",
+    "latitude": 36.3811,
+    "longitude": 45.3619
+  },
+  {
+    "name": "صحنه",
+    "slug": "صحنه",
+    "province_name": "کرمانشاه",
+    "name_en": "Sahneh",
+    "slug_en": "sahneh",
+    "latitude": 34.4828,
+    "longitude": 47.6942
+  },
+  {
+    "name": "هرسین",
+    "slug": "هرسین",
+    "province_name": "کرمانشاه",
+    "name_en": "Harsin",
+    "slug_en": "harsin",
+    "latitude": 34.2722,
+    "longitude": 47.5856
+  },
+  {
+    "name": "ثلاث باباجانی",
+    "slug": "ثلاث-باباجانی",
+    "province_name": "کرمانشاه",
+    "name_en": "Salas-e Babajani",
+    "slug_en": "salas-e-babajani",
+    "latitude": 34.6158,
+    "longitude": 46.126
+  },
+  {
+    "name": "دالاهو",
+    "slug": "دالاهو",
+    "province_name": "کرمانشاه",
+    "name_en": "Dalahu",
+    "slug_en": "dalahu",
+    "latitude": 34.2882,
+    "longitude": 46.2424
+  },
+  {
+    "name": "روانسر",
+    "slug": "روانسر",
+    "province_name": "کرمانشاه",
+    "name_en": "Ravansar",
+    "slug_en": "ravansar",
+    "latitude": 34.7153,
+    "longitude": 46.6667
+  },
+  {
+    "name": "رامهرمز",
+    "slug": "رامهرمز",
+    "province_name": "خوزستان",
+    "name_en": "Ramhormoz",
+    "slug_en": "ramhormoz",
+    "latitude": 31.2783,
+    "longitude": 49.6044
+  },
+  {
+    "name": "شادگان",
+    "slug": "شادگان",
+    "province_name": "خوزستان",
+    "name_en": "Shadegan",
+    "slug_en": "shadegan",
+    "latitude": 30.6497,
+    "longitude": 48.6636
+  },
+  {
+    "name": "شوشتر",
+    "slug": "شوشتر",
+    "province_name": "خوزستان",
+    "name_en": "Shushtar",
+    "slug_en": "shushtar",
+    "latitude": 32.0436,
+    "longitude": 48.8567
+  },
+  {
+    "name": "مسجدسلیمان",
+    "slug": "مسجدسلیمان",
+    "province_name": "خوزستان",
+    "name_en": "Masjed Soleyman",
+    "slug_en": "masjed-soleyman",
+    "latitude": 31.9364,
+    "longitude": 49.3039
+  },
+  {
+    "name": "شوش",
+    "slug": "شوش",
+    "province_name": "خوزستان",
+    "name_en": "Shush",
+    "slug_en": "shush",
+    "latitude": 32.1933,
+    "longitude": 48.2458
+  },
+  {
+    "name": "باغ ملک",
+    "slug": "باغ-ملک",
+    "province_name": "خوزستان",
+    "name_en": "Bagh-e Malek",
+    "slug_en": "bagh-e-malek",
+    "latitude": 31.5239,
+    "longitude": 49.8894
+  },
+  {
+    "name": "امیدیه",
+    "slug": "امیدیه",
+    "province_name": "خوزستان",
+    "name_en": "Omidiyeh",
+    "slug_en": "omidiyeh",
+    "latitude": 30.7606,
+    "longitude": 49.7022
+  },
+  {
+    "name": "لالی",
+    "slug": "لالی",
+    "province_name": "خوزستان",
+    "name_en": "Lali",
+    "slug_en": "lali",
+    "latitude": 32.3292,
+    "longitude": 49.0944
+  },
+  {
+    "name": "هندیجان",
+    "slug": "هندیجان",
+    "province_name": "خوزستان",
+    "name_en": "Hendijan",
+    "slug_en": "hendijan",
+    "latitude": 30.2361,
+    "longitude": 49.7125
+  },
+  {
+    "name": "رامشیر",
+    "slug": "رامشیر",
+    "province_name": "خوزستان",
+    "name_en": "Ramshir",
+    "slug_en": "ramshir",
+    "latitude": 30.8925,
+    "longitude": 49.4078
+  },
+  {
+    "name": "گتوند",
+    "slug": "گتوند",
+    "province_name": "خوزستان",
+    "name_en": "Gatvand",
+    "slug_en": "gatvand",
+    "latitude": 32.2458,
+    "longitude": 48.8164
+  },
+  {
+    "name": "اندیکا",
+    "slug": "اندیکا",
+    "province_name": "خوزستان",
+    "name_en": "Andika",
+    "slug_en": "andika",
+    "latitude": 32.2033,
+    "longitude": 49.4444
+  },
+  {
+    "name": "هفتکل",
+    "slug": "هفتکل",
+    "province_name": "خوزستان",
+    "name_en": "Haftkel",
+    "slug_en": "haftkel",
+    "latitude": 31.4428,
+    "longitude": 49.5317
+  },
+  {
+    "name": "هویزه",
+    "slug": "هویزه",
+    "province_name": "خوزستان",
+    "name_en": "Hoveyzeh",
+    "slug_en": "hoveyzeh",
+    "latitude": 31.4619,
+    "longitude": 48.0736
+  },
+  {
+    "name": "باوی",
+    "slug": "باوی",
+    "province_name": "خوزستان",
+    "name_en": "Bavi",
+    "slug_en": "bavi",
+    "latitude": 31.5833,
+    "longitude": 48.8833
+  },
+  {
+    "name": "حمیدیه",
+    "slug": "حمیدیه",
+    "province_name": "خوزستان",
+    "name_en": "Hamidiyeh",
+    "slug_en": "hamidiyeh",
+    "latitude": 31.4822,
+    "longitude": 48.4439
+  },
+  {
+    "name": "آغاجاری",
+    "slug": "آغاجاری",
+    "province_name": "خوزستان",
+    "name_en": "Aghajari",
+    "slug_en": "aghajari",
+    "latitude": 30.7019,
+    "longitude": 49.8336
+  },
+  {
+    "name": "کارون",
+    "slug": "کارون",
+    "province_name": "خوزستان",
+    "name_en": "Karun",
+    "slug_en": "karun",
+    "latitude": 31.2847,
+    "longitude": 48.7231
+  },
+  {
+    "name": "کرخه",
+    "slug": "کرخه",
+    "province_name": "خوزستان",
+    "name_en": "Karkheh",
+    "slug_en": "karkheh",
+    "latitude": 31.9542,
+    "longitude": 48.2869
+  },
+  {
+    "name": "دزپارت",
+    "slug": "دزپارت",
+    "province_name": "خوزستان",
+    "name_en": "Dezpart",
+    "slug_en": "dezpart",
+    "latitude": 31.7083,
+    "longitude": 50.2858
+  },
+  {
+    "name": "صیدون",
+    "slug": "صیدون",
+    "province_name": "خوزستان",
+    "name_en": "Seydun",
+    "slug_en": "seydun",
+    "latitude": 31.3969,
+    "longitude": 50.0658
+  },
+  {
+    "name": "کازرون",
+    "slug": "کازرون",
+    "province_name": "فارس",
+    "name_en": "Kazerun",
+    "slug_en": "kazerun",
+    "latitude": 29.6194,
+    "longitude": 51.6542
+  },
+  {
+    "name": "لارستان",
+    "slug": "لارستان",
+    "province_name": "فارس",
+    "name_en": "Larestan",
+    "slug_en": "larestan",
+    "latitude": 27.6631,
+    "longitude": 54.3417
+  },
+  {
+    "name": "مرودشت",
+    "slug": "مرودشت",
+    "province_name": "فارس",
+    "name_en": "Marvdasht",
+    "slug_en": "marvdasht",
+    "latitude": 29.8742,
+    "longitude": 52.8028
+  },
+  {
+    "name": "ممسنی",
+    "slug": "ممسنی",
+    "province_name": "فارس",
+    "name_en": "Mamasani",
+    "slug_en": "mamasani",
+    "latitude": 30.1147,
+    "longitude": 51.5239
+  },
+  {
+    "name": "نی ریز",
+    "slug": "نی-ریز",
+    "province_name": "فارس",
+    "name_en": "Neyriz",
+    "slug_en": "neyriz",
+    "latitude": 29.1986,
+    "longitude": 54.3278
+  },
+  {
+    "name": "لامرد",
+    "slug": "لامرد",
+    "province_name": "فارس",
+    "name_en": "Lamerd",
+    "slug_en": "lamerd",
+    "latitude": 27.3339,
+    "longitude": 53.1783
+  },
+  {
+    "name": "بوانات",
+    "slug": "بوانات",
+    "province_name": "فارس",
+    "name_en": "Bavanat",
+    "slug_en": "bavanat",
+    "latitude": 30.4578,
+    "longitude": 53.6644
+  },
+  {
+    "name": "ارسنجان",
+    "slug": "ارسنجان",
+    "province_name": "فارس",
+    "name_en": "Arsanjan",
+    "slug_en": "arsanjan",
+    "latitude": 29.9142,
+    "longitude": 53.2947
+  },
+  {
+    "name": "خرم بید",
+    "slug": "خرم-بید",
+    "province_name": "فارس",
+    "name_en": "Khorrambid",
+    "slug_en": "khorrambid",
+    "latitude": 30.6139,
+    "longitude": 53.1906
+  },
+  {
+    "name": "زرین دشت",
+    "slug": "زرین-دشت",
+    "province_name": "فارس",
+    "name_en": "Zarrin Dasht",
+    "slug_en": "zarrin-dasht",
+    "latitude": 28.3636,
+    "longitude": 54.4231
+  },
+  {
+    "name": "قیروکارزین",
+    "slug": "قیروکارزین",
+    "province_name": "فارس",
+    "name_en": "Qir and Karzin",
+    "slug_en": "qir-and-karzin",
+    "latitude": 28.4831,
+    "longitude": 53.0333
+  },
+  {
+    "name": "مهر",
+    "slug": "مهر",
+    "province_name": "فارس",
+    "name_en": "Mohr",
+    "slug_en": "mohr",
+    "latitude": 27.555,
+    "longitude": 52.8833
+  },
+  {
+    "name": "فراشبند",
+    "slug": "فراشبند",
+    "province_name": "فارس",
+    "name_en": "Farashband",
+    "slug_en": "farashband",
+    "latitude": 28.8714,
+    "longitude": 52.0917
+  },
+  {
+    "name": "پاسارگاد",
+    "slug": "پاسارگاد",
+    "province_name": "فارس",
+    "name_en": "Pasargad",
+    "slug_en": "pasargad",
+    "latitude": 30.0767,
+    "longitude": 53.1436
+  },
+  {
+    "name": "خنج",
+    "slug": "خنج",
+    "province_name": "فارس",
+    "name_en": "Khonj",
+    "slug_en": "khonj",
+    "latitude": 27.8928,
+    "longitude": 53.4444
+  },
+  {
+    "name": "سروستان",
+    "slug": "سروستان",
+    "province_name": "فارس",
+    "name_en": "Sarvestan",
+    "slug_en": "sarvestan",
+    "latitude": 29.2736,
+    "longitude": 53.2203
+  },
+  {
+    "name": "رستم",
+    "slug": "رستم",
+    "province_name": "فارس",
+    "name_en": "Rostam",
+    "slug_en": "rostam",
+    "latitude": 30.2417,
+    "longitude": 51.5031
+  },
+  {
+    "name": "گراش",
+    "slug": "گراش",
+    "province_name": "فارس",
+    "name_en": "Gerash",
+    "slug_en": "gerash",
+    "latitude": 27.665,
+    "longitude": 54.1372
+  },
+  {
+    "name": "کوار",
+    "slug": "کوار",
+    "province_name": "فارس",
+    "name_en": "Kavar",
+    "slug_en": "kavar",
+    "latitude": 29.2056,
+    "longitude": 52.6883
+  },
+  {
+    "name": "خرامه",
+    "slug": "خرامه",
+    "province_name": "فارس",
+    "name_en": "Kharameh",
+    "slug_en": "kharameh",
+    "latitude": 29.5008,
+    "longitude": 53.3106
+  },
+  {
+    "name": "زرقان",
+    "slug": "زرقان",
+    "province_name": "فارس",
+    "name_en": "Zarqan",
+    "slug_en": "zarqan",
+    "latitude": 29.7628,
+    "longitude": 52.7169
+  },
+  {
+    "name": "بیضا",
+    "slug": "بیضا",
+    "province_name": "فارس",
+    "name_en": "Beyza",
+    "slug_en": "beyza",
+    "latitude": 29.9392,
+    "longitude": 52.3956
+  },
+  {
+    "name": "سرچهان",
+    "slug": "سرچهان",
+    "province_name": "فارس",
+    "name_en": "Sarchehan",
+    "slug_en": "sarchehan",
+    "latitude": 30.3425,
+    "longitude": 53.6339
+  },
+  {
+    "name": "کوه چنار",
+    "slug": "کوه-چنار",
+    "province_name": "فارس",
+    "name_en": "Kuhchenar",
+    "slug_en": "kuhchenar",
+    "latitude": 29.8519,
+    "longitude": 51.6406
+  },
+  {
+    "name": "خفر",
+    "slug": "خفر",
+    "province_name": "فارس",
+    "name_en": "Khafr",
+    "slug_en": "khafr",
+    "latitude": 28.9722,
+    "longitude": 53.2064
+  },
+  {
+    "name": "بختگان",
+    "slug": "بختگان",
+    "province_name": "فارس",
+    "name_en": "Bakhtegan",
+    "slug_en": "bakhtegan",
+    "latitude": 29.7431,
+    "longitude": 53.8681
+  },
+  {
+    "name": "اوز",
+    "slug": "اوز",
+    "province_name": "فارس",
+    "name_en": "Evaz",
+    "slug_en": "evaz",
+    "latitude": 27.7619,
+    "longitude": 54.0083
+  },
+  {
+    "name": "جویم",
+    "slug": "جویم",
+    "province_name": "فارس",
+    "name_en": "Juyom",
+    "slug_en": "juyom",
+    "latitude": 28.1517,
+    "longitude": 53.9739
+  },
+  {
+    "name": "بردسیر",
+    "slug": "بردسیر",
+    "province_name": "کرمان",
+    "name_en": "Bardsir",
+    "slug_en": "bardsir",
+    "latitude": 29.9275,
+    "longitude": 56.5742
+  },
+  {
+    "name": "راور",
+    "slug": "راور",
+    "province_name": "کرمان",
+    "name_en": "Ravar",
+    "slug_en": "ravar",
+    "latitude": 31.2656,
+    "longitude": 56.8056
+  },
+  {
+    "name": "عنبرآباد",
+    "slug": "عنبرآباد",
+    "province_name": "کرمان",
+    "name_en": "Anbarabad",
+    "slug_en": "anbarabad",
+    "latitude": 28.4758,
+    "longitude": 57.8481
+  },
+  {
+    "name": "منوجان",
+    "slug": "منوجان",
+    "province_name": "کرمان",
+    "name_en": "Manujan",
+    "slug_en": "manujan",
+    "latitude": 27.4061,
+    "longitude": 57.5011
+  },
+  {
+    "name": "کوهبنان",
+    "slug": "کوهبنان",
+    "province_name": "کرمان",
+    "name_en": "Kuhbanan",
+    "slug_en": "kuhbanan",
+    "latitude": 31.4103,
+    "longitude": 56.2825
+  },
+  {
+    "name": "رودبارجنوب",
+    "slug": "رودبارجنوب",
+    "province_name": "کرمان",
+    "name_en": "Rudbar-e Jonub",
+    "slug_en": "rudbar-e-jonub",
+    "latitude": 27.9406,
+    "longitude": 58.1092
+  },
+  {
+    "name": "قلعه گنج",
+    "slug": "قلعه-گنج",
+    "province_name": "کرمان",
+    "name_en": "Qaleh Ganj",
+    "slug_en": "qaleh-ganj",
+    "latitude": 27.5236,
+    "longitude": 57.8794
+  },
+  {
+    "name": "ریگان",
+    "slug": "ریگان",
+    "province_name": "کرمان",
+    "name_en": "Rigan",
+    "slug_en": "rigan",
+    "latitude": 28.6481,
+    "longitude": 59.0272
+  },
+  {
+    "name": "رابر",
+    "slug": "رابر",
+    "province_name": "کرمان",
+    "name_en": "Rabor",
+    "slug_en": "rabor",
+    "latitude": 29.2903,
+    "longitude": 56.9131
+  },
+  {
+    "name": "فهرج",
+    "slug": "فهرج",
+    "province_name": "کرمان",
+    "name_en": "Fahraj",
+    "slug_en": "fahraj",
+    "latitude": 28.9483,
+    "longitude": 58.8856
+  },
+  {
+    "name": "انار",
+    "slug": "انار",
+    "province_name": "کرمان",
+    "name_en": "Anar",
+    "slug_en": "anar",
+    "latitude": 30.8719,
+    "longitude": 55.2711
+  },
+  {
+    "name": "نرماشیر",
+    "slug": "نرماشیر",
+    "province_name": "کرمان",
+    "name_en": "Narmashir",
+    "slug_en": "narmashir",
+    "latitude": 28.9511,
+    "longitude": 58.6967
+  },
+  {
+    "name": "فاریاب",
+    "slug": "فاریاب",
+    "province_name": "کرمان",
+    "name_en": "Faryab",
+    "slug_en": "faryab",
+    "latitude": 28.0983,
+    "longitude": 57.2319
+  },
+  {
+    "name": "ارزوییه",
+    "slug": "ارزوییه",
+    "province_name": "کرمان",
+    "name_en": "Arzuiyeh",
+    "slug_en": "arzuiyeh",
+    "latitude": 28.4411,
+    "longitude": 56.3742
+  },
+  {
+    "name": "گنبکی",
+    "slug": "گنبکی",
+    "province_name": "کرمان",
+    "name_en": "Gonbaki",
+    "slug_en": "gonbaki",
+    "latitude": 28.7175,
+    "longitude": 58.9719
+  },
+  {
+    "name": "جازموریان",
+    "slug": "جازموریان",
+    "province_name": "کرمان",
+    "name_en": "Jazmurian",
+    "slug_en": "jazmurian",
+    "latitude": 27.7539,
+    "longitude": 58.4681
+  },
+  {
+    "name": "قوچان",
+    "slug": "قوچان",
+    "province_name": "خراسان رضوی",
+    "name_en": "Quchan",
+    "slug_en": "quchan",
+    "latitude": 37.1064,
+    "longitude": 58.5097
+  },
+  {
+    "name": "کاشمر",
+    "slug": "کاشمر",
+    "province_name": "خراسان رضوی",
+    "name_en": "Kashmar",
+    "slug_en": "kashmar",
+    "latitude": 35.2383,
+    "longitude": 58.4656
+  },
+  {
+    "name": "گناباد",
+    "slug": "گناباد",
+    "province_name": "خراسان رضوی",
+    "name_en": "Gonabad",
+    "slug_en": "gonabad",
+    "latitude": 34.3517,
+    "longitude": 58.6836
+  },
+  {
+    "name": "مشهد",
+    "slug": "مشهد",
+    "province_name": "خراسان رضوی",
+    "name_en": "Mashhad",
+    "slug_en": "mashhad",
+    "latitude": 36.2605,
+    "longitude": 59.6168
+  },
+  {
+    "name": "نیشابور",
+    "slug": "نیشابور",
+    "province_name": "خراسان رضوی",
+    "name_en": "Neyshabur",
+    "slug_en": "neyshabur",
+    "latitude": 36.2133,
+    "longitude": 58.7958
+  },
+  {
+    "name": "چناران",
+    "slug": "چناران",
+    "province_name": "خراسان رضوی",
+    "name_en": "Chenaran",
+    "slug_en": "chenaran",
+    "latitude": 36.645,
+    "longitude": 59.1211
+  },
+  {
+    "name": "خواف",
+    "slug": "خواف",
+    "province_name": "خراسان رضوی",
+    "name_en": "Khaf",
+    "slug_en": "khaf",
+    "latitude": 34.5764,
+    "longitude": 60.1419
+  },
+  {
+    "name": "سرخس",
+    "slug": "سرخس",
+    "province_name": "خراسان رضوی",
+    "name_en": "Sarakhs",
+    "slug_en": "sarakhs",
+    "latitude": 36.5447,
+    "longitude": 61.1575
+  },
+  {
+    "name": "فریمان",
+    "slug": "فریمان",
+    "province_name": "خراسان رضوی",
+    "name_en": "Fariman",
+    "slug_en": "fariman",
+    "latitude": 35.7075,
+    "longitude": 59.8497
+  },
+  {
+    "name": "بردسکن",
+    "slug": "بردسکن",
+    "province_name": "خراسان رضوی",
+    "name_en": "Bardaskan",
+    "slug_en": "bardaskan",
+    "latitude": 35.2633,
+    "longitude": 57.9717
+  },
+  {
+    "name": "رشتخوار",
+    "slug": "رشتخوار",
+    "province_name": "خراسان رضوی",
+    "name_en": "Roshtkhar",
+    "slug_en": "roshtkhar",
+    "latitude": 34.9658,
+    "longitude": 59.6264
+  },
+  {
+    "name": "کلات",
+    "slug": "کلات",
+    "province_name": "خراسان رضوی",
+    "name_en": "Kalat",
+    "slug_en": "kalat",
+    "latitude": 36.9953,
+    "longitude": 59.7647
+  },
+  {
+    "name": "خلیل آباد",
+    "slug": "خلیل-آباد",
+    "province_name": "خراسان رضوی",
+    "name_en": "Khalilabad",
+    "slug_en": "khalilabad",
+    "latitude": 35.2536,
+    "longitude": 58.2858
+  },
+  {
+    "name": "مه ولات",
+    "slug": "مه-ولات",
+    "province_name": "خراسان رضوی",
+    "name_en": "Mahvelat",
+    "slug_en": "mahvelat",
+    "latitude": 35.0169,
+    "longitude": 58.7889
+  },
+  {
+    "name": "بجستان",
+    "slug": "بجستان",
+    "province_name": "خراسان رضوی",
+    "name_en": "Bajestan",
+    "slug_en": "bajestan",
+    "latitude": 34.5164,
+    "longitude": 58.1853
+  },
+  {
+    "name": "طرقبه شاندیز",
+    "slug": "طرقبه-شاندیز",
+    "province_name": "خراسان رضوی",
+    "name_en": "Torqabeh and Shandiz",
+    "slug_en": "torqabeh-and-shandiz",
+    "latitude": 36.3111,
+    "longitude": 59.3736
+  },
+  {
+    "name": "فیروزه",
+    "slug": "فیروزه",
+    "province_name": "خراسان رضوی",
+    "name_en": "Firuzeh",
+    "slug_en": "firuzeh",
+    "latitude": 36.2872,
+    "longitude": 58.5878
+  },
+  {
+    "name": "جغتای",
+    "slug": "جغتای",
+    "province_name": "خراسان رضوی",
+    "name_en": "Joghatai",
+    "slug_en": "joghatai",
+    "latitude": 36.6025,
+    "longitude": 56.9483
+  },
+  {
+    "name": "زاوه",
+    "slug": "زاوه",
+    "province_name": "خراسان رضوی",
+    "name_en": "Zaveh",
+    "slug_en": "zaveh",
+    "latitude": 35.2925,
+    "longitude": 59.5108
+  },
+  {
+    "name": "جوین",
+    "slug": "جوین",
+    "province_name": "خراسان رضوی",
+    "name_en": "Jovayin",
+    "slug_en": "jovayin",
+    "latitude": 36.7108,
+    "longitude": 57.41
+  },
+  {
+    "name": "باخرز",
+    "slug": "باخرز",
+    "province_name": "خراسان رضوی",
+    "name_en": "Bakharz",
+    "slug_en": "bakharz",
+    "latitude": 34.9925,
+    "longitude": 60.3094
+  },
+  {
+    "name": "خوشاب",
+    "slug": "خوشاب",
+    "province_name": "خراسان رضوی",
+    "name_en": "Khoshab",
+    "slug_en": "khoshab",
+    "latitude": 36.4,
+    "longitude": 58.04
+  },
+  {
+    "name": "داورزن",
+    "slug": "داورزن",
+    "province_name": "خراسان رضوی",
+    "name_en": "Davarzan",
+    "slug_en": "davarzan",
+    "latitude": 36.3522,
+    "longitude": 56.8856
+  },
+  {
+    "name": "صالح آباد",
+    "slug": "صالح-آباد",
+    "province_name": "خراسان رضوی",
+    "name_en": "Salehabad",
+    "slug_en": "salehabad",
+    "latitude": 35.6875,
+    "longitude": 61.1328
+  },
+  {
+    "name": "کوهسرخ",
+    "slug": "کوهسرخ",
+    "province_name": "خراسان رضوی",
+    "name_en": "Kuhsorkh",
+    "slug_en": "kuhsorkh",
+    "latitude": 35.4753,
+    "longitude": 58.4592
+  },
+  {
+    "name": "زبرخان",
+    "slug": "زبرخان",
+    "province_name": "خراسان رضوی",
+    "name_en": "Zeberkhan",
+    "slug_en": "zeberkhan",
+    "latitude": 36.1061,
+    "longitude": 59.0608
+  },
+  {
+    "name": "ششتمد",
+    "slug": "ششتمد",
+    "province_name": "خراسان رضوی",
+    "name_en": "Sheshtomad",
+    "slug_en": "sheshtomad",
+    "latitude": 35.9639,
+    "longitude": 57.7658
+  },
+  {
+    "name": "گلبهار",
+    "slug": "گلبهار",
+    "province_name": "خراسان رضوی",
+    "name_en": "Golbahar",
+    "slug_en": "golbahar",
+    "latitude": 36.6209,
+    "longitude": 59.2222
+  },
+  {
+    "name": "میان جلگه",
+    "slug": "میان-جلگه",
+    "province_name": "خراسان رضوی",
+    "name_en": "Miyan Jolgeh",
+    "slug_en": "miyan-jolgeh",
+    "latitude": 36.0414,
+    "longitude": 58.6819
+  },
+  {
+    "name": "کاشان",
+    "slug": "کاشان",
+    "province_name": "اصفهان",
+    "name_en": "Kashan",
+    "slug_en": "kashan",
+    "latitude": 33.985,
+    "longitude": 51.41
+  },
+  {
+    "name": "گلپایگان",
+    "slug": "گلپایگان",
+    "province_name": "اصفهان",
+    "name_en": "Golpayegan",
+    "slug_en": "golpayegan",
+    "latitude": 33.4536,
+    "longitude": 50.2883
+  },
+  {
+    "name": "لنجان",
+    "slug": "لنجان",
+    "province_name": "اصفهان",
+    "name_en": "Lenjan",
+    "slug_en": "lenjan",
+    "latitude": 32.3908,
+    "longitude": 51.3783
+  },
+  {
+    "name": "نایین",
+    "slug": "نایین",
+    "province_name": "اصفهان",
+    "name_en": "Nain",
+    "slug_en": "nain",
+    "latitude": 32.86,
+    "longitude": 53.0875
+  },
+  {
+    "name": "نجف آباد",
+    "slug": "نجف-آباد",
+    "province_name": "اصفهان",
+    "name_en": "Najafabad",
+    "slug_en": "najafabad",
+    "latitude": 32.6361,
+    "longitude": 51.3683
+  },
+  {
+    "name": "نطنز",
+    "slug": "نطنز",
+    "province_name": "اصفهان",
+    "name_en": "Natanz",
+    "slug_en": "natanz",
+    "latitude": 33.5136,
+    "longitude": 51.9161
+  },
+  {
+    "name": "شاهین شهرو میمه",
+    "slug": "شاهین-شهرو-میمه",
+    "province_name": "اصفهان",
+    "name_en": "Shahin Shahr and Meymeh",
+    "slug_en": "shahin-shahr-and-meymeh",
+    "latitude": 32.8633,
+    "longitude": 51.5475
+  },
+  {
+    "name": "مبارکه",
+    "slug": "مبارکه",
+    "province_name": "اصفهان",
+    "name_en": "Mobarakeh",
+    "slug_en": "mobarakeh",
+    "latitude": 32.3481,
+    "longitude": 51.5039
+  },
+  {
+    "name": "آران و بیدگل",
+    "slug": "آران-و-بیدگل",
+    "province_name": "اصفهان",
+    "name_en": "Aran va Bidgol",
+    "slug_en": "aran-va-bidgol",
+    "latitude": 34.0578,
+    "longitude": 51.4842
+  },
+  {
+    "name": "تیران وکرون",
+    "slug": "تیران-وکرون",
+    "province_name": "اصفهان",
+    "name_en": "Tiran va Karvan",
+    "slug_en": "tiran-va-karvan",
+    "latitude": 32.7039,
+    "longitude": 51.1531
+  },
+  {
+    "name": "چادگان",
+    "slug": "چادگان",
+    "province_name": "اصفهان",
+    "name_en": "Chadegan",
+    "slug_en": "chadegan",
+    "latitude": 32.7667,
+    "longitude": 50.6333
+  },
+  {
+    "name": "دهاقان",
+    "slug": "دهاقان",
+    "province_name": "اصفهان",
+    "name_en": "Dehaqan",
+    "slug_en": "dehaqan",
+    "latitude": 31.9422,
+    "longitude": 51.6467
+  },
+  {
+    "name": "برخوار",
+    "slug": "برخوار",
+    "province_name": "اصفهان",
+    "name_en": "Borkhar",
+    "slug_en": "borkhar",
+    "latitude": 32.8003,
+    "longitude": 51.6958
+  },
+  {
+    "name": "خور و بیابانک",
+    "slug": "خور-و-بیابانک",
+    "province_name": "اصفهان",
+    "name_en": "Khur and Biabanak",
+    "slug_en": "khur-and-biabanak",
+    "latitude": 33.7739,
+    "longitude": 55.0856
+  },
+  {
+    "name": "بویین و میاندشت",
+    "slug": "بویین-و-میاندشت",
+    "province_name": "اصفهان",
+    "name_en": "Buin va Miandasht",
+    "slug_en": "buin-va-miandasht",
+    "latitude": 33.0667,
+    "longitude": 50.15
+  },
+  {
+    "name": "کوهپایه",
+    "slug": "کوهپایه",
+    "province_name": "اصفهان",
+    "name_en": "Kuhpayeh",
+    "slug_en": "kuhpayeh",
+    "latitude": 32.6625,
+    "longitude": 52.4833
+  },
+  {
+    "name": "جرقویه",
+    "slug": "جرقویه",
+    "province_name": "اصفهان",
+    "name_en": "Jarqavieh",
+    "slug_en": "jarqavieh",
+    "latitude": 32.3033,
+    "longitude": 52.2019
+  },
+  {
+    "name": "ورزنه",
+    "slug": "ورزنه",
+    "province_name": "اصفهان",
+    "name_en": "Varzaneh",
+    "slug_en": "varzaneh",
+    "latitude": 32.4197,
+    "longitude": 52.6478
+  },
+  {
+    "name": "هرند",
+    "slug": "هرند",
+    "province_name": "اصفهان",
+    "name_en": "Harand",
+    "slug_en": "harand",
+    "latitude": 32.5653,
+    "longitude": 52.4364
+  },
+  {
+    "name": "زهک",
+    "slug": "زهک",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Zahak",
+    "slug_en": "zahak",
+    "latitude": 30.8933,
+    "longitude": 61.6781
+  },
+  {
+    "name": "هیرمند",
+    "slug": "هیرمند",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Hirmand",
+    "slug_en": "hirmand",
+    "latitude": 31.15,
+    "longitude": 61.79
+  },
+  {
+    "name": "دلگان",
+    "slug": "دلگان",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Dalgan",
+    "slug_en": "dalgan",
+    "latitude": 27.48,
+    "longitude": 59.45
+  },
+  {
+    "name": "مهرستان",
+    "slug": "مهرستان",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Mehrestan",
+    "slug_en": "mehrestan",
+    "latitude": 27.16,
+    "longitude": 61.61
+  },
+  {
+    "name": "سیب و سوران",
+    "slug": "سیب-و-سوران",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Sib and Suran",
+    "slug_en": "sib-and-suran",
+    "latitude": 27.29,
+    "longitude": 62.0
+  },
+  {
+    "name": "نیمروز",
+    "slug": "نیمروز",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Nimruz",
+    "slug_en": "nimruz",
+    "latitude": 31.1172,
+    "longitude": 61.4083
+  },
+  {
+    "name": "هامون",
+    "slug": "هامون",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Hamun",
+    "slug_en": "hamun",
+    "latitude": 30.8856,
+    "longitude": 61.4636
+  },
+  {
+    "name": "میرجاوه",
+    "slug": "میرجاوه",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Mirjaveh",
+    "slug_en": "mirjaveh",
+    "latitude": 29.0264,
+    "longitude": 61.455
+  },
+  {
+    "name": "قصرقند",
+    "slug": "قصرقند",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Qasr-e Qand",
+    "slug_en": "qasr-e-qand",
+    "latitude": 26.2319,
+    "longitude": 60.7411
+  },
+  {
+    "name": "فنوج",
+    "slug": "فنوج",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Fanuj",
+    "slug_en": "fanuj",
+    "latitude": 26.5742,
+    "longitude": 59.6419
+  },
+  {
+    "name": "بمپور",
+    "slug": "بمپور",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Bampur",
+    "slug_en": "bampur",
+    "latitude": 27.1942,
+    "longitude": 60.4631
+  },
+  {
+    "name": "تفتان",
+    "slug": "تفتان",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Taftan",
+    "slug_en": "taftan",
+    "latitude": 28.5397,
+    "longitude": 60.7583
+  },
+  {
+    "name": "دشتیاری",
+    "slug": "دشتیاری",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Dashtiari",
+    "slug_en": "dashtiari",
+    "latitude": 25.3881,
+    "longitude": 61.1397
+  },
+  {
+    "name": "سرباز",
+    "slug": "سرباز",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Sarbaz",
+    "slug_en": "sarbaz",
+    "latitude": 26.6319,
+    "longitude": 61.2558
+  },
+  {
+    "name": "گلشن",
+    "slug": "گلشن",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Golshan",
+    "slug_en": "golshan",
+    "latitude": 27.6033,
+    "longitude": 62.7097
+  },
+  {
+    "name": "لاشار",
+    "slug": "لاشار",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Lashar",
+    "slug_en": "lashar",
+    "latitude": 26.8375,
+    "longitude": 60.1736
+  },
+  {
+    "name": "زرآباد",
+    "slug": "زرآباد",
+    "province_name": "سیستان و بلوچستان",
+    "name_en": "Zarabad",
+    "slug_en": "zarabad",
+    "latitude": 25.5964,
+    "longitude": 59.4042
+  },
+  {
+    "name": "دهگلان",
+    "slug": "دهگلان",
+    "province_name": "کردستان",
+    "name_en": "Dehgolan",
+    "slug_en": "dehgolan",
+    "latitude": 35.2778,
+    "longitude": 47.4189
+  },
+  {
+    "name": "درگزین",
+    "slug": "درگزین",
+    "province_name": "همدان",
+    "name_en": "Dargazin",
+    "slug_en": "dargazin",
+    "latitude": 35.35,
+    "longitude": 49.1
+  },
+  {
+    "name": "خانمیرزا",
+    "slug": "خانمیرزا",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Khanmirza",
+    "slug_en": "khanmirza",
+    "latitude": 31.5667,
+    "longitude": 51.05
+  },
+  {
+    "name": "فلارد",
+    "slug": "فلارد",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Falard",
+    "slug_en": "falard",
+    "latitude": 31.2908,
+    "longitude": 51.2603
+  },
+  {
+    "name": "فرخ شهر",
+    "slug": "فرخ-شهر",
+    "province_name": "چهارمحال و بختیاری",
+    "name_en": "Farrokh Shahr",
+    "slug_en": "farrokh-shahr",
+    "latitude": 32.2747,
+    "longitude": 50.9786
+  },
+  {
+    "name": "چگنی",
+    "slug": "چگنی",
+    "province_name": "لرستان",
+    "name_en": "Chegeni",
+    "slug_en": "chegeni",
+    "latitude": 33.5636,
+    "longitude": 48.0225
+  },
+  {
+    "name": "رومشکان",
+    "slug": "رومشکان",
+    "province_name": "لرستان",
+    "name_en": "Rumeshkan",
+    "slug_en": "rumeshkan",
+    "latitude": 33.28,
+    "longitude": 47.51
+  },
+  {
+    "name": "معمولان",
+    "slug": "معمولان",
+    "province_name": "لرستان",
+    "name_en": "Mamulan",
+    "slug_en": "mamulan",
+    "latitude": 33.3931,
+    "longitude": 47.9625
+  },
+  {
+    "name": "بدره",
+    "slug": "بدره",
+    "province_name": "ایلام",
+    "name_en": "Badreh",
+    "slug_en": "badreh",
+    "latitude": 33.3086,
+    "longitude": 47.0369
+  },
+  {
+    "name": "هلیلان",
+    "slug": "هلیلان",
+    "province_name": "ایلام",
+    "name_en": "Holeylan",
+    "slug_en": "holeylan",
+    "latitude": 33.7261,
+    "longitude": 47.0669
+  },
+  {
+    "name": "چوار",
+    "slug": "چوار",
+    "province_name": "ایلام",
+    "name_en": "Chavar",
+    "slug_en": "chavar",
+    "latitude": 33.6953,
+    "longitude": 46.2933
+  },
+  {
+    "name": "عسلویه",
+    "slug": "عسلویه",
+    "province_name": "بوشهر",
+    "name_en": "Asaluyeh",
+    "slug_en": "asaluyeh",
+    "latitude": 27.4761,
+    "longitude": 52.6075
+  },
+  {
+    "name": "سلطانیه",
+    "slug": "سلطانیه",
+    "province_name": "زنجان",
+    "name_en": "Soltaniyeh",
+    "slug_en": "soltaniyeh",
+    "latitude": 36.4339,
+    "longitude": 48.7967
+  },
+  {
+    "name": "بهاباد",
+    "slug": "بهاباد",
+    "province_name": "یزد",
+    "name_en": "Behabad",
+    "slug_en": "behabad",
+    "latitude": 31.8728,
+    "longitude": 56.0261
+  },
+  {
+    "name": "مروست",
+    "slug": "مروست",
+    "province_name": "یزد",
+    "name_en": "Marvast",
+    "slug_en": "marvast",
+    "latitude": 30.48,
+    "longitude": 54.21
+  },
+  {
+    "name": "زارچ",
+    "slug": "زارچ",
+    "province_name": "یزد",
+    "name_en": "Zarch",
+    "slug_en": "zarch",
+    "latitude": 31.99,
+    "longitude": 54.23
+  },
+  {
+    "name": "خمیر",
+    "slug": "خمیر",
+    "province_name": "هرمزگان",
+    "name_en": "Khamir",
+    "slug_en": "khamir",
+    "latitude": 26.9522,
+    "longitude": 55.585
+  },
+  {
+    "name": "پارسیان",
+    "slug": "پارسیان",
+    "province_name": "هرمزگان",
+    "name_en": "Parsian",
+    "slug_en": "parsian",
+    "latitude": 27.135,
+    "longitude": 53.0436
+  },
+  {
+    "name": "سیریک",
+    "slug": "سیریک",
+    "province_name": "هرمزگان",
+    "name_en": "Sirik",
+    "slug_en": "sirik",
+    "latitude": 26.5161,
+    "longitude": 57.0994
+  },
+  {
+    "name": "بشاگرد",
+    "slug": "بشاگرد",
+    "province_name": "هرمزگان",
+    "name_en": "Bashagard",
+    "slug_en": "bashagard",
+    "latitude": 26.4553,
+    "longitude": 57.8997
+  },
+  {
+    "name": "اسلامشهر",
+    "slug": "اسلامشهر",
+    "province_name": "تهران",
+    "name_en": "Islamshahr",
+    "slug_en": "islamshahr",
+    "latitude": 35.5492,
+    "longitude": 51.2333
+  },
+  {
+    "name": "رباط کریم",
+    "slug": "رباط-کریم",
+    "province_name": "تهران",
+    "name_en": "Robat Karim",
+    "slug_en": "robat-karim",
+    "latitude": 35.4847,
+    "longitude": 51.0828
+  },
+  {
+    "name": "پاکدشت",
+    "slug": "پاکدشت",
+    "province_name": "تهران",
+    "name_en": "Pakdasht",
+    "slug_en": "pakdasht",
+    "latitude": 35.4817,
+    "longitude": 51.6783
+  },
+  {
+    "name": "فیروزکوه",
+    "slug": "فیروزکوه",
+    "province_name": "تهران",
+    "name_en": "Firuzkuh",
+    "slug_en": "firuzkuh",
+    "latitude": 35.7561,
+    "longitude": 52.7706
+  },
+  {
+    "name": "قدس",
+    "slug": "قدس",
+    "province_name": "تهران",
+    "name_en": "Qods",
+    "slug_en": "qods",
+    "latitude": 35.7214,
+    "longitude": 51.1089
+  },
+  {
+    "name": "ملارد",
+    "slug": "ملارد",
+    "province_name": "تهران",
+    "name_en": "Malard",
+    "slug_en": "malard",
+    "latitude": 35.6661,
+    "longitude": 50.9767
+  },
+  {
+    "name": "پیشوا",
+    "slug": "پیشوا",
+    "province_name": "تهران",
+    "name_en": "Pishva",
+    "slug_en": "pishva",
+    "latitude": 35.3081,
+    "longitude": 51.7272
+  },
+  {
+    "name": "بهارستان",
+    "slug": "بهارستان",
+    "province_name": "تهران",
+    "name_en": "Baharestan",
+    "slug_en": "baharestan",
+    "latitude": 35.4931,
+    "longitude": 51.1133
+  },
+  {
+    "name": "پردیس",
+    "slug": "پردیس",
+    "province_name": "تهران",
+    "name_en": "Pardis",
+    "slug_en": "pardis",
+    "latitude": 35.7369,
+    "longitude": 51.7675
+  },
+  {
+    "name": "قرچک",
+    "slug": "قرچک",
+    "province_name": "تهران",
+    "name_en": "Qarchak",
+    "slug_en": "qarchak",
+    "latitude": 35.4406,
+    "longitude": 51.5694
+  },
+  {
+    "name": "سرعین",
+    "slug": "سرعین",
+    "province_name": "اردبیل",
+    "name_en": "Sareyn",
+    "slug_en": "sareyn",
+    "latitude": 38.1514,
+    "longitude": 48.0708
+  },
+  {
+    "name": "اصلاندوز",
+    "slug": "اصلاندوز",
+    "province_name": "اردبیل",
+    "name_en": "Aslanduz",
+    "slug_en": "aslanduz",
+    "latitude": 39.4442,
+    "longitude": 47.4086
+  },
+  {
+    "name": "انگوت",
+    "slug": "انگوت",
+    "province_name": "اردبیل",
+    "name_en": "Ungut",
+    "slug_en": "ungut",
+    "latitude": 39.017,
+    "longitude": 47.717
+  },
+  {
+    "name": "آزادشهر",
+    "slug": "آزادشهر",
+    "province_name": "گلستان",
+    "name_en": "Azadshahr",
+    "slug_en": "azadshahr",
+    "latitude": 37.0864,
+    "longitude": 55.1725
+  },
+  {
+    "name": "رامیان",
+    "slug": "رامیان",
+    "province_name": "گلستان",
+    "name_en": "Ramian",
+    "slug_en": "ramian",
+    "latitude": 37.0167,
+    "longitude": 55.1417
+  },
+  {
+    "name": "مراوه تپه",
+    "slug": "مراوه-تپه",
+    "province_name": "گلستان",
+    "name_en": "Maraveh Tappeh",
+    "slug_en": "maraveh-tappeh",
+    "latitude": 37.9039,
+    "longitude": 55.9558
+  },
+  {
+    "name": "گمیشان",
+    "slug": "گمیشان",
+    "province_name": "گلستان",
+    "name_en": "Gomishan",
+    "slug_en": "gomishan",
+    "latitude": 37.0708,
+    "longitude": 54.0767
+  },
+  {
+    "name": "گالیکش",
+    "slug": "گالیکش",
+    "province_name": "گلستان",
+    "name_en": "Galikash",
+    "slug_en": "galikash",
+    "latitude": 37.2661,
+    "longitude": 55.43
+  },
+  {
+    "name": "مانه",
+    "slug": "مانه",
+    "province_name": "خراسان شمالی",
+    "name_en": "Maneh",
+    "slug_en": "maneh",
+    "latitude": 37.6517,
+    "longitude": 57.0014
+  },
+  {
+    "name": "خوسف",
+    "slug": "خوسف",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Khusf",
+    "slug_en": "khusf",
+    "latitude": 32.8797,
+    "longitude": 58.8897
+  },
+  {
+    "name": "طبس",
+    "slug": "طبس",
+    "province_name": "خراسان جنوبی",
+    "name_en": "Tabas",
+    "slug_en": "tabas",
+    "latitude": 33.5958,
+    "longitude": 56.9244
+  }
+]
