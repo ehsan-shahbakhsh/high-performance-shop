@@ -26,9 +26,9 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->string('type')->index();
-            $table->string('sku')->unique()->nullable();
+            $table->string('sku')->nullable();
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug');
 
             $table->decimal('price', 15, 4)->nullable()->index();
             $table->decimal('sale_price', 15, 4)->nullable();
@@ -51,6 +51,12 @@ return new class extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unsignedTinyInteger('unique_keeper')
+                ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
+
+            $table->unique(['slug', 'unique_keeper']);
+            $table->unique(['sku', 'unique_keeper']);
         });
     }
 

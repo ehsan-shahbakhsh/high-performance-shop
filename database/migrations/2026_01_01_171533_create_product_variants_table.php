@@ -22,18 +22,23 @@ return new class extends Migration
             $table->decimal('sale_price', 15, 4)->nullable();
 
             $table->integer('stock_quantity')->default(0);
-            $table->string('sku')->nullable()->unique();
+            $table->string('sku')->nullable();
 
-            $table->json('attributes');
+            $table->json('attributes')->nullable();
 
-            $table->string('variant_hash')->index();
+            $table->string('variant_hash')->index()->nullable();
 
             $table->boolean('is_active')->default(true);
 
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['product_id', 'variant_hash']);
+            $table->unsignedTinyInteger('unique_keeper')
+                ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
+
+            $table->unique(['product_id', 'variant_hash', 'unique_keeper']);
+
+            $table->unique(['sku', 'unique_keeper']);
         });
     }
 

@@ -16,8 +16,8 @@ return new class extends Migration
 
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->string('mobile', 15)->unique()->nullable()->index();
-            $table->string('email')->nullable()->unique();
+            $table->string('mobile', 15)->nullable()->index();
+            $table->string('email')->nullable();
 
             $table->timestamp('mobile_verified_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();
@@ -35,6 +35,12 @@ return new class extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unsignedTinyInteger('unique_keeper')
+                ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
+
+            $table->unique(['mobile', 'unique_keeper']);
+            $table->unique(['email', 'unique_keeper']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

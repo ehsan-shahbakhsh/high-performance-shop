@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug');
 
             $table->string('website')->nullable();
             $table->text('description')->nullable();
@@ -25,6 +25,11 @@ return new class extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unsignedTinyInteger('unique_keeper')
+                ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
+
+            $table->unique(['slug', 'unique_keeper']);
         });
     }
 
