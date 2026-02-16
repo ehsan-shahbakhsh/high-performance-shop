@@ -1,0 +1,21 @@
+{
+  "token_hmac_secret_key": "3f35de18-c83e-432d-ba3c-df64ef501440",
+  "admin_password": "390ec6ad-b2f6-440c-ac07-3511d62091e0",
+  "admin_secret": "d5bbb0ea-5043-41a1-9e35-69790435683a",
+  "admin": true,
+  "api_key": "62fbdc24-831c-4f46-82aa-cabdc840078e",
+  "allowed_origins": ["*"],
+  "allow_subscribe_for_client": true,
+  "allow_anonymous_connect_without_token": true,
+  "namespaces": [
+    {
+      "name": "public",
+      "allow_subscribe_for_anonymous": true,
+      "allow_subscribe_for_client": true,
+      "allow_publish_for_client": false,
+      "allow_history_for_client": true,
+      "history_size": 100,
+      "history_ttl": "60s"
+    }
+  ]
+}

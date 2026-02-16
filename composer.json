@@ -7,9 +7,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ariaieboy/filament-jalali": "^2.2",
         "codeat3/blade-google-material-design-icons": "^1.20",
         "cviebrock/eloquent-sluggable": "^12.0",
         "darkaonline/l5-swagger": "^9.0",
+        "denis660/laravel-centrifugo": "^5.2",
         "filament/filament": "^4.0",
         "filament/spatie-laravel-media-library-plugin": "^4.3",
         "hekmatinasser/verta": "^8.5",
@@ -22,7 +24,8 @@
         "laravel/tinker": "^2.10.1",
         "solution-forest/filament-tree": "^3.1",
         "spatie/laravel-data": "^4.18",
-        "spatie/laravel-medialibrary": "^11.17"
+        "spatie/laravel-medialibrary": "^11.17",
+        "spatie/laravel-tags": "^4.10"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
