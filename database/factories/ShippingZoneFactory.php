@@ -33,7 +33,6 @@ class ShippingZoneFactory extends Factory
         return [
             'name' => $name,
             'code' => 'zone_' . fake()->unique()->numberBetween(100, 999),
-            'description' => fake()->realText(50),
             'position' => fake()->numberBetween(0, 100),
             'is_active' => true,
         ];

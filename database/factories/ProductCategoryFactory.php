@@ -28,8 +28,6 @@ class ProductCategoryFactory extends Factory
 
             'icon' => fake()->randomElement(['fa-mobile', 'fa-laptop', 'fa-tshirt', 'fa-home', 'fa-book']),
 
-            'cover' => null,
-
             'is_active' => fake()->boolean(90),
             'is_featured' => fake()->boolean(20),
             'include_in_menu' => fake()->boolean(70),
@@ -50,7 +48,6 @@ class ProductCategoryFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'is_featured' => true,
-            'cover' => 'categories/featured-placeholder.jpg',
         ]);
     }
 }

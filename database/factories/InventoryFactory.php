@@ -33,8 +33,8 @@ class InventoryFactory extends Factory
     public function configure(): Factory|InventoryFactory
     {
         return $this->afterCreating(function (Inventory $inventory) {
-            $inventory->variant->update([
-                'stock_quantity' => $inventory->variant->stock_quantity + $inventory->quantity
+            $inventory->productVariant->update([
+                'stock_quantity' => $inventory->productVariant->stock_quantity + $inventory->quantity
             ]);
         });
     }

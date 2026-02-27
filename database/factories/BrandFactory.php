@@ -27,9 +27,6 @@ class BrandFactory extends Factory
             'website' => 'https://www.' . Str::slug($name) . '.com',
             'description' => fake()->realText(),
 
-            'logo' => 'brands/logos/default.png',
-            'cover' => 'brands/covers/default.jpg',
-
             'is_active' => fake()->boolean(90),
             'is_featured' => fake()->boolean(15),
 
