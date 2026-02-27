@@ -35,6 +35,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install exif
 
+RUN apt-get update && apt-get install -y sqlite3 libsqlite3-dev
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY --from=node_source /usr/local/lib/node_modules /usr/local/lib/node_modules
