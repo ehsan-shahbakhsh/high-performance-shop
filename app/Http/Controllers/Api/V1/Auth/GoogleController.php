@@ -10,6 +10,7 @@ use App\Http\Resources\V1\Auth\AuthUserResource;
 use App\Http\Responses\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Socialite;
 use Throwable;
 
@@ -40,6 +41,8 @@ class GoogleController extends Controller
                 'user' => new AuthUserResource($result->user),
                 'authorization' => $result->authorization,
             ], $result->message);
+        } catch (ValidationException $e) {
+            return ApiResponse::validationFailed('اطلاعات ورود از گوگل ناقص است.', $e->errors());
         } catch (Exception $e) {
             report($e);
 
