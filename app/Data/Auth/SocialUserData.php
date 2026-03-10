@@ -3,6 +3,7 @@
 namespace App\Data\Auth;
 
 use App\Enums\SocialAccountProvider;
+use Illuminate\Validation\ValidationException;
 use Spatie\LaravelData\Data;
 use Laravel\Socialite\Two\User as SocialiteUser;
 
@@ -23,6 +24,12 @@ class SocialUserData extends Data
 
     public static function fromSocialite(SocialiteUser $socialUser, SocialAccountProvider $provider, ?string $userIp = null): self
     {
+        if (!$socialUser->getEmail()) {
+            throw ValidationException::withMessages([
+                'email' => 'ایمیل از طرف گوگل دریافت نشد.',
+            ]);
+        }
+
         return new self(
             firstName: $socialUser->getRaw()['given_name'],
             lastName: $socialUser->getRaw()['family_name'],
