@@ -196,5 +196,10 @@ return [
     'attributes' => [
         'identifier' => 'ایمیل یا شماره موبایل',
         'code' => 'کد',
+        'product_id' => 'محصول',
+        'variant_id' => 'تنوع محصول',
+        'quantity' => 'تعداد',
+        'cart_id' => 'سبد خرید',
+        'email' => 'ایمیل',
     ],
 ];
