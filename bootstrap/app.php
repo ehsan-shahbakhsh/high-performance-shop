@@ -84,7 +84,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 $isDebug = config('app.debug');
 
                 return ApiResponse::internalServerError(
-                    message: $isDebug ? $e->getMessage() : 'خطای داخلی سرور رخ داده است.',
+                    message: $isDebug ? $e->getMessage() : 'خطای غیرمنتظره‌ای رخ داده است. لطفاً کمی بعد مجدداً تلاش کنید.',
                     errors: $isDebug ? [
                         'file' => $e->getFile(),
                         'line' => $e->getLine(),
