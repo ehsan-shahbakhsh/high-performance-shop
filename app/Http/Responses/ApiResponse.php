@@ -132,6 +132,17 @@ final class ApiResponse implements Responsable
         );
     }
 
+    public static function tooManyRequests(string $message = 'تعداد درخواست‌های شما بیش از حد مجاز است. لطفاً کمی بعد دوباره تلاش کنید.', array $meta = []): self
+    {
+        return new self(
+            message: $message,
+            success: false,
+            meta: $meta,
+            code: ResponseCode::HTTP_TOO_MANY_REQUESTS,
+            httpStatus: ResponseCode::HTTP_TOO_MANY_REQUESTS,
+        );
+    }
+
     public static function internalServerError(string $message = 'Internal Server Error', ?array $errors = null): self
     {
         return self::error(
