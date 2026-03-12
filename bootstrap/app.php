@@ -93,6 +93,12 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
+        $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return ApiResponse::tooManyRequests(meta: ['retry_after' => $e->getHeaders()['Retry-After'] ?? null]);
+            }
+        });
+
         $exceptions->render(function (Throwable $e, Request $request) {
             if ($e instanceof ThrottleRequestsException || $e instanceof \Illuminate\Http\Exceptions\HttpResponseException) {
                 return false;
