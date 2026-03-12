@@ -37,6 +37,15 @@ return Application::configure(basePath: dirname(__DIR__))
             return $request->is('api/*') || $request->wantsJson();
         });
 
+        $exceptions->render(function (BusinessException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return ApiResponse::error(
+                    $e->getMessage(),
+                    code: $e->getCode() ?: Response::HTTP_UNPROCESSABLE_ENTITY,
+                );
+            }
+        });
+
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             $message = $e->getPrevious() instanceof ModelNotFoundException
                 ? 'رکورد مورد نظر یافت نشد.'
