@@ -48,11 +48,17 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             $message = $e->getPrevious() instanceof ModelNotFoundException
-                ? 'رکورد مورد نظر یافت نشد.'
+                ? 'موردی با این مشخصات یافت نشد.'
                 : 'آدرس مورد نظر یافت نشد.';
 
             if ($request->is('api/*')) {
                 return ApiResponse::notFound($message);
+            }
+        });
+
+        $exceptions->render(function (ModelNotFoundException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return ApiResponse::notFound('موردی با این مشخصات یافت نشد.');
             }
         });
 
