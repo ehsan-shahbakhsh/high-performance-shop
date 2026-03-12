@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\CartStatus;
+use App\Enums\CartType;
+use Database\Factories\CartFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Cart extends Model
+{
+    /** @use HasFactory<CartFactory> */
+    use HasFactory;
+    use HasUlids;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'user_id',
+        'session_id',
+        'type',
+        'name',
+        'status',
+        'meta',
+        'locked_at',
+        'lock_token',
+        'last_activity_at',
+        'completed_at',
+        'abandoned_at',
+        'items_count',
+        'items_qty_sum',
+        'subtotal',
+        'discount_total',
+        'shipping_total',
+        'total',
+        'version',
+    ];
+
+    protected $casts = [
+        'type' => CartType::class,
+        'status' => CartStatus::class,
+        'meta' => 'json',
+        'locked_at' => 'datetime',
+        'last_activity_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'abandoned_at' => 'datetime',
+        'items_count' => 'integer',
+        'items_qty_sum' => 'integer',
+        'subtotal' => 'integer',
+        'discount_total' => 'integer',
+        'shipping_total' => 'integer',
+        'total' => 'integer',
+        'version' => 'integer',
+    ];
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
