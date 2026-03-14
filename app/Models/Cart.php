@@ -69,4 +69,29 @@ class Cart extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function isLocked(): bool
+    {
+        if (! $this->locked_at) {
+            return false;
+        }
+
+        return $this->locked_at->gt(now()->subMinutes(15));
+    }
+
+    public function lock(string $token): void
+    {
+        $this->update([
+            'locked_at' => now(),
+            'lock_token' => $token,
+        ]);
+    }
+
+    public function unlock(): void
+    {
+        $this->update([
+            'locked_at' => null,
+            'lock_token' => null,
+        ]);
+    }
 }
