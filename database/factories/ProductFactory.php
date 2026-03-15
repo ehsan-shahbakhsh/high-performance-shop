@@ -59,13 +59,13 @@ class ProductFactory extends Factory
         ];
     }
 
-    public function variable(): Factory
+    public function variable(): static
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'type' => ProductType::Variable,
-                'manage_stock' => false,
-            ];
-        });
+        return $this->state(['type' => ProductType::Variable]);
+    }
+
+    public function simple(): static
+    {
+        return $this->state(['type' => ProductType::Simple]);
     }
 }
