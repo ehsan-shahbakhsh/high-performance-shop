@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -38,7 +39,6 @@ class Product extends Model implements HasMedia
         'out_of_stock_action',
         'custom_stock_text',
         'attributes',
-        'thumbnail',
         'short_description',
         'description',
         'seo_title',
@@ -58,29 +58,33 @@ class Product extends Model implements HasMedia
         $this->addMediaCollection('cover')
             ->useDisk('public')
             ->singleFile()
-            ->registerMediaConversions(function ($media) {
+            ->acceptsMimeTypes(['image/jpeg','image/png','image/webp'])
+            ->registerMediaConversions(function () {
                 $this->addMediaConversion('thumb')
-                    ->width(400)
-                    ->height(400);
+                    ->fit(Fit::Crop, 400, 400)
+                    ->format('webp')
+                    ->quality(80);
             });
 
         $this->addMediaCollection('gallery')
             ->useDisk('public')
-            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
-            ->registerMediaConversions(function ($media) {
+            ->acceptsMimeTypes(['image/jpeg','image/png','image/webp'])
+            ->registerMediaConversions(function () {
                 $this->addMediaConversion('thumb')
-                    ->width(200)
-                    ->height(200)
+                    ->fit(Fit::Crop, 300, 300)
+                    ->format('webp')
+                    ->quality(80)
                     ->sharpen(10);
 
                 $this->addMediaConversion('large')
-                    ->width(1000)
-                    ->format('webp');
+                    ->width(1200)
+                    ->format('webp')
+                    ->quality(85);
             });
 
         $this->addMediaCollection('videos')
             ->useDisk('public')
-            ->acceptsMimeTypes(['video/mp4', 'video/webm']);
+            ->acceptsMimeTypes(['video/mp4','video/webm']);
     }
 
     public function attributeSet(): BelongsTo

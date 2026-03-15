@@ -41,8 +41,6 @@ return new class extends Migration
 
             $table->json('attributes')->nullable();
 
-            $table->string('thumbnail')->nullable();
-
             $table->text('short_description')->nullable();
             $table->longText('description')->nullable();
 

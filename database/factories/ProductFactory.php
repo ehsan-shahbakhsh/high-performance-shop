@@ -52,8 +52,6 @@ class ProductFactory extends Factory
             'short_description' => fake()->sentence(),
             'description' => fake()->paragraph(),
 
-            'thumbnail' => fake()->imageUrl(600, 600, 'product'),
-
             'seo_title' => $name,
             'seo_description' => fake()->realText(150),
         ];
