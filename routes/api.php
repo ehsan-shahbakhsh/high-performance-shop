@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Auth\{
     VerifyController,
 };
 use App\Http\Controllers\Api\V1\Catalog\ProductCategoryController;
+use App\Http\Controllers\Api\V1\Sales\Cart\{CartController, CartItemController};
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -31,6 +32,25 @@ Route::prefix('v1')->group(function () {
             Route::controller(ProductCategoryController::class)->group(function () {
                 Route::get('menus/main', 'index');
             });
+        });
+
+        Route::prefix('carts')->controller(CartController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::delete('{cart}', 'destroy');
+        });
+
+        Route::prefix('cart-items')->controller(CartItemController::class)->group(function () {
+            Route::post('{cartItem}/move', 'move');
+        });
+    });
+
+    Route::middleware('auth.optional')->group(function () {
+        Route::prefix('cart-items')->controller(CartItemController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::match(['put', 'patch'], '{cartItem}', 'update');
+            Route::delete('{cartItem}', 'destroy');
         });
     });
 });
