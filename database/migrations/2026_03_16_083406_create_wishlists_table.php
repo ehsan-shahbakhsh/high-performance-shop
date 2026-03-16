@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'is_default']);
+            $table->unique(['user_id', 'name']);
         });
     }
 
