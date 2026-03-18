@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Date;
-use App\Models\Warehouse;
-use App\Observers\WarehouseObserver;
+use App\Models\{Warehouse, User};
+use App\Observers\{WarehouseObserver, UserObserver};
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -46,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Warehouse::observe(WarehouseObserver::class);
+        User::observe(UserObserver::class);
 
         Date::serializeUsing(function ($date) {
             return $date->toIso8601String();
