@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Auth\{
 };
 use App\Http\Controllers\Api\V1\Catalog\ProductCategoryController;
 use App\Http\Controllers\Api\V1\Sales\Cart\{CartController, CartItemController};
+use App\Http\Controllers\Api\V1\Sales\Wishlist\{WishlistController, WishlistItemController};
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -43,6 +44,17 @@ Route::prefix('v1')->group(function () {
         Route::prefix('cart-items')->controller(CartItemController::class)->group(function () {
             Route::post('{cartItem}/move', 'move');
         });
+
+        Route::apiResource('wishlists', WishlistController::class)->except('show');
+
+        Route::prefix('wishlists/{wishlist}/items')
+            ->scopeBindings()
+            ->controller(WishlistItemController::class)
+            ->group(function () {
+                Route::get('/', 'index');
+                Route::post('/', 'store');
+                Route::delete('{item}', 'destroy');
+            });
     });
 
     Route::middleware('auth.optional')->group(function () {
