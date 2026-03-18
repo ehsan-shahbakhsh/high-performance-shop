@@ -26,7 +26,6 @@ class Cart extends Model
         'user_id',
         'session_id',
         'type',
-        'name',
         'status',
         'meta',
         'locked_at',

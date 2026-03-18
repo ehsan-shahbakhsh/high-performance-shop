@@ -2,10 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Enums\CartStatus;
-use App\Enums\CartType;
-use App\Models\Cart;
-use App\Models\User;
+use App\Enums\{CartStatus, CartType};
+use App\Models\{Cart, User};
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -26,7 +24,6 @@ class CartFactory extends Factory
             'session_id' => null,
 
             'type' => CartType::Main,
-            'name' => null,
 
             'status' => CartStatus::Active,
 
@@ -76,13 +73,5 @@ class CartFactory extends Factory
     public function secondary(): static
     {
         return $this->state(fn() => ['type' => CartType::Secondary]);
-    }
-
-    public function named(?string $name = null): static
-    {
-        return $this->state(fn() => [
-            'type' => CartType::Named,
-            'name' => $name ?? fake()->words(2, true),
-        ]);
     }
 }

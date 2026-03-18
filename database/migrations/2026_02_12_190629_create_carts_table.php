@@ -19,8 +19,6 @@ return new class extends Migration {
 
             $table->enum('type', CartType::cases())->default(CartType::Main)->index();
 
-            $table->string('name')->nullable()->default('سبد خرید اصلی');
-
             $table->enum('status', CartStatus::cases())->default(CartStatus::Active)->index();
 
             $table->json('meta')->nullable();
