@@ -94,22 +94,6 @@ describe('validation', function () {
 });
 
 describe('core logic and happy path', function () {
-    it('creates cart if none exists for user', function () {
-        $user = User::factory()->create();
-        $product = Product::factory()->simple()->create();
-
-        expect(Cart::query()->where('user_id', $user->id)->count())->toBe(0);
-
-        Sanctum::actingAs($user);
-
-        postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
-            'quantity' => 1,
-        ])->assertOk();
-
-        expect(Cart::query()->where('user_id', $user->id)->count())->toBe(1);
-    });
-
     it('creates cart if none exists for session', function () {
         $sessionId = fake()->uuid();
         $product = Product::factory()->simple()->create();
@@ -128,19 +112,20 @@ describe('core logic and happy path', function () {
 
     it('creates new cart item when product not in cart', function () {
         $user = User::factory()->create();
-        $cart = Cart::factory()->for($user)->create();
-        $product = Product::factory()->simple()->create();
 
         Sanctum::actingAs($user);
 
-        expect(CartItem::query()->where('cart_id', $cart->id)->count())->toBe(0);
+        $mainCart = $user->mainCart;
+        $product = Product::factory()->simple()->create();
+
+        expect(CartItem::query()->where('cart_id', $mainCart->id)->count())->toBe(0);
 
         postJson('/api/v1/cart-items', [
             'product_id' => $product->id,
             'quantity' => 1,
         ])->assertOk();
 
-        $item = CartItem::query()->where('cart_id', $cart->id)->first();
+        $item = CartItem::query()->where('cart_id', $mainCart->id)->first();
 
         expect($item)->not->toBeNull()
             ->and($item)
@@ -150,15 +135,13 @@ describe('core logic and happy path', function () {
 
     it('increments quantity when item already exists', function () {
         $user = User::factory()->create();
-        $cart = Cart::factory()->for($user)->create();
-        $product = Product::factory()->simple()->create();
-
-        $cartItem = CartItem::factory()->quantity(10)->create([
-            'product_id' => $product->id,
-            'cart_id' => $cart->id,
-        ]);
 
         Sanctum::actingAs($user);
+
+        $mainCart = $user->mainCart;
+        $product = Product::factory()->simple()->create();
+
+        $cartItem = CartItem::factory()->quantity(10)->for($product)->for($mainCart)->create();
 
         postJson('/api/v1/cart-items', [
             'product_id' => $product->id,
@@ -170,10 +153,10 @@ describe('core logic and happy path', function () {
 
     it('stores price snapshot when item is created', function () {
         $user = User::factory()->create();
-        $cart = Cart::factory()->for($user)->create();
 
         Sanctum::actingAs($user);
 
+        $mainCart = $user->mainCart;
         $product = Product::factory()->simple()->create([
             'price' => 10_000,
             'sale_price' => 7_000,
@@ -183,7 +166,7 @@ describe('core logic and happy path', function () {
             'quantity' => 5,
         ])->assertOk();
 
-        $item = CartItem::query()->where('cart_id', $cart->id)->first();
+        $item = CartItem::query()->where('cart_id', $mainCart->id)->first();
 
         expect($item)->not->toBeNull()
             ->and($item)
@@ -194,10 +177,11 @@ describe('core logic and happy path', function () {
 
     it('updates cart version after modification', function () {
         $user = User::factory()->create();
-        $cart = Cart::factory()->for($user)->create()->fresh();
+
+        $mainCart = $user->mainCart;
         $product = Product::factory()->simple()->create();
 
-        $initialVersion = $cart->version;
+        $initialVersion = $mainCart->version;
 
         Sanctum::actingAs($user);
 
@@ -206,30 +190,29 @@ describe('core logic and happy path', function () {
             'quantity' => 2,
         ])->assertOk();
 
-        expect(Cart::query()->where('user_id', $user->id)->count())->toBe(1)
-            ->and($cart->fresh()->version)->toBe($initialVersion + 1);
+        expect(Cart::query()->where('user_id', $user->id)->count())->toBe(2)
+            ->and($mainCart->fresh()->version)->toBe($initialVersion + 1);
 
         postJson('/api/v1/cart-items', [
             'product_id' => $product->id,
             'quantity' => 2,
         ])->assertOk();
 
-        expect(Cart::query()->where('user_id', $user->id)->count())->toBe(1)
-            ->and($cart->fresh()->version)->toBe($initialVersion + 2);
+        expect(Cart::query()->where('user_id', $user->id)->count())->toBe(2)
+            ->and($mainCart->fresh()->version)->toBe($initialVersion + 2);
     });
 
     it('updates cart last_activity_at timestamp', function () {
         $user = User::factory()->create();
 
+        Sanctum::actingAs($user);
+
         Carbon::setTestNow(now());
 
-        $cart = Cart::factory()->for($user)->create([
-            'last_activity_at' => now(),
-        ]);
+        $mainCart = $user->mainCart;
+        $mainCart->update(['last_activity_at' => now()]);
 
         $product = Product::factory()->simple()->create();
-
-        Sanctum::actingAs($user);
 
         Carbon::setTestNow(now()->addMinutes(5));
 
@@ -238,52 +221,54 @@ describe('core logic and happy path', function () {
             'quantity' => 2,
         ])->assertOk();
 
-        expect($cart->fresh()->last_activity_at->timestamp)
+        expect($mainCart->fresh()->last_activity_at->timestamp)
             ->toBe(now()->timestamp);
     });
 
     it('recalculates cart totals after adding item', function () {
         $user = User::factory()->create();
 
-        $cart = Cart::factory()->for($user)->create(['subtotal' => 0]);
+        Sanctum::actingAs($user);
+
+        $mainCart = $user->mainCart;
+        $mainCart->update(['subtotal' => 0]);
 
         $productA = Product::factory()->simple()->create(['sale_price' => 100]);
         $productB = Product::factory()->simple()->create(['sale_price' => 300]);
-
-        Sanctum::actingAs($user);
 
         postJson('/api/v1/cart-items', [
             'product_id' => $productA->id,
             'quantity' => 2,
         ])->assertOk();
 
-        $cart->refresh();
+        $mainCart->refresh();
 
-        expect($cart->subtotal)->toBe(200)
-            ->and($cart->items_count)->toBe(1)
-            ->and($cart->items_qty_sum)->toBe(2);
+        expect($mainCart->subtotal)->toBe(200)
+            ->and($mainCart->items_count)->toBe(1)
+            ->and($mainCart->items_qty_sum)->toBe(2);
 
         postJson('/api/v1/cart-items', [
             'product_id' => $productB->id,
             'quantity' => 5,
         ])->assertOk();
 
-        $cart->refresh();
+        $mainCart->refresh();
 
-        expect($cart->subtotal)->toBe(1700)
-            ->and($cart->items_count)->toBe(2)
-            ->and($cart->items_qty_sum)->toBe(7);
+        expect($mainCart->subtotal)->toBe(1700)
+            ->and($mainCart->items_count)->toBe(2)
+            ->and($mainCart->items_qty_sum)->toBe(7);
     });
 
     it('creates separate cart items when different variants of the same product are added', function () {
         $user = User::factory()->create();
-        $cart = Cart::factory()->for($user)->create();
+
+        Sanctum::actingAs($user);
+
+        $mainCart = $user->mainCart;
 
         $product = Product::factory()->variable()->create(['manage_stock' => false]);
         $variantA = ProductVariant::factory()->create(['product_id' => $product->id, 'sale_price' => 100]);
         $variantB = ProductVariant::factory()->create(['product_id' => $product->id, 'sale_price' => 150]);
-
-        Sanctum::actingAs($user);
 
         postJson('/api/v1/cart-items', [
             'product_id' => $product->id,
@@ -297,24 +282,24 @@ describe('core logic and happy path', function () {
             'quantity' => 3,
         ])->assertOk();
 
-        expect(CartItem::query()->where('cart_id', $cart->id)->count())->toBe(2);
+        expect(CartItem::query()->where('cart_id', $mainCart->id)->count())->toBe(2);
 
-        $itemA = CartItem::query()->where('cart_id', $cart->id)->where('variant_id', $variantA->id)->first();
+        $itemA = CartItem::query()->where('cart_id', $mainCart->id)->where('variant_id', $variantA->id)->first();
         expect($itemA->quantity)->toBe(2)
             ->and($itemA->unit_price_snapshot)->toEqual(100);
 
-        $itemB = CartItem::query()->where('cart_id', $cart->id)->where('variant_id', $variantB->id)->first();
+        $itemB = CartItem::query()->where('cart_id', $mainCart->id)->where('variant_id', $variantB->id)->first();
         expect($itemB->quantity)->toBe(3)
             ->and($itemB->unit_price_snapshot)->toEqual(150);
     });
 
     it('adds item to existing cart', function () {
         $user = User::factory()->create();
-        $product = Product::factory()->simple()->create();
 
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
+        $mainCart = $user->mainCart;
+        $product = Product::factory()->simple()->create();
 
         postJson('/api/v1/cart-items', [
             'product_id' => $product->id,
@@ -323,16 +308,17 @@ describe('core logic and happy path', function () {
 
         assertDatabaseHas('cart_items', [
             'product_id' => $product->id,
-            'cart_id' => $cart->id,
+            'cart_id' => $mainCart->id,
         ]);
     });
 
     it('increments quantity instead of creating duplicate cart items on rapid requests', function () {
         $user = User::factory()->create();
-        $cart = Cart::factory()->for($user)->create();
-        $product = Product::factory()->simple()->create();
 
         Sanctum::actingAs($user);
+
+        $mainCart = $user->mainCart;
+        $product = Product::factory()->simple()->create();
 
         for ($i = 0; $i < 10; $i++) {
             postJson('/api/v1/cart-items', [
@@ -343,13 +329,13 @@ describe('core logic and happy path', function () {
 
         expect(
             CartItem::query()
-                ->where('cart_id', $cart->id)
+                ->where('cart_id', $mainCart->id)
                 ->where('product_id', $product->id)
                 ->count()
         )->toBe(1);
 
         assertDatabaseHas('cart_items', [
-            'cart_id' => $cart->id,
+            'cart_id' => $mainCart->id,
             'product_id' => $product->id,
             'quantity' => 10,
         ]);

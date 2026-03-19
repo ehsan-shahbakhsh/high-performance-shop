@@ -4,18 +4,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use function Pest\Laravel\{patchJson, assertDatabaseHas, assertDatabaseMissing};
 use App\Models\{User, Cart, CartItem, Product, ProductVariant};
+use App\Enums\CartStatus;
 use Laravel\Sanctum\Sanctum;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 describe('validation', function () {
-
     it('requires quantity', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}")
             ->assertUnprocessable()
@@ -26,8 +26,8 @@ describe('validation', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 'foo'])
             ->assertUnprocessable()
@@ -38,24 +38,22 @@ describe('validation', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => -1])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('quantity');
     });
-
 });
 
 describe('core logic and happy path', function () {
-
     it('user can update own cart item', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 3])
             ->assertOk()
@@ -70,8 +68,8 @@ describe('core logic and happy path', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->quantity(2)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->quantity(2)->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 0])
             ->assertOk()
@@ -101,8 +99,8 @@ describe('core logic and happy path', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->quantity(2)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->quantity(2)->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 5])
             ->assertOk()
@@ -127,16 +125,17 @@ describe('core logic and happy path', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create([
+        $mainCart = $user->mainCart;
+        $mainCart->update([
             'items_count' => 2,
             'items_qty_sum' => 6,
             'subtotal' => 3800,
             'total' => 3800,
         ]);
 
-        $item1 = CartItem::factory()->for($cart)->quantity(2)->price(500)->create();
+        $item1 = CartItem::factory()->for($mainCart)->quantity(2)->price(500)->create();
 
-        CartItem::factory()->for($cart)->quantity(4)->price(700)->create();
+        CartItem::factory()->for($mainCart)->quantity(4)->price(700)->create();
 
         patchJson("/api/v1/cart-items/{$item1->id}", ['quantity' => 5])
             ->assertOk();
@@ -146,28 +145,26 @@ describe('core logic and happy path', function () {
             'quantity' => 5,
         ]);
 
-        $cart->refresh();
+        $mainCart->refresh();
 
-        expect($cart->items_count)->toBe(2)
-            ->and($cart->items_qty_sum)->toBe(9)
-            ->and($cart->subtotal)->toBe(5300)
-            ->and($cart->total)->toBe(5300);
+        expect($mainCart->items_count)->toBe(2)
+            ->and($mainCart->items_qty_sum)->toBe(9)
+            ->and($mainCart->subtotal)->toBe(5300)
+            ->and($mainCart->total)->toBe(5300);
     });
-
 });
 
 describe('edge cases and errors', function () {
-
     it('cannot update another users cart item', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $anotherUser = User::factory()->create();
+        $otherUser = User::factory()->create();
 
-        $cart = Cart::factory()->for($anotherUser)->create();
-        $anotherUserCartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $otherUser->mainCart;
+        $otherUserCartItem = CartItem::factory()->for($mainCart)->create();
 
-        patchJson("/api/v1/cart-items/{$anotherUserCartItem->id}", ['quantity' => 3])
+        patchJson("/api/v1/cart-items/{$otherUserCartItem->id}", ['quantity' => 3])
             ->assertForbidden();
     });
 
@@ -186,8 +183,9 @@ describe('edge cases and errors', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->locked()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $user->mainCart;
+        $mainCart->lock(fake()->uuid());
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 3])
             ->assertForbidden();
@@ -197,8 +195,12 @@ describe('edge cases and errors', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->checkedOut()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $user->mainCart;
+        $mainCart->update([
+            'status' => CartStatus::CheckedOut,
+            'completed_at' => now(),
+        ]);
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 3])
             ->assertForbidden();
@@ -208,11 +210,11 @@ describe('edge cases and errors', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
+        $mainCart = $user->mainCart;
 
         $product = Product::factory()->create(['manage_stock' => true]);
         $variant = ProductVariant::factory()->for($product)->create(['stock_quantity' => 5]);
-        $cartItem = CartItem::factory()->for($cart)->for($product)->for($variant, 'variant')->create();
+        $cartItem = CartItem::factory()->for($mainCart)->for($product)->for($variant, 'variant')->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 8])
             ->assertUnprocessable()
@@ -226,5 +228,4 @@ describe('edge cases and errors', function () {
         patchJson('/api/v1/cart-items/999', ['quantity' => 3])
             ->assertNotFound();
     });
-
 });

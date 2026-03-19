@@ -2,46 +2,50 @@
 
 namespace App\Http\Controllers\Api\V1\Sales\Cart;
 
-use App\Enums\CartStatus;
-use App\Enums\CartType;
+use App\Enums\{CartStatus, CartType};
+use App\Models\Cart;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Sales\Cart\StoreCartRequest;
 use App\Http\Resources\V1\Sales\CartResource;
 use App\Http\Responses\ApiResponse;
-use App\Models\Cart;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
+use Throwable;
 
 class CartController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * @throws Throwable
+     */
+    public function __invoke(Request $request)
     {
         $user = $request->user();
-        $carts = $user->carts()->latest()->get();
 
-        return ApiResponse::success(CartResource::collection($carts));
-    }
+        if ($user) {
+            $type = $request->enum('type', CartType::class, CartType::Main);
 
-    public function store(StoreCartRequest $request)
-    {
-        $inputs = $request->validated();
-        $user = $request->user();
+            $cart = $user->carts()
+                ->firstOrCreate([
+                    'status' => CartStatus::Active,
+                    'type' => $type,
+                ]);
+        } else {
+            $sessionId = $request->header('Session-Id');
 
-        $cart = $user->carts()->create([
-            'type' => CartType::Named,
-            'name' => $inputs['name'],
-            'status' => CartStatus::Active,
+            throw_unless($sessionId, AuthenticationException::class);
+
+            $cart = Cart::query()
+                ->firstOrCreate([
+                    'session_id' => $sessionId,
+                    'status' => CartStatus::Active,
+                    'type' => CartType::Main,
+                ]);
+        }
+
+        $cart->load([
+            'items.product.media',
+            'items.variant',
         ]);
 
-        return ApiResponse::created(CartResource::make($cart), 'سبد خرید با موفقیت ایجاد شد.');
-    }
-
-    public function destroy(Cart $cart)
-    {
-        Gate::authorize('delete', $cart);
-
-        $cart->delete();
-
-        return ApiResponse::deleted('سبد خرید و تمامی محصولات آن حذف شدند.');
+        return ApiResponse::success(CartResource::make($cart));
     }
 }

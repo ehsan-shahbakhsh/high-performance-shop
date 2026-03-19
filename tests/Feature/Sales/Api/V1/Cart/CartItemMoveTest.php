@@ -3,86 +3,39 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use function Pest\Laravel\{postJson, assertDatabaseHas, assertDatabaseMissing};
-use App\Models\{Product, User, Cart, CartItem};
+use App\Models\{Product, User, CartItem};
+use App\Enums\CartType;
 use Laravel\Sanctum\Sanctum;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 describe('validation', function () {
-    it('fails when destination_cart_id is missing', function () {
+    it('fails when target_type is missing', function () {
         $user = User::factory()->create();
 
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
         Sanctum::actingAs($user);
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move")
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move")
             ->assertUnprocessable()
-            ->assertJsonValidationErrors('destination_cart_id');
+            ->assertJsonValidationErrors('target_type');
     });
 
-    it('fails when destination_cart_id is not a valid ulid', function () {
+    it('fails when target_type is invalid', function () {
         $user = User::factory()->create();
 
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
         Sanctum::actingAs($user);
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", ['destination_cart_id' => 'foo'])
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('destination_cart_id');
-    });
-
-    it('fails when destination_cart_id does not exist', function () {
-        $user = User::factory()->create();
-
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
-
-        Sanctum::actingAs($user);
-
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", ['destination_cart_id' => 999])
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('destination_cart_id');
-    });
-
-    it('fails when destination_cart_id belongs to another user', function () {
-        $user = User::factory()->create();
-
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
-
-        Sanctum::actingAs($user);
-
-        $anotherUser = User::factory()->create();
-        $anotherUserCart = Cart::factory()->for($anotherUser)->create();
-
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", ['destination_cart_id' => $anotherUserCart->id])
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('destination_cart_id');
-    });
-
-    it('fails when destination_cart_id points to an inactive cart', function () {
-        $user = User::factory()->create();
-
-        $cart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($cart)->create();
-
-        $inactiveSecondaryCart = Cart::factory()
-            ->for($user)
-            ->secondary()
-            ->checkedOut()
-            ->create();
-
-        Sanctum::actingAs($user);
-
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $inactiveSecondaryCart->id,
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => 'foo',
         ])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors('destination_cart_id');
+            ->assertJsonValidationErrors('target_type');
     });
 });
 
@@ -90,154 +43,65 @@ describe('core logic and happy path', function () {
     it('moves item from main to secondary', function () {
         $user = User::factory()->create();
 
-        $mainCart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($mainCart)->create();
-
-        $secondaryCart = Cart::factory()->for($user)->secondary()->create();
-
         Sanctum::actingAs($user);
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $secondaryCart->id,
+        $mainCart = $user->mainCart;
+        $secondaryCart = $user->secondaryCart;
+
+        $cartItem = CartItem::factory()->for($mainCart)->create();
+
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Secondary->value,
         ])
             ->assertOk()
-            ->assertJsonPath('message', 'محصول با موفقیت انتقال یافت.');
+            ->assertJsonPath('message', 'محصول با موفقیت به سبد خرید بعدی منتقل شد.');
 
         assertDatabaseHas('cart_items', [
             'id' => $cartItem->id,
             'cart_id' => $secondaryCart->id,
-        ]);
-    });
-
-    it('moves item from main to named cart', function () {
-        $user = User::factory()->create();
-
-        $mainCart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($mainCart)->create();
-
-        $namedCart = Cart::factory()->for($user)->named()->create();
-
-        Sanctum::actingAs($user);
-
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $namedCart->id,
-        ])
-            ->assertOk()
-            ->assertJsonPath('message', 'محصول با موفقیت انتقال یافت.');
-
-        assertDatabaseHas('cart_items', [
-            'id' => $cartItem->id,
-            'cart_id' => $namedCart->id,
         ]);
     });
 
     it('moves item from secondary to main', function () {
         $user = User::factory()->create();
 
-        $secondaryCart = Cart::factory()->for($user)->secondary()->create();
-        $cartItem = CartItem::factory()->for($secondaryCart)->create();
-
-        $mainCart = Cart::factory()->for($user)->create();
-
         Sanctum::actingAs($user);
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $mainCart->id,
+        $mainCart = $user->mainCart;
+        $secondaryCart = $user->secondaryCart;
+        $cartItem = CartItem::factory()->for($secondaryCart)->create();
+
+        postJson("/api/v1/carts/{$secondaryCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Main->value,
         ])
             ->assertOk()
-            ->assertJsonPath('message', 'محصول با موفقیت انتقال یافت.');
+            ->assertJsonPath('message', 'محصول با موفقیت به سبد خرید اصلی منتقل شد.');
 
         assertDatabaseHas('cart_items', [
             'id' => $cartItem->id,
             'cart_id' => $mainCart->id,
-        ]);
-    });
-
-    it('moves item from secondary to named', function () {
-        $user = User::factory()->create();
-
-        $secondaryCart = Cart::factory()->for($user)->secondary()->create();
-        $cartItem = CartItem::factory()->for($secondaryCart)->create();
-
-        $namedCart = Cart::factory()->for($user)->named()->create();
-
-        Sanctum::actingAs($user);
-
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $namedCart->id,
-        ])
-            ->assertOk()
-            ->assertJsonPath('message', 'محصول با موفقیت انتقال یافت.');
-
-        assertDatabaseHas('cart_items', [
-            'id' => $cartItem->id,
-            'cart_id' => $namedCart->id,
-        ]);
-    });
-
-    it('moves item from named to main', function () {
-        $user = User::factory()->create();
-
-        $namedCart = Cart::factory()->for($user)->named()->create();
-        $cartItem = CartItem::factory()->for($namedCart)->create();
-
-        $mainCart = Cart::factory()->for($user)->create();
-
-        Sanctum::actingAs($user);
-
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $mainCart->id,
-        ])
-            ->assertOk()
-            ->assertJsonPath('message', 'محصول با موفقیت انتقال یافت.');
-
-        assertDatabaseHas('cart_items', [
-            'id' => $cartItem->id,
-            'cart_id' => $mainCart->id,
-        ]);
-    });
-
-    it('moves item from named to secondary', function () {
-        $user = User::factory()->create();
-
-        $namedCart = Cart::factory()->for($user)->named()->create();
-        $cartItem = CartItem::factory()->for($namedCart)->create();
-
-        $secondaryCart = Cart::factory()->for($user)->create();
-
-        Sanctum::actingAs($user);
-
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $secondaryCart->id,
-        ])
-            ->assertOk()
-            ->assertJsonPath('message', 'محصول با موفقیت انتقال یافت.');
-
-        assertDatabaseHas('cart_items', [
-            'id' => $cartItem->id,
-            'cart_id' => $secondaryCart->id,
         ]);
     });
 
     it('creates new item when destination cart has no equivalent product', function () {
         $user = User::factory()->create();
 
-        $sourceCart = Cart::factory()->for($user)->create();
-        $destinationCart = Cart::factory()->for($user)->secondary()->create();
+        $mainCart = $user->mainCart;
+        $secondaryCart = $user->secondaryCart;
 
-        $cartItem = CartItem::factory()->for($sourceCart)->create(['quantity' => 2]);
+        $cartItem = CartItem::factory()->for($mainCart)->quantity(2)->create();
 
         Sanctum::actingAs($user);
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $destinationCart->id
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Secondary->value,
         ])
             ->assertOk()
-            ->assertJsonPath('message', 'محصول با موفقیت انتقال یافت.');
+            ->assertJsonPath('message', 'محصول با موفقیت به سبد خرید بعدی منتقل شد.');
 
         assertDatabaseHas('cart_items', [
             'id' => $cartItem->id,
-            'cart_id' => $destinationCart->id,
+            'cart_id' => $secondaryCart->id,
             'quantity' => 2,
         ]);
     });
@@ -247,30 +111,31 @@ describe('core logic and happy path', function () {
 
         $product = Product::factory()->create();
 
-        $sourceCart = Cart::factory()->for($user)->create();
-        $sourceItem = CartItem::factory()->for($sourceCart)->create([
-            'product_id' => $product->id,
-            'quantity' => 3,
-        ]);
+        $mainCart = $user->mainCart;
+        $sourceItem = CartItem::factory()
+            ->for($mainCart)
+            ->for($product)
+            ->quantity(3)
+            ->create();
 
-        $destinationCart = Cart::factory()->for($user)->secondary()->create();
-
-        $destinationItem = CartItem::factory()->for($destinationCart)->create([
-            'product_id' => $product->id,
-            'quantity' => 2,
-        ]);
+        $secondaryCart = $user->secondaryCart;
+        $destinationItem = CartItem::factory()
+            ->for($secondaryCart)
+            ->for($product)
+            ->quantity(2)
+            ->create();
 
         Sanctum::actingAs($user);
 
-        postJson("/api/v1/cart-items/{$sourceItem->id}/move", [
-            'destination_cart_id' => $destinationCart->id
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$sourceItem->id}/move", [
+            'target_type' => CartType::Secondary->value,
         ])
             ->assertOk()
-            ->assertJsonPath('message', 'محصول با موفقیت انتقال یافت.');
+            ->assertJsonPath('message', 'محصول با موفقیت به سبد خرید بعدی منتقل شد.');
 
         assertDatabaseHas('cart_items', [
             'id' => $destinationItem->id,
-            'cart_id' => $destinationCart->id,
+            'cart_id' => $secondaryCart->id,
             'quantity' => 5,
         ]);
 
@@ -280,7 +145,7 @@ describe('core logic and happy path', function () {
 
         expect(
             CartItem::query()
-                ->where('cart_id', $destinationCart->id)
+                ->where('cart_id', $secondaryCart->id)
                 ->where('product_id', $product->id)
                 ->count()
         )->toBe(1);
@@ -288,26 +153,40 @@ describe('core logic and happy path', function () {
 });
 
 describe('edge cases and errors', function () {
-    it('denies access when user is not authenticated', function () {
+    it('returns unauthorized when user is not authenticated', function () {
         $user = User::factory()->create();
 
-        $sourceCart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($sourceCart)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $sourceCart->id
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Secondary->value,
         ])->assertUnauthorized();
+    });
+
+    it('fails when moving item to the same cart type', function () {
+        $user = User::factory()->create();
+
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
+
+        Sanctum::actingAs($user);
+
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Main->value,
+        ])
+            ->assertConflict();
     });
 
     it('returns 409 when moving to the same cart', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $sourceCart = Cart::factory()->for($user)->create();
-        $cartItem = CartItem::factory()->for($sourceCart)->create();
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()->for($mainCart)->create();
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $sourceCart->id
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Main->value,
         ])
             ->assertConflict()
             ->assertJsonPath('message', 'این مورد هم‌اکنون در همین سبد خرید قرار دارد.');
@@ -317,52 +196,53 @@ describe('edge cases and errors', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $sourceCart = Cart::factory()->for($user)->create();
+        $mainCart = $user->mainCart;
 
-        postJson('/api/v1/cart-items/999/move', [
-            'destination_cart_id' => $sourceCart->id
+        postJson("/api/v1/carts/{$mainCart->id}/items/99999/move", [
+            'target_type' => CartType::Main->value,
         ])->assertNotFound();
     });
 
-    it('fails when source cart is not active', function () {
+    it('fails with 404 when cart item does not belong to the cart', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $inactiveSourceCart = Cart::factory()->for($user)->checkedOut()->create();
-        $cartItem = CartItem::factory()->for($inactiveSourceCart)->create();
+        $mainCart = $user->mainCart;
+        $secondaryCart = $user->secondaryCart;
 
-        $destinationCart = Cart::factory()->for($user)->secondary()->create();
+        $cartItem = CartItem::factory()->for($secondaryCart)->create();
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $destinationCart->id
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Secondary->value,
+        ])->assertNotFound();
+    });
+
+    it('fails when transferring from main locked cart (e.g payment in progress)', function () {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $mainCart = $user->mainCart;
+        $mainCart->lock(fake()->uuid());
+        $cartItem = CartItem::factory()->for($mainCart)->create();
+
+        postJson("/api/v1/carts/{$mainCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Secondary->value,
         ])->assertForbidden();
     });
 
-    it('fails when transferring from a locked cart (e.g payment in progress)', function () {
+    it('fails when transferring to main locked cart', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $lockedSourceCart = Cart::factory()->for($user)->locked()->create();
-        $cartItem = CartItem::factory()->for($lockedSourceCart)->create();
+        $mainCart = $user->mainCart;
+        $secondaryCart = $user->secondaryCart;
 
-        $destinationCart = Cart::factory()->for($user)->secondary()->create();
+        $mainCart->lock(fake()->uuid());
 
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $destinationCart->id
-        ])->assertForbidden();
-    });
+        $cartItem = CartItem::factory()->for($secondaryCart)->create();
 
-    it('fails when transferring to a locked cart', function () {
-        $user = User::factory()->create();
-        Sanctum::actingAs($user);
-
-        $sourceCart = Cart::factory()->for($user)->secondary()->create();
-        $cartItem = CartItem::factory()->for($sourceCart)->create();
-
-        $lockedDestinationCart = Cart::factory()->for($user)->locked()->create();
-
-        postJson("/api/v1/cart-items/{$cartItem->id}/move", [
-            'destination_cart_id' => $lockedDestinationCart->id
+        postJson("/api/v1/carts/{$secondaryCart->id}/items/{$cartItem->id}/move", [
+            'target_type' => CartType::Main->value,
         ])
             ->assertForbidden()
             ->assertJsonPath('message', 'در حال حاضر امکان انتقال به این سبد خرید وجود ندارد زیرا فرآیند پرداخت آن در حال انجام است.');

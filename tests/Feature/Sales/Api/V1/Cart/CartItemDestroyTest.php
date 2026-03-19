@@ -16,17 +16,17 @@ describe('core logic and happy path', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create();
+        $mainCart = $user->mainCart;
 
         $product = Product::factory()->simple()->create(['manage_stock' => false]);
-        $cartItem = CartItem::factory()->for($cart)->for($product)->create();
+        $cartItem = CartItem::factory()->for($mainCart)->for($product)->create();
 
         deleteJson("/api/v1/cart-items/{$cartItem->id}")
             ->assertOk()
             ->assertJsonPath('message', 'محصول با موفقیت از سبد خرید حذف شد.');
 
         assertDatabaseMissing('cart_items', [
-            'cart_id' => $cart->id,
+            'cart_id' => $mainCart->id,
             'product_id' => $product->id,
         ]);
     });
@@ -54,16 +54,17 @@ describe('core logic and happy path', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->create([
+        $mainCart = $user->mainCart;
+        $mainCart->update([
             'items_count' => 2,
             'items_qty_sum' => 3,
             'subtotal' => 1700,
             'total' => 1700,
         ]);
 
-        $item1 = CartItem::factory()->for($cart)->quantity(2)->price(500)->create();
+        $item1 = CartItem::factory()->for($mainCart)->quantity(2)->price(500)->create();
 
-        CartItem::factory()->for($cart)->quantity(1)->price(700)->create();
+        CartItem::factory()->for($mainCart)->quantity(1)->price(700)->create();
 
         deleteJson("/api/v1/cart-items/{$item1->id}")
             ->assertOk();
@@ -72,14 +73,13 @@ describe('core logic and happy path', function () {
             'id' => $item1->id,
         ]);
 
-        $cart->refresh();
+        $mainCart->refresh();
 
-        expect($cart->items_count)->toBe(1)
-            ->and($cart->items_qty_sum)->toBe(1)
-            ->and($cart->subtotal)->toBe(700)
-            ->and($cart->total)->toBe(700);
+        expect($mainCart->items_count)->toBe(1)
+            ->and($mainCart->items_qty_sum)->toBe(1)
+            ->and($mainCart->subtotal)->toBe(700)
+            ->and($mainCart->total)->toBe(700);
     });
-
 });
 
 describe('edge cases and errors', function () {
@@ -102,13 +102,13 @@ describe('edge cases and errors', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $cart = Cart::factory()->for($user)->locked()->create();
+        $mainCart = $user->mainCart;
+        $mainCart->lock(fake()->uuid());
 
         $product = Product::factory()->simple()->create(['manage_stock' => false]);
-        $cartItem = CartItem::factory()->for($cart)->for($product)->create();
+        $cartItem = CartItem::factory()->for($mainCart)->for($product)->create();
 
         deleteJson("/api/v1/cart-items/{$cartItem->id}")
             ->assertForbidden();
     });
-
 });

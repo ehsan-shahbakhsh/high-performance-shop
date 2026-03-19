@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Sales\Cart;
 
 use App\Actions\Sales\Cart\{AddItemToCartAction, MoveCartItemAction, RemoveItemFromCartAction, UpdateCartItemAction};
 use App\Data\Sales\AddItemToCartData;
+use App\Models\Cart;
 use App\Enums\{CartStatus, CartType};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Sales\Cart\{MoveCartItemRequest, StoreCartItemRequest, UpdateCartItemRequest};
@@ -16,22 +17,6 @@ use Throwable;
 
 class CartItemController extends Controller
 {
-    public function index(Request $request)
-    {
-        $user = $request->user();
-        $cart = $user->carts()
-            ->with([
-                'items.product.media',
-                'items.variant.media',
-            ])
-            ->firstOrCreate([
-                'status' => CartStatus::Active,
-                'type' => CartType::Main,
-            ]);
-
-        return ApiResponse::success(CartResource::make($cart));
-    }
-
     /**
      * @throws Throwable
      */
@@ -53,30 +38,30 @@ class CartItemController extends Controller
     /**
      * @throws Throwable
      */
-    public function update(UpdateCartItemRequest $request, CartItem $cartItem, UpdateCartItemAction $action)
+    public function update(UpdateCartItemRequest $request, CartItem $item, UpdateCartItemAction $action)
     {
         $sessionId = $request->header('Session-Id');
 
-        Gate::authorize('update', [$cartItem, $sessionId]);
+        Gate::authorize('update', [$item, $sessionId]);
 
         $quantity = intval($request->validated('quantity'));
 
-        $cartItem = $action->execute($cartItem, $quantity);
+        $item = $action->execute($item, $quantity);
 
         $message = $quantity > 0
             ? 'تعداد محصول در سبد خرید بروزرسانی شد.'
             : 'محصول از سبد خرید حذف شد.';
-        return ApiResponse::success(CartItemResource::make($cartItem), $message);
+        return ApiResponse::success(CartItemResource::make($item), $message);
     }
 
     /**
      * @throws Throwable
      */
-    public function destroy(Request $request, CartItem $cartItem, RemoveItemFromCartAction $action)
+    public function destroy(Request $request, CartItem $item, RemoveItemFromCartAction $action)
     {
-        Gate::authorize('delete', [$cartItem, $request->header('Session-Id')]);
+        Gate::authorize('delete', [$item, $request->header('Session-Id')]);
 
-        $action->execute($request->user(), $cartItem);
+        $action->execute($request->user(), $item);
 
         return ApiResponse::success(message: 'محصول با موفقیت از سبد خرید حذف شد.');
     }
@@ -84,18 +69,22 @@ class CartItemController extends Controller
     /**
      * @throws Throwable
      */
-    public function move(MoveCartItemRequest $request, CartItem $cartItem, MoveCartItemAction $action)
+    public function move(MoveCartItemRequest $request, Cart $cart, CartItem $item, MoveCartItemAction $action)
     {
-        Gate::authorize('move', $cartItem);
+        Gate::authorize('move', $item);
 
-        $inputs = $request->validated();
+        $targetType = CartType::from($request->validated('target_type'));
 
         $action->execute(
             $request->user(),
-            $cartItem,
-            $inputs['destination_cart_id'] ?? null,
+            $item,
+            $targetType,
         );
 
-        return ApiResponse::success(message: 'محصول با موفقیت انتقال یافت.');
+        $message = match ($targetType) {
+            CartType::Main => 'محصول با موفقیت به سبد خرید اصلی منتقل شد.',
+            CartType::Secondary => 'محصول با موفقیت به سبد خرید بعدی منتقل شد.',
+        };
+        return ApiResponse::success(message: $message);
     }
 }
