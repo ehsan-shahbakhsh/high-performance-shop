@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
+use App\Enums\{CartType, CartStatus};
 
 class User extends Authenticatable implements FilamentUser, HasName
 {
@@ -85,6 +86,20 @@ class User extends Authenticatable implements FilamentUser, HasName
     public function carts(): HasMany
     {
         return $this->hasMany(Cart::class);
+    }
+
+    public function mainCart(): HasOne
+    {
+        return $this->hasOne(Cart::class)
+            ->where('type', CartType::Main)
+            ->where('status', CartStatus::Active);
+    }
+
+    public function secondaryCart(): HasOne
+    {
+        return $this->hasOne(Cart::class)
+            ->where('type', CartType::Secondary)
+            ->where('status', CartStatus::Active);
     }
 
     public function wishlists(): HasMany
