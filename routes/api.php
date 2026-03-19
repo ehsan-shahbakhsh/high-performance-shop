@@ -35,15 +35,12 @@ Route::prefix('v1')->group(function () {
             });
         });
 
-        Route::prefix('carts')->controller(CartController::class)->group(function () {
-            Route::get('/', 'index');
-            Route::post('/', 'store');
-            Route::delete('{cart}', 'destroy');
-        });
-
-        Route::prefix('cart-items')->controller(CartItemController::class)->group(function () {
-            Route::post('{cartItem}/move', 'move');
-        });
+        Route::prefix('carts/{cart}/items')
+            ->controller(CartItemController::class)
+            ->scopeBindings()
+            ->group(function () {
+                Route::post('{item}/move', 'move');
+            });
 
         Route::apiResource('wishlists', WishlistController::class)->except('show');
 
@@ -58,11 +55,12 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth.optional')->group(function () {
+        Route::get('cart', CartController::class);
+
         Route::prefix('cart-items')->controller(CartItemController::class)->group(function () {
-            Route::get('/', 'index');
             Route::post('/', 'store');
-            Route::match(['put', 'patch'], '{cartItem}', 'update');
-            Route::delete('{cartItem}', 'destroy');
+            Route::match(['put', 'patch'], '{item}', 'update');
+            Route::delete('{item}', 'destroy');
         });
     });
 });
