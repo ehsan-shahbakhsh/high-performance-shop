@@ -4,7 +4,6 @@ namespace App\Http\Responses;
 
 use Illuminate\Contracts\Support\Responsable;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Pagination\AbstractPaginator;
 use Symfony\Component\HttpFoundation\Response as ResponseCode;
@@ -69,7 +68,7 @@ final class ApiResponse implements Responsable
         );
     }
 
-    public static function created(mixed $data = null, ?string $message = 'Resource created successfully'): self
+    public static function created(mixed $data = null, ?string $message = 'منبع با موفقیت ایجاد شد.'): self
     {
         return new self(
             data: $data,
@@ -80,7 +79,8 @@ final class ApiResponse implements Responsable
         );
     }
 
-    public static function deleted(string $message = 'Resource deleted successfully'): self
+
+    public static function deleted(string $message = 'منبع با موفقیت حذف شد.'): self
     {
         return self::success(message: $message);
     }
@@ -96,7 +96,7 @@ final class ApiResponse implements Responsable
         );
     }
 
-    public static function badRequest(string $message = 'Bad Request', ?array $errors = null): self
+    public static function badRequest(string $message = 'درخواست نامعتبر است.', ?array $errors = null): self
     {
         return self::error(
             message: $message,
@@ -105,7 +105,7 @@ final class ApiResponse implements Responsable
         );
     }
 
-    public static function unauthorized(string $message = 'Unauthenticated'): self
+    public static function unauthorized(string $message = 'احراز هویت انجام نشده است.'): self
     {
         return self::error(
             message: $message,
@@ -113,17 +113,17 @@ final class ApiResponse implements Responsable
         );
     }
 
-    public static function notFound(string $message = 'Resource not found'): self
+    public static function notFound(string $message = 'منبع مورد نظر یافت نشد.'): self
     {
         return self::error($message, ResponseCode::HTTP_NOT_FOUND);
     }
 
-    public static function forbidden(string $message = 'Access denied'): self
+    public static function forbidden(string $message = 'شما دسترسی لازم برای انجام این عملیات را ندارید.'): self
     {
         return self::error($message, ResponseCode::HTTP_FORBIDDEN);
     }
 
-    public static function validationFailed(string $message = 'Validation errors', array $errors = []): self
+    public static function validationFailed(string $message = 'اطلاعات ورودی معتبر نیست.', array $errors = []): self
     {
         return self::error(
             message: $message,
@@ -143,7 +143,7 @@ final class ApiResponse implements Responsable
         );
     }
 
-    public static function internalServerError(string $message = 'Internal Server Error', ?array $errors = null): self
+    public static function internalServerError(string $message = 'خطای داخلی سرور رخ داده است.', ?array $errors = null): self
     {
         return self::error(
             message: $message,
