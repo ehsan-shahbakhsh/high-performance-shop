@@ -13,17 +13,19 @@ class BusinessException extends Exception
     /**
      * Create a new business exception instance.
      *
-     * @param string         $message   The user-friendly error message.
-     * @param int            $httpCode  The HTTP status code (default: 400 Bad Request).
-     * @param int            $code      Internal error code (optional).
-     * @param Throwable|null $previous  The previous exception used for chaining (optional).
+     * @param string $message The user-friendly error message.
+     * @param int $httpCode The HTTP status code (default: 400 Bad Request).
+     * @param int $code Internal error code (optional).
+     * @param Throwable|null $previous The previous exception used for chaining (optional).
      */
     public function __construct(
-        string $message,
-        protected int $httpCode = HttpResponse::HTTP_BAD_REQUEST,
-        int $code = 0,
-        ?Throwable $previous = null
-    ) {
+        string            $message,
+        protected int     $httpCode = HttpResponse::HTTP_BAD_REQUEST,
+        protected ?string $errorCode = null,
+        int               $code = 0,
+        ?Throwable        $previous = null
+    )
+    {
         parent::__construct($message, $code, $previous);
     }
 
@@ -32,7 +34,7 @@ class BusinessException extends Exception
      *
      * Laravel automatically calls this method when the exception is thrown.
      *
-     * @param  Request $request
+     * @param Request $request
      * @return ApiResponse
      */
     public function render(Request $request): ApiResponse
@@ -40,6 +42,7 @@ class BusinessException extends Exception
         return ApiResponse::error(
             $this->getMessage(),
             code: $this->httpCode,
+            errorCode: $this->errorCode,
         );
     }
 }
