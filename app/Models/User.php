@@ -102,6 +102,12 @@ class User extends Authenticatable implements FilamentUser, HasName
             ->where('status', CartStatus::Active);
     }
 
+    public function defaultWishlist(): HasOne
+    {
+        return $this->hasOne(Wishlist::class)
+                ->where('is_default', true);
+    }
+
     public function wishlists(): HasMany
     {
         return $this->hasMany(Wishlist::class);
