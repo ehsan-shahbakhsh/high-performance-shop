@@ -64,4 +64,12 @@ class WishlistItemPolicy
     {
         return false;
     }
+
+    /**
+     * Determine whether the user can move to cart the model.
+     */
+    public function moveToCart(User $user, WishlistItem $wishlistItem): bool
+    {
+        return $user->id === $wishlistItem->wishlist->user_id;
+    }
 }

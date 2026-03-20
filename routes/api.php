@@ -51,6 +51,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('/', 'index');
                 Route::post('/', 'store');
                 Route::delete('{item}', 'destroy');
+
+                Route::post('{item}/move-to-cart', 'moveToCart');
             });
     });
 

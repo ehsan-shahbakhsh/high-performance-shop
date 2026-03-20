@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Sales\Wishlist;
 
-use App\Actions\Sales\Wishlist\AddWishlistItemAction;
+use App\Http\Requests\Api\V1\Sales\Wishlist\MoveWishlistItemToCartRequest;
+use Illuminate\Http\Request;
+use App\Actions\Sales\Wishlist\{MoveWishlistItemToCartAction, AddWishlistItemAction};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Sales\Wishlist\StoreWishlistItemRequest;
 use App\Http\Resources\V1\Sales\WishlistItemResource;
@@ -50,5 +52,17 @@ class WishlistItemController extends Controller
         $item->delete();
 
         return ApiResponse::deleted('محصول از لیست حذف شد.');
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function moveToCart(MoveWishlistItemToCartRequest $request, Wishlist $wishlist, WishlistItem $item, MoveWishlistItemToCartAction $action)
+    {
+        Gate::authorize('moveToCart', $item);
+
+        $action->execute($request->user(), $item, $request->validated('variant_id'));
+
+        return ApiResponse::success(message: 'محصول با موفقیت به سبد خرید افزوده شد.');
     }
 }
