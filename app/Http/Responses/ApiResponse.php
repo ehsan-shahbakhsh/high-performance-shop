@@ -11,14 +11,15 @@ use Symfony\Component\HttpFoundation\Response as ResponseCode;
 final class ApiResponse implements Responsable
 {
     public function __construct(
-        private readonly mixed  $data = null,
-        private ?string         $message = null,
-        private readonly bool   $success = true,
-        private readonly ?array $errors = null,
-        private readonly array  $meta = [],
-        private readonly int    $code = ResponseCode::HTTP_OK,
-        private readonly int    $httpStatus = ResponseCode::HTTP_OK,
-        private readonly array  $headers = [],
+        private readonly mixed   $data = null,
+        private ?string          $message = null,
+        private readonly bool    $success = true,
+        private readonly ?array  $errors = null,
+        private readonly array   $meta = [],
+        private readonly int     $code = ResponseCode::HTTP_OK,
+        private readonly int     $httpStatus = ResponseCode::HTTP_OK,
+        private readonly array   $headers = [],
+        private readonly ?string $errorCode = null,
     )
     {
         $this->message = $message ?? ($success ? 'Success' : 'Error');
@@ -34,6 +35,7 @@ final class ApiResponse implements Responsable
             'data' => $this->data,
             'meta' => !empty($this->meta) ? $this->meta : null,
             'errors' => $this->errors,
+            'error_code' => $this->errorCode,
         ];
 
         if ($this->data instanceof ResourceCollection && $this->data->resource instanceof AbstractPaginator) {
@@ -85,7 +87,13 @@ final class ApiResponse implements Responsable
         return self::success(message: $message);
     }
 
-    public static function error(string $message, int $code = ResponseCode::HTTP_BAD_REQUEST, ?array $errors = null, int $httpStatus = null): self
+    public static function error(
+        string  $message,
+        int     $code = ResponseCode::HTTP_BAD_REQUEST,
+        ?array  $errors = null,
+        int     $httpStatus = null,
+        ?string $errorCode = null,
+    ): self
     {
         return new self(
             message: $message,
@@ -93,6 +101,7 @@ final class ApiResponse implements Responsable
             errors: $errors,
             code: $code,
             httpStatus: $httpStatus ?? $code,
+            errorCode: $errorCode,
         );
     }
 
