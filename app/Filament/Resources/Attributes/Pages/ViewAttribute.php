@@ -12,7 +12,7 @@ class ViewAttribute extends ViewRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $this->record->load(['values', 'attributeSet']);
+        $this->record->load(['options', 'group']);
 
         return $data;
     }

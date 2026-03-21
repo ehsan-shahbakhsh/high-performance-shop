@@ -3,13 +3,8 @@
 namespace App\Filament\Resources\Attributes\Schemas;
 
 use App\Enums\AttributeType;
-use Filament\Infolists\Components\ColorEntry;
-use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
+use Filament\Infolists\Components\{RepeatableEntry, IconEntry, TextEntry};
+use Filament\Schemas\Components\{Group, Section, Grid};
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
 
@@ -25,6 +20,12 @@ class AttributeInfolist
                         Section::make('اطلاعات پایه')
                             ->columns(2)
                             ->schema([
+                                TextEntry::make('group.name')
+                                    ->label('گروه')
+                                    ->badge()
+                                    ->color('gray')
+                                    ->placeholder('بدون گروه'),
+
                                 TextEntry::make('name')
                                     ->label('نام ویژگی')
                                     ->weight('bold')
@@ -41,6 +42,10 @@ class AttributeInfolist
                                 IconEntry::make('is_required')
                                     ->label('اجباری')
                                     ->boolean(),
+
+                                IconEntry::make('is_variant')
+                                    ->label('ویژگی تنوع محصول')
+                                    ->boolean(),
                             ]),
 
                         Section::make('مقادیر تعریف شده')
@@ -53,20 +58,13 @@ class AttributeInfolist
                                             ->label('عنوان')
                                             ->weight('medium'),
 
-                                        ColorEntry::make('color_view')
-                                            ->label('رنگ')
-                                            ->state(fn($record) => $record->value)
-                                            ->visible(fn($record) => $schema->getRecord()->type === AttributeType::Color),
-
-                                        TextEntry::make('system_value')
+                                        TextEntry::make('value')
                                             ->label('مقدار سیستمی')
-                                            ->state(fn($record) => $record->value)
                                             ->color('gray')
-                                            ->size(TextSize::Small)
-                                            ->visible(fn($record) => $schema->getRecord()->type !== AttributeType::Color),
+                                            ->size(TextSize::Small),
                                     ]),
                             ])
-                            ->visible(fn($record) => in_array($record->type, [AttributeType::Select, AttributeType::MultiSelect, AttributeType::Color])),
+                            ->visible(fn($record) => in_array($record->type, [AttributeType::Select, AttributeType::MultiSelect])),
 
                         Group::make()
                             ->columnSpan(1)

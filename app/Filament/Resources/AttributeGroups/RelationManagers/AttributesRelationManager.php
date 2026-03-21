@@ -1,35 +1,29 @@
 <?php
 
-namespace App\Filament\Resources\Attributes\Tables;
+namespace App\Filament\Resources\AttributeGroups\RelationManagers;
 
-use App\Enums\AttributeType;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
+use App\Filament\Resources\Attributes\AttributeResource;
+use Filament\Actions\CreateAction;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Columns\{IconColumn, TextColumn};
 use Filament\Tables\Table;
 
-class AttributesTable
+class AttributesRelationManager extends RelationManager
 {
-    public static function configure(Table $table): Table
+    protected static string $relationship = 'attributes';
+
+    protected static ?string $relatedResource = AttributeResource::class;
+
+    public function table(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('position')
+            ->reorderable('position')
             ->columns([
                 TextColumn::make('id')
                     ->sortable()
                     ->label('شناسه')
                     ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('group.name')
-                    ->label('گروه')
-                    ->sortable()
-                    ->placeholder('بدون گروه')
-                    ->toggleable(),
 
                 TextColumn::make('name')
                     ->searchable()
@@ -78,37 +72,8 @@ class AttributesTable
                     ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                SelectFilter::make('type')
-                    ->label('نوع')
-                    ->options(AttributeType::class),
-
-                TernaryFilter::make('is_filterable')
-                    ->label('قابلیت فیلتر')
-                    ->placeholder('همه موارد')
-                    ->trueLabel('فقط قابل فیلتر')
-                    ->falseLabel('غیر قابل فیلتر'),
-
-                TernaryFilter::make('is_required')
-                    ->label('وضعیت الزام')
-                    ->placeholder('همه موارد')
-                    ->trueLabel('فقط اجباری‌ها')
-                    ->falseLabel('فقط اختیاری‌ها'),
-
-                TernaryFilter::make('is_variant')
-                    ->label('ویژگی تنوع')
-                    ->placeholder('همه')
-                    ->trueLabel('دارای تنوع')
-                    ->falseLabel('بدون تنوع'),
-            ])
-            ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+            ->headerActions([
+                CreateAction::make(),
             ]);
     }
 }

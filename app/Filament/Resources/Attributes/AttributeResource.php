@@ -16,31 +16,30 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class AttributeResource extends Resource
 {
     protected static ?string $model = Attribute::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsHorizontal;
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $modelLabel = 'ویژگی';
 
-    protected static ?string $pluralModelLabel = 'ویژگی ها';
+    protected static ?string $pluralModelLabel = 'ویژگی‌ها';
 
-    /**
-     * @return string
-     */
-    public static function getNavigationLabel(): string
-    {
-        return 'ویژگی ها';
-    }
+    protected static ?string $navigationLabel = 'ویژگی‌ها';
+
+    protected static ?int $navigationSort = 2;
+
+    protected static string|UnitEnum|null $navigationGroup = 'کاتالوگ';
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with('options');
+            ->with(['options', 'group']);
     }
 
     public static function form(Schema $schema): Schema

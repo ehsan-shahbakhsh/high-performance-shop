@@ -3,17 +3,12 @@
 namespace App\Filament\Resources\Attributes\Schemas;
 
 use App\Enums\AttributeType;
-use Filament\Forms\Components\ColorPicker;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
+use Filament\Actions\Action;
+use Filament\Forms\Components\{TextInput, Toggle, Select, Repeater};
+use Filament\Schemas\Components\{Grid, Section};
+use Filament\Schemas\Components\Utilities\{Get, Set};
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
 
 class AttributeForm
@@ -24,8 +19,35 @@ class AttributeForm
             ->components([
                 Section::make('تعریف ویژگی')
                     ->description('مشخصات اصلی و نوع داده‌ای ویژگی را تعیین کنید.')
-                    ->icon('heroicon-o-cube')
+                    ->icon(Heroicon::OutlinedCube)
                     ->schema([
+                        Select::make('attribute_group_id')
+                            ->label('گروه ویژگی')
+                            ->placeholder('یک گروه انتخاب کنید')
+                            ->relationship('group', 'name')
+                            ->preload()
+                            ->searchable()
+                            ->hintIcon(Heroicon::QuestionMarkCircle)
+                            ->hintIconTooltip('گروه‌بندی برای نمایش در صفحه محصول و مرتب‌سازی در پنل مدیریت')
+                            ->createOptionForm([
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->label('نام گروه')
+                                            ->required()
+                                            ->maxLength(200)
+                                            ->unique(ignoreRecord: true),
+
+                                        TextInput::make('position')
+                                            ->label('ترتیب نمایش')
+                                            ->numeric()
+                                            ->default(0),
+                                    ]),
+                            ])
+                            ->createOptionAction(function (Action $action) {
+                                return $action->label('ایجاد گروه جدید');
+                            }),
+
                         TextInput::make('name')
                             ->label('نام نمایشی')
                             ->placeholder('مثال: رنگ، سایز، حافظه داخلی')
@@ -33,10 +55,9 @@ class AttributeForm
                             ->maxLength(200)
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $state, ?string $old) {
-                                if (($get('code') ?? '') !== Str::slug($old) && filled($get('code'))) {
-                                    return;
+                                if (!filled($get('code')) || $get('code') === Str::slug($old)) {
+                                    $set('code', Str::slug($state));
                                 }
-                                $set('code', Str::slug($state));
                             }),
 
                         TextInput::make('code')
@@ -45,8 +66,8 @@ class AttributeForm
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->alphaDash()
-                            ->hintIcon('heroicon-m-question-mark-circle')
-                            ->hintIconTooltip('یک شناسه یکتا برای استفاده در سیستم (انگلیسی)'),
+                            ->hintIcon(Heroicon::QuestionMarkCircle)
+                            ->hintIconTooltip('شناسه یکتای این ویژگی در سطح سیستم و برای استفاده داخلی (فقط حروف انگلیسی و خط تیره)'),
 
                         Select::make('type')
                             ->label('نوع داده')
@@ -64,27 +85,36 @@ class AttributeForm
                             ->schema([
                                 Toggle::make('is_filterable')
                                     ->label('قابل فیلتر کردن در فروشگاه')
-                                    ->hintIcon('heroicon-m-question-mark-circle')
+                                    ->hintIcon(Heroicon::QuestionMarkCircle)
                                     ->hintIconTooltip('آیا کاربر می‌تواند در سایدبار فروشگاه بر اساس این ویژگی فیلتر کند؟')
                                     ->default(false)
-                                    ->onIcon('heroicon-s-funnel')
-                                    ->offIcon('heroicon-o-x-mark')
+                                    ->onIcon(Heroicon::Funnel)
+                                    ->offIcon(Heroicon::OutlinedXMark)
                                     ->onColor('success'),
 
                                 Toggle::make('is_required')
                                     ->label('اجباری')
-                                    ->hintIcon('heroicon-m-question-mark-circle')
+                                    ->hintIcon(Heroicon::QuestionMarkCircle)
                                     ->hintIconTooltip('آیا پر کردن این ویژگی برای محصول الزامی است؟')
                                     ->default(false)
-                                    ->onIcon('heroicon-s-shield-check')
-                                    ->offIcon('heroicon-o-x-mark'),
+                                    ->onIcon(Heroicon::ShieldCheck)
+                                    ->offIcon(Heroicon::OutlinedXMark),
+
+                                Toggle::make('is_variant')
+                                    ->label('ایجاد نوع (Variant)')
+                                    ->hintIcon(Heroicon::QuestionMarkCircle)
+                                    ->hintIconTooltip('اگر فعال باشد، محصول با گزینه‌های این ویژگی نوع‌های مختلف خواهد داشت (مثلاً رنگ یا حافظه)')
+                                    ->default(false)
+                                    ->onIcon(Heroicon::Squares2x2)
+                                    ->offIcon(Heroicon::OutlinedXMark)
+                                    ->onColor('info')
 
                             ]),
                     ]),
 
                 Section::make('مدیریت گزینه‌ها')
                     ->description('گزینه‌های قابل انتخاب برای این ویژگی را تعریف کنید (مثل: قرمز، آبی، سبز).')
-                    ->icon('heroicon-o-list-bullet')
+                    ->icon(Heroicon::OutlinedListBullet)
                     ->collapsible()
                     ->schema([
                         Repeater::make('options')
@@ -97,36 +127,20 @@ class AttributeForm
                                     ->required()
                                     ->live(onBlur: true)
                                     ->maxLength(255)
-                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('value', $state)),
-
-                                ColorPicker::make('color_ui')
-                                    ->label('کد رنگ')
-                                    ->required()
-                                    ->visible(fn(Get $get) => $get('../../type') === AttributeType::Color)
-                                    ->dehydrated(false)
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('value', $state))
-                                    ->afterStateHydrated(function (Set $set, Get $get) {
-                                        $set('color_ui', $get('value'));
+                                    ->afterStateUpdated(function (Set $set, Get $get, ?string $state) {
+                                        if (blank($get('value'))) {
+                                            $set('value', $state);
+                                        }
                                     }),
 
-                                TextInput::make('text_ui')
+                                TextInput::make('value')
                                     ->label('مقدار ذخیره شده')
                                     ->required()
-                                    ->visible(fn(Get $get) => in_array($get('../../type'), [AttributeType::Select, AttributeType::MultiSelect]))
                                     ->default(fn(Get $get) => $get('label'))
                                     ->maxLength(255)
-                                    ->dehydrated(false)
                                     ->live(onBlur: true)
-                                    ->hintIcon('heroicon-m-question-mark-circle')
-                                    ->hintIconTooltip('مقداری که در دیتابیس یا فیلترها استفاده می‌شود')
-                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('value', $state))
-                                    ->afterStateHydrated(function (Set $set, Get $get) {
-                                        $set('text_ui', $get('value'));
-                                    }),
-
-                                Hidden::make('value')
-                                    ->required(),
+                                    ->hintIcon(Heroicon::QuestionMarkCircle)
+                                    ->hintIconTooltip('مقداری که در دیتابیس یا فیلترها استفاده می‌شود'),
                             ])
                             ->orderColumn('position')
                             ->columns(2)
@@ -138,7 +152,6 @@ class AttributeForm
                     ->visible(fn(Get $get) => in_array($get('type'), [
                         AttributeType::Select,
                         AttributeType::MultiSelect,
-                        AttributeType::Color ,
                     ])),
             ]);
     }

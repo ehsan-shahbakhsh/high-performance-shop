@@ -1,18 +1,21 @@
 <?php
 
-namespace App\Filament\Resources\AttributeSets\Tables;
+namespace App\Filament\Resources\AttributeGroups\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 
-class AttributeSetsTable
+class AttributeGroupsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('position')
+            ->reorderable('position')
             ->columns([
                 TextColumn::make('id')
                     ->sortable()
@@ -20,8 +23,23 @@ class AttributeSetsTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('name')
-                    ->label('نام')
                     ->searchable()
+                    ->label('نام')
+                    ->toggleable(),
+
+                TextColumn::make('attributes_count')
+                    ->counts('attributes')
+                    ->label('تعداد ویژگی‌ها')
+                    ->badge()
+                    ->sortable()
+                    ->toggleable(),
+
+                TextInputColumn::make('position')
+                    ->label('ترتیب')
+                    ->inputMode('number')
+                    ->step(1)
+                    ->sortable()
+                    ->extraAttributes(['style' => 'max-width:80px'])
                     ->toggleable(),
 
                 TextColumn::make('created_at')
@@ -33,7 +51,7 @@ class AttributeSetsTable
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->label('تاریخ بروزرسانی')
+                    ->label('تاریخ آخرین بروزرسانی')
                     ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

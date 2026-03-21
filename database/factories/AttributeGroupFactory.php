@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\AttributeGroup;
-use App\Models\AttributeSet;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,9 +18,8 @@ class AttributeGroupFactory extends Factory
     public function definition(): array
     {
         return [
-            'attribute_set_id' => AttributeSet::factory(),
             'name' => ucfirst(fake()->unique()->word()),
-            'position' => fake()->numberBetween(0, 100),
+            'position' => fake()->randomNumber(0, 100),
         ];
     }
 }

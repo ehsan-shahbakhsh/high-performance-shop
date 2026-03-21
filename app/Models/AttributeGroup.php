@@ -5,25 +5,17 @@ namespace App\Models;
 use Database\Factories\AttributeGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AttributeGroup extends Model
 {
     /** @use HasFactory<AttributeGroupFactory> */
     use HasFactory;
 
-    protected $fillable = ['attribute_set_id', 'name', 'position'];
+    protected $fillable = ['name', 'position'];
 
-    public function attributeSet(): BelongsTo
+    public function attributes(): HasMany
     {
-        return $this->belongsTo(AttributeSet::class);
-    }
-
-    public function attributes(): BelongsToMany
-    {
-        return $this->belongsToMany(Attribute::class)
-            ->withPivot('position')
-            ->orderByPivot('position');
+        return $this->hasMany(Attribute::class);
     }
 }
