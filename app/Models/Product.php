@@ -2,94 +2,129 @@
 
 namespace App\Models;
 
-use App\Enums\ProductOutOfStockAction;
-use App\Enums\ProductRelationType;
-use App\Enums\ProductType;
+use Illuminate\Database\LazyLoadingViolationException;
+use App\Enums\{ProductOutOfStockAction, ProductStatus, ProductRelationType, ProductType};
 use Cviebrock\EloquentSluggable\Sluggable;
 use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\{HasOne, HasMany, BelongsToMany, BelongsTo};
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Spatie\Image\Enums\Fit;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\{HasMedia, InteractsWithMedia, MediaCollections\Models\Media};
+use Illuminate\Database\Eloquent\Casts\Attribute as CastAttribute;
 
 class Product extends Model implements HasMedia
 {
     use InteractsWithMedia;
+
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
     use SoftDeletes;
     use Sluggable;
 
     protected $fillable = [
-        'attribute_set_id',
         'brand_id',
         'type',
-        'sku',
+        'status',
         'name',
         'slug',
-        'price',
-        'sale_price',
         'is_active',
+        'is_virtual',
+        'is_downloadable',
         'manage_stock',
         'out_of_stock_action',
         'custom_stock_text',
-        'attributes',
         'short_description',
         'description',
         'seo_title',
         'seo_description',
+        'published_at',
+        'min_price',
+        'max_price',
+        'min_sale_price',
+        'max_sale_price',
     ];
 
     protected $casts = [
         'type' => ProductType::class,
+        'status' => ProductStatus::class,
         'is_active' => 'boolean',
+        'is_virtual' => 'boolean',
+        'is_downloadable' => 'boolean',
         'manage_stock' => 'boolean',
-        'attributes' => 'json',
         'out_of_stock_action' => ProductOutOfStockAction::class,
+        'published_at' => 'datetime',
+        'min_price' => 'integer',
+        'max_price' => 'integer',
+        'min_sale_price' => 'integer',
+        'max_sale_price' => 'integer',
     ];
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('cover')
+        $this->addMediaCollection('product_gallery')
             ->useDisk('public')
-            ->singleFile()
-            ->acceptsMimeTypes(['image/jpeg','image/png','image/webp'])
-            ->registerMediaConversions(function () {
-                $this->addMediaConversion('thumb')
-                    ->fit(Fit::Crop, 400, 400)
-                    ->format('webp')
-                    ->quality(80);
-            });
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
 
-        $this->addMediaCollection('gallery')
+        $this->addMediaCollection('product_videos')
             ->useDisk('public')
-            ->acceptsMimeTypes(['image/jpeg','image/png','image/webp'])
-            ->registerMediaConversions(function () {
-                $this->addMediaConversion('thumb')
-                    ->fit(Fit::Crop, 300, 300)
-                    ->format('webp')
-                    ->quality(80)
-                    ->sharpen(10);
+            ->acceptsMimeTypes(['video/mp4', 'video/webm']);
 
-                $this->addMediaConversion('large')
-                    ->width(1200)
-                    ->format('webp')
-                    ->quality(85);
-            });
-
-        $this->addMediaCollection('videos')
+        $this->addMediaCollection('product_content')
             ->useDisk('public')
-            ->acceptsMimeTypes(['video/mp4','video/webm']);
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
-    public function attributeSet(): BelongsTo
+    public function registerMediaConversions(?Media $media = null): void
     {
-        return $this->belongsTo(AttributeSet::class);
+        if (!$media || !str_starts_with($media->mime_type, 'image/')) {
+            return;
+        }
+
+        // thumbnail (admin tables / selects)
+        $this->addMediaConversion('thumb')
+            ->fit(Fit::Crop, 300, 300)
+            ->format('webp')
+            ->quality(80)
+            ->queued()
+            ->performOnCollections('product_gallery');
+
+        // product cards
+        $this->addMediaConversion('card')
+            ->fit(Fit::Crop, 500, 500)
+            ->format('webp')
+            ->quality(85)
+            ->queued()
+            ->performOnCollections('product_gallery');
+
+        // gallery (product page)
+        $this->addMediaConversion('gallery')
+            ->width(800)
+            ->format('webp')
+            ->quality(85)
+            ->queued()
+            ->performOnCollections('product_gallery');
+
+        // zoom image
+        $this->addMediaConversion('zoom')
+            ->width(1600)
+            ->format('webp')
+            ->quality(90)
+            ->queued()
+            ->performOnCollections('product_gallery');
+    }
+
+    public function thumbnailUrl(): CastAttribute
+    {
+        return new CastAttribute(
+            get: function () {
+                if (!$this->relationLoaded('media')) {
+                    throw new LazyLoadingViolationException($this, 'media');
+                }
+
+                return $this->getFirstMediaUrl('product_gallery', 'thumb');
+            },
+        );
     }
 
     public function brand(): BelongsTo
@@ -102,6 +137,11 @@ class Product extends Model implements HasMedia
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function defaultVariant(): HasOne
+    {
+        return $this->hasOne(ProductVariant::class)->where('is_default', true);
+    }
+
     public function isVariable(): bool
     {
         return $this->type === ProductType::Variable;
@@ -110,11 +150,6 @@ class Product extends Model implements HasMedia
     public function files(): HasMany
     {
         return $this->hasMany(ProductFile::class)->orderBy('position');
-    }
-
-    public function isDownloadable(): bool
-    {
-        return $this->type === ProductType::Downloadable;
     }
 
     public function productRelations(): HasMany
@@ -146,12 +181,6 @@ class Product extends Model implements HasMedia
     {
         return $this->relatedProducts()
             ->wherePivot('type', ProductRelationType::Related);
-    }
-
-    public function bundleItems(): BelongsToMany
-    {
-        return $this->relatedProducts()
-            ->wherePivot('type', ProductRelationType::Bundle);
     }
 
     public function categories(): BelongsToMany

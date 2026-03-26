@@ -4,13 +4,11 @@ namespace App\Models;
 
 use Database\Factories\ProductVariantFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Spatie\MediaLibrary\{HasMedia, InteractsWithMedia, MediaCollections\Models\Media};
 use Illuminate\Database\Eloquent\Casts\Attribute as CastAttribute;
+use Spatie\Image\Enums\Fit;
 
 class ProductVariant extends Model implements HasMedia
 {
@@ -23,31 +21,74 @@ class ProductVariant extends Model implements HasMedia
         'product_id',
         'price',
         'sale_price',
+        'sale_start',
+        'sale_end',
         'stock_quantity',
         'sku',
-        'attributes',
-        'variant_hash',
+        'is_default',
         'is_active',
+        'position',
+        'weight',
+        'length',
+        'width',
+        'height',
     ];
 
     protected $casts = [
-        'attributes' => 'json',
         'stock_quantity' => 'integer',
         'is_active' => 'boolean',
-        'price' => 'decimal:4',
-        'sale_price' => 'decimal:4',
+        'is_default' => 'boolean',
+        'price' => 'integer',
+        'sale_price' => 'integer',
+        'position' => 'integer',
+        'sale_start' => 'datetime',
+        'sale_end' => 'datetime',
     ];
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('image')
-            ->singleFile()
+        $this->addMediaCollection('variant_gallery')
             ->useDisk('public')
-            ->registerMediaConversions(function ($media) {
-                $this->addMediaConversion('thumb')
-                    ->width(200)
-                    ->height(200);
-            });
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        if (!$media || !str_starts_with($media->mime_type, 'image/')) {
+            return;
+        }
+
+        // thumbnail (admin tables / selects)
+        $this->addMediaConversion('thumb')
+            ->fit(Fit::Crop, 300, 300)
+            ->format('webp')
+            ->quality(80)
+            ->queued()
+            ->performOnCollections('variant_gallery');
+
+        // product cards
+        $this->addMediaConversion('card')
+            ->fit(Fit::Crop, 500, 500)
+            ->format('webp')
+            ->quality(85)
+            ->queued()
+            ->performOnCollections('variant_gallery');
+
+        // gallery (product page)
+        $this->addMediaConversion('gallery')
+            ->width(800)
+            ->format('webp')
+            ->quality(85)
+            ->queued()
+            ->performOnCollections('variant_gallery');
+
+        // zoom image
+        $this->addMediaConversion('zoom')
+            ->width(1600)
+            ->format('webp')
+            ->quality(90)
+            ->queued()
+            ->performOnCollections('variant_gallery');
     }
 
     public function product(): BelongsTo
@@ -58,24 +99,8 @@ class ProductVariant extends Model implements HasMedia
     protected function finalPrice(): CastAttribute
     {
         return CastAttribute::make(
-            get: fn () => $this->price ?? $this->product->price
+            get: fn() => $this->sale_price ?? $this->price,
         );
-    }
-
-    protected static function booted(): void
-    {
-        static::saving(function (self $variant) {
-            if ($variant->isDirty('attributes') || empty($variant->variant_hash)) {
-                $variant->variant_hash = self::generateHash($variant->attributes);
-            }
-        });
-    }
-
-    public static function generateHash(array $attributes): string
-    {
-        ksort($attributes);
-        $json = json_encode($attributes);
-        return md5($json);
     }
 
     public function inventories(): HasMany
