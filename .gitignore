@@ -16,3 +16,8 @@
 /storage/logs/*
 .idea/
 .vscode/
+/public/css/filament
+/public/js/filament
+/public/js/ariaieboy
+/public/css/solution-forest
+/public/js/solution-forest
