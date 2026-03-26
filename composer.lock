@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d776be7b10eaaba3c3f4a6061f25daa5",
+    "content-hash": "8698fd5dc0fe8753c27ed29b955a7954",
     "packages": [
         {
             "name": "ariaieboy/filament-jalali",
