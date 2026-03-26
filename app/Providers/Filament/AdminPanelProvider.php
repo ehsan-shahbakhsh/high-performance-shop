@@ -45,6 +45,11 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
             ])
+            ->navigationGroups([
+                'کاتالوگ',
+                'مدیریت مناطق',
+                'مدیریت ارسال',
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
