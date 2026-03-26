@@ -4,14 +4,27 @@ namespace App\Filament\Components;
 
 use App\Models\Icon;
 use Cviebrock\EloquentSluggable\Services\SlugService;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Support\Icons\Heroicon;
+use Filament\Actions\Action;
+use Filament\Forms\Components\{Select, TextInput, Toggle};
+use Filament\Schemas\Components\Utilities\{Get, Set};
+use Filament\Support\{RawJs, Icons\Heroicon};
 
 final class ShopForm
 {
+    public static function price(string $name = 'price', string $label = 'قیمت', bool $isRequired = true): TextInput
+    {
+        return TextInput::make($name)
+            ->label($label)
+            ->numeric()
+            ->integer()
+            ->required($isRequired)
+            ->mask(RawJs::make('$money($input)'))
+            ->prefix('تومان')
+            ->maxValue(999999999999)
+            ->extraAttributes(['dir' => 'ltr'])
+            ->mutateStateForValidationUsing(fn($state) => str_replace(',', '', $state ?? ''));
+    }
+
     public static function status(string $name, string $label, ?string $hint = null): Toggle
     {
         $field = Toggle::make($name)
@@ -24,7 +37,7 @@ final class ShopForm
             ->offIcon(Heroicon::XMark);
 
         if ($hint !== null) {
-            $field->hintIcon('heroicon-m-question-mark-circle', $hint);
+            $field->hintIcon(Heroicon::QuestionMarkCircle, $hint);
         }
 
         return $field;
@@ -97,17 +110,36 @@ final class ShopForm
             });
     }
 
-    public static function slug(string $model, string $name = 'slug', string $label = 'نامک (Slug)'): TextInput
+    public static function slug(string $model, string $name = 'slug', string $label = 'نامک (Slug)', ?string $generateFrom = null): TextInput
     {
-        return TextInput::make($name)
+        $field = TextInput::make($name)
             ->label($label)
-            ->hintIcon('heroicon-m-question-mark-circle', 'نامک همان متنی است که در انتهای آدرس مرورگر نمایش داده می‌شود.')
+            ->hintIcon(Heroicon::QuestionMarkCircle, 'نامک همان متنی است که در انتهای آدرس مرورگر نمایش داده می‌شود.')
             ->required()
-            ->prefixIcon('heroicon-m-link')
+            ->prefixIcon(Heroicon::Link)
             ->maxLength(255)
             ->unique(ignoreRecord: true)
             ->live(onBlur: true)
-            ->afterStateUpdated(fn (Set $set, ?string $state) => $set($name, SlugService::createSlug($model, $name, $state ?? '')))
+            ->afterStateUpdated(fn(Set $set, ?string $state) => $set($name, SlugService::createSlug($model, $name, $state ?? '')))
             ->regex('/^[a-z0-9\-\_]+$/');
+
+        if ($generateFrom) {
+            $field->suffixAction(
+                Action::make('generateSlug')
+                    ->icon(Heroicon::ArrowPath)
+                    ->tooltip('ساخت مجدد اسلاگ')
+                    ->action(function (Get $get, Set $set) use ($generateFrom, $model, $name) {
+                        $set(
+                            $name,
+                            SlugService::createSlug($model,
+                                $name,
+                                $get($generateFrom) ?? '',
+                            )
+                        );
+                    })
+            );
+        }
+
+        return $field;
     }
 }
