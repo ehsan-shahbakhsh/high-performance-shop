@@ -3,10 +3,10 @@
 namespace App\Exceptions;
 
 use App\Http\Responses\ApiResponse;
-use Exception;
 use Illuminate\Http\Request;
-use Throwable;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Exception;
+use Throwable;
 
 class BusinessException extends Exception
 {
@@ -35,10 +35,12 @@ class BusinessException extends Exception
      * Laravel automatically calls this method when the exception is thrown.
      *
      * @param Request $request
-     * @return ApiResponse
+     * @return ?ApiResponse
      */
-    public function render(Request $request): ApiResponse
+    public function render(Request $request): ?ApiResponse
     {
+        if (!$request->is('api/*')) return null;
+
         return ApiResponse::error(
             $this->getMessage(),
             code: $this->httpCode,
