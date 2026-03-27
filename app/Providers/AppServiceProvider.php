@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Filament\Actions\Action;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use App\Models\{Warehouse, User};
 use App\Observers\{WarehouseObserver, UserObserver};
 use Illuminate\Cache\RateLimiting\Limit;
@@ -50,6 +52,32 @@ class AppServiceProvider extends ServiceProvider
 
         Date::serializeUsing(function ($date) {
             return $date->toIso8601String();
+        });
+
+        Action::macro('handleWith', function (
+            callable $callback,
+            bool     $useTransaction = true,
+        ) {
+            /** @var Action $this */
+
+            return $this->action(static function (Model $record, Action $action) use ($callback, $useTransaction) {
+                $executor = static fn() => $callback($record, $action);
+
+                $result = rescue(
+                    static fn() => $useTransaction
+                        ? DB::transaction($executor)
+                        : $executor(),
+                    false,
+                    false,
+                );
+
+                if (!$result) {
+                    $action->failure();
+                    return;
+                }
+
+                $action->success();
+            });
         });
     }
 }
