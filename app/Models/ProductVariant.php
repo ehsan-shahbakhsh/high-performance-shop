@@ -107,4 +107,9 @@ class ProductVariant extends Model implements HasMedia
     {
         return $this->hasMany(Inventory::class);
     }
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(ProductVariantFile::class);
+    }
 }

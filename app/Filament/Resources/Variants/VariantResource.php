@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Variants;
 
+use App\Filament\Resources\Variants\RelationManagers\FilesRelationManager;
 use App\Filament\Resources\Variants\Pages\{EditVariant, ViewVariant};
 use App\Filament\Resources\Variants\Schemas\{VariantForm, VariantInfolist};
 use App\Filament\Resources\Variants\Tables\VariantsTable;
@@ -43,7 +44,7 @@ class VariantResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            FilesRelationManager::class,
         ];
     }
 

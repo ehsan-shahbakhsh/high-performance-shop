@@ -3,7 +3,11 @@
 namespace App\Filament\Resources\Products;
 
 use App\Filament\Resources\Products\Pages\{CreateProduct, EditProduct, ListProducts, ViewProduct};
-use App\Filament\Resources\Products\RelationManagers\{RelatedProductsRelationManager, VariantsRelationManager};
+use App\Filament\Resources\Products\RelationManagers\{
+    FilesRelationManager,
+    RelatedProductsRelationManager,
+    VariantsRelationManager,
+};
 use App\Filament\Resources\Products\Schemas\{ProductForm, ProductInfolist};
 use App\Filament\Resources\Products\Tables\ProductsTable;
 use App\Filament\Resources\Variants\VariantResource;
@@ -68,6 +72,7 @@ class ProductResource extends Resource
     {
         return [
             VariantsRelationManager::class,
+            FilesRelationManager::class,
             RelatedProductsRelationManager::class,
         ];
     }
