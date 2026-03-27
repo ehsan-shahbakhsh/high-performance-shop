@@ -2,14 +2,9 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
-use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Icons\Heroicon;
+use Filament\Infolists\Components\{IconEntry, ImageEntry, SpatieMediaLibraryImageEntry, TextEntry};
+use Filament\Schemas\Components\{Grid, Group, Section, Tabs, Tabs\Tab};
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
 
@@ -20,104 +15,196 @@ class ProductInfolist
         return $schema
             ->components([
                 Grid::make(['default' => 1, 'lg' => 3])
-                ->schema([
-                    Group::make()
-                        ->schema([
-                            Section::make('اطلاعات محصول')
-                                ->schema([
-                                    Grid::make(2)
-                                        ->schema([
-                                            ImageEntry::make('thumbnail')
-                                                ->hiddenLabel()
-                                                ->height(150)
-                                                ->extraImgAttributes(['class' => 'rounded-lg shadow']),
+                    ->schema([
+                        Group::make()
+                            ->schema([
+                                Section::make('اطلاعات محصول')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                ImageEntry::make('thumbnail_url')
+                                                    ->hiddenLabel()
+                                                    ->height(150)
+                                                    ->width(150)
+                                                    ->extraImgAttributes(['class' => 'rounded-lg shadow object-cover']),
 
-                                            Group::make([
-                                                TextEntry::make('name')
-                                                    ->label('نام محصول')
-                                                    ->size(TextSize::Large)
-                                                    ->weight('bold'),
+                                                Group::make([
+                                                    TextEntry::make('name')
+                                                        ->label('نام محصول')
+                                                        ->size(TextSize::Large)
+                                                        ->weight('bold'),
 
-                                                TextEntry::make('sku')
-                                                    ->label('SKU')
-                                                    ->fontFamily('mono')
-                                                    ->copyable()
-                                                    ->badge()
-                                                    ->color('gray'),
+                                                    TextEntry::make('brand.name')
+                                                        ->label('برند')
+                                                        ->badge(),
+
+                                                    TextEntry::make('type')
+                                                        ->label('نوع محصول')
+                                                        ->badge(),
+                                                ]),
                                             ]),
-                                        ]),
-                                ]),
 
-                            Tabs::make('Details')
-                                ->tabs([
-                                    Tab::make('توضیحات')
-                                        ->icon('heroicon-m-document-text')
-                                        ->schema([
-                                            TextEntry::make('description')
-                                                ->markdown()
-                                                ->prose()
-                                                ->hiddenLabel(),
-                                        ]),
+                                        TextEntry::make('short_description')
+                                            ->label('توضیح کوتاه')
+                                            ->placeholder('-'),
+                                    ]),
 
-                                    Tab::make('مشخصات فنی')
-                                        ->icon('heroicon-m-wrench')
-                                        ->schema([
-                                            TextEntry::make('slug')
-                                                ->url(fn ($record) => url("/product/{$record->slug}"), true)
-                                                ->color('info'),
+                                Tabs::make('Details')
+                                    ->tabs([
+                                        Tab::make('توضیحات')
+                                            ->icon(Heroicon::DocumentText)
+                                            ->schema([
+                                                TextEntry::make('description')
+                                                    ->markdown()
+                                                    ->prose()
+                                                    ->hiddenLabel(),
+                                            ]),
 
-                                            TextEntry::make('attributeSet.name')
-                                                ->label('دسته ویژگی'),
-                                        ]),
-                                ]),
-                        ])
-                        ->columnSpan(['lg' => 2]),
+                                        Tab::make('مشخصات فنی')
+                                            ->icon(Heroicon::Wrench)
+                                            ->schema([
+                                                TextEntry::make('slug')
+                                                    ->label('نامک (Slug)')
+                                                    ->url(fn($record) => url("/products/{$record->slug}"), true)
+                                                    ->color('info'),
 
-                    Group::make()
-                        ->schema([
-                            Section::make('وضعیت')
-                                ->schema([
-                                    IconEntry::make('is_active')
-                                        ->label('وضعیت انتشار')
-                                        ->boolean(),
+                                                TextEntry::make('out_of_stock_action')
+                                                    ->label('عملیات هنگام اتمام موجودی')
+                                                    ->badge(),
 
-                                    IconEntry::make('manage_stock')
-                                        ->label('مدیریت انبار')
-                                        ->boolean(),
-                                ]),
+                                                TextEntry::make('custom_stock_text')
+                                                    ->label('متن سفارشی اتمام موجودی')
+                                                    ->placeholder('-'),
+                                            ]),
 
-                            Section::make('قیمت‌گذاری')
-                                ->schema([
-                                    TextEntry::make('price')
-                                        ->label('قیمت اصلی')
-                                        ->money('IRT'),
+                                        Tab::make('گالری رسانه')
+                                            ->icon(Heroicon::Photo)
+                                            ->schema([
+                                                Section::make('گالری تصاویر')
+                                                    ->schema([
+                                                        SpatieMediaLibraryImageEntry::make('gallery')
+                                                            ->collection('product_gallery')
+                                                            ->label('تصاویر محصول')
+                                                            ->columnSpanFull(),
+                                                    ]),
 
-                                    TextEntry::make('sale_price')
-                                        ->label('فروش ویژه')
-                                        ->money('IRT')
-                                        ->color('danger')
-                                        ->placeholder('-'),
-                                ]),
+                                                Section::make('ویدیوها')
+                                                    ->collapsed()
+                                                    ->schema([
+                                                        SpatieMediaLibraryImageEntry::make('videos')
+                                                            ->collection('product_videos')
+                                                            ->label('ویدیوهای محصول')
+                                                            ->columnSpanFull(),
+                                                    ]),
+                                            ]),
 
-                            Section::make('تاریخچه')
-                                ->collapsed()
-                                ->schema([
-                                    TextEntry::make('created_at')
-                                        ->label('تاریخ ایجاد')
-                                        ->dateTime()
-                                        ->formatStateUsing(fn($state) => verta($state)->format('j F Y - H:i'))
-                                        ->color('gray'),
+                                        Tab::make('قیمت‌ها')
+                                            ->icon(Heroicon::Banknotes)
+                                            ->schema([
+                                                TextEntry::make('min_price')
+                                                    ->label('حداقل قیمت')
+                                                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                                                    ->placeholder('-'),
 
-                                    TextEntry::make('updated_at')
-                                        ->label('آخرین بروزرسانی')
-                                        ->dateTime()
-                                        ->formatStateUsing(fn($state) => verta($state)->format('j F Y - H:i'))
-                                        ->color('gray'),
-                                ]),
-                        ])
-                        ->columnSpan(['lg' => 1]),
-                ])
-                ->columnSpanFull(),
+                                                TextEntry::make('max_price')
+                                                    ->label('حداکثر قیمت')
+                                                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                                                    ->placeholder('-'),
+
+                                                TextEntry::make('min_sale_price')
+                                                    ->label('حداقل قیمت تخفیف')
+                                                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                                                    ->placeholder('-'),
+
+                                                TextEntry::make('max_sale_price')
+                                                    ->label('حداکثر قیمت تخفیف')
+                                                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                                                    ->placeholder('-'),
+                                            ]),
+
+                                        Tab::make('SEO')
+                                            ->icon(Heroicon::GlobeAlt)
+                                            ->schema([
+                                                TextEntry::make('seo_title')
+                                                    ->label('عنوان سئو')
+                                                    ->placeholder('-'),
+
+                                                TextEntry::make('seo_description')
+                                                    ->label('توضیحات سئو')
+                                                    ->placeholder('-'),
+                                            ]),
+                                    ]),
+                            ])
+                            ->columnSpan(['lg' => 2]),
+
+                        Group::make()
+                            ->schema([
+                                Section::make('وضعیت')
+                                    ->schema([
+                                        IconEntry::make('is_active')
+                                            ->label('وضعیت انتشار')
+                                            ->boolean()
+                                            ->tooltip(fn ($state) => $state
+                                                ? 'این محصول در حال حاضر منتشر و برای کاربران قابل مشاهده است'
+                                                : 'این محصول هنوز منتشر نشده و برای کاربران قابل مشاهده نیست'
+                                            ),
+
+                                        IconEntry::make('manage_stock')
+                                            ->label('مدیریت انبار')
+                                            ->boolean()
+                                            ->tooltip(fn ($state) => $state
+                                                ? 'موجودی این محصول به صورت خودکار مدیریت می‌شود'
+                                                : 'موجودی این محصول مدیریت نمی‌شود و همیشه موجود فرض می‌شود'
+                                            ),
+
+                                        IconEntry::make('is_virtual')
+                                            ->label('محصول مجازی')
+                                            ->tooltip(fn ($state) => $state
+                                                ? 'این یک محصول غیر فیزیکی است (ارسال ندارد)'
+                                                : 'این محصول فیزیکی است و نیازمند ارسال است'
+                                            ),
+
+                                        IconEntry::make('is_downloadable')
+                                            ->label('قابل دانلود')
+                                            ->tooltip(fn ($state) => $state
+                                                ? 'این محصول شامل فایل دانلودی است'
+                                                : 'برای این محصول هیچ فایلی جهت دانلود وجود ندارد'
+                                            ),
+
+                                        TextEntry::make('status')
+                                            ->label('وضعیت سیستم')
+                                            ->badge(),
+                                    ]),
+
+                                Section::make('زمان انتشار')
+                                    ->schema([
+                                        TextEntry::make('published_at')
+                                            ->hiddenLabel()
+                                            ->dateTime()
+                                            ->formatStateUsing(fn($state) => verta($state)->format('j F Y - H:i'))
+                                            ->placeholder('-')
+                                            ->color('success'),
+                                    ]),
+
+                                Section::make('تاریخچه')
+                                    ->collapsed()
+                                    ->schema([
+                                        TextEntry::make('created_at')
+                                            ->label('تاریخ ایجاد')
+                                            ->dateTime()
+                                            ->formatStateUsing(fn($state) => verta($state)->format('j F Y - H:i'))
+                                            ->color('gray'),
+
+                                        TextEntry::make('updated_at')
+                                            ->label('آخرین بروزرسانی')
+                                            ->dateTime()
+                                            ->formatStateUsing(fn($state) => verta($state)->format('j F Y - H:i'))
+                                            ->color('gray'),
+                                    ]),
+                            ])
+                            ->columnSpan(['lg' => 1]),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 }

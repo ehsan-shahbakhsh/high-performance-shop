@@ -2,23 +2,19 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
-use App\Enums\ProductOutOfStockAction;
-use App\Enums\ProductType;
-use App\Models\Product;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ViewAction;
+use App\Enums\{ProductOutOfStockAction, ProductStatus, ProductType};
+use Filament\Actions\{
+    BulkActionGroup,
+    DeleteBulkAction,
+    EditAction,
+    ForceDeleteBulkAction,
+    RestoreBulkAction,
+    ViewAction,
+};
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Columns\{IconColumn, SpatieMediaLibraryImageColumn, TextColumn};
+use Filament\Tables\Filters\{SelectFilter, TernaryFilter, TrashedFilter};
 use Filament\Tables\Table;
-use Illuminate\Support\HtmlString;
 
 class ProductsTable
 {
@@ -32,9 +28,9 @@ class ProductsTable
                     ->label('شناسه')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                SpatieMediaLibraryImageColumn::make('thumbnail')
+                SpatieMediaLibraryImageColumn::make('thumbnail_url')
                     ->label('تصویر شاخص')
-                    ->collection('gallery')
+                    ->collection('product_gallery')
                     ->circular()
                     ->toggleable(),
 
@@ -45,69 +41,56 @@ class ProductsTable
                     ->label('نام')
                     ->toggleable(),
 
-                TextColumn::make('sku')
-                    ->label('SKU')
-                    ->searchable()
-                    ->copyable()
-                    ->sortable()
-                    ->toggleable(),
-
-                TextColumn::make('attributeSet.name')
-                    ->label('مجموعه ویژگی‌ها')
-                    ->badge()
-                    ->color('gray')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
                 TextColumn::make('type')
                     ->badge()
                     ->sortable()
                     ->label('نوع')
                     ->toggleable(),
 
-                TextColumn::make('price')
+                TextColumn::make('status')
+                    ->badge()
                     ->sortable()
+                    ->label('وضعیت')
+                    ->toggleable(),
+
+                TextColumn::make('min_price')
+                    ->label('شروع قیمت')
                     ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
-                    ->label('قیمت')
-                    ->toggleable()
-                    ->description(function (Product $record) {
-                        $lines = [];
-
-                        if ($record->sale_price) {
-                            $lines[] = '<span class="text-danger-600 font-bold">🔥 حراج: ' . number_format($record->sale_price) . ' تومان' . '</span>';
-                        }
-
-                        if ($record->out_of_stock_action === ProductOutOfStockAction::Text) {
-                            $lines[] = '<span class="text-primary-600">✉️ متن: ' . e($record->custom_stock_text) . '</span>';
-                        } elseif ($record->out_of_stock_action === ProductOutOfStockAction::Hidden) {
-                            $lines[] = '<span class="text-gray-500 text-xs">👁️‍🗨️ قیمت در سایت مخفی است</span>';
-                        }
-
-                        if (empty($lines)) {
-                            return null;
-                        }
-
-                        return new HtmlString(implode('<br>', $lines));
-                    }),
+                    ->sortable()
+                    ->toggleable(),
 
                 IconColumn::make('manage_stock')
                     ->boolean()
                     ->label('مدیریت موجودی')
                     ->toggleable(),
 
+                TextColumn::make('brand.name')
+                    ->label('برند')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('stock_sum')
                     ->label('موجودی کل')
                     ->state(function ($record) {
                         if ($record->type === ProductType::Simple && $record->manage_stock) {
-                            return $record->variants_sum_stock_quantity;
+                            return $record->variants_sum_stock_quantity ?? 0;
                         }
                         if ($record->type === ProductType::Variable) {
-                            return $record->variants_sum_stock_quantity;
+                            return $record->variants_sum_stock_quantity ?? 0;
                         }
                         return '∞';
                     })
                     ->badge()
-                    ->color(fn($state) => $state === 0 ? 'danger' : 'success')
+                    ->color(fn($state) => intval($state) === 0 ? 'danger' : 'success')
+                    ->toggleable(),
+
+                IconColumn::make('is_virtual')
+                    ->boolean()
+                    ->label('محصول مجازی')
+                    ->toggleable(),
+
+                IconColumn::make('is_downloadable')
+                    ->boolean()
+                    ->label('قابل دانلود')
                     ->toggleable(),
 
                 IconColumn::make('is_active')
@@ -140,6 +123,45 @@ class ProductsTable
                     ->label('فیلتر رفتار ناموجودی')
                     ->options(ProductOutOfStockAction::class)
                     ->multiple(),
+
+//                TernaryFilter::make('in_stock')
+//                    ->label('وضعیت موجودی')
+//                    ->placeholder('همه محصولات')
+//                    ->trueLabel('فقط موجودها')
+//                    ->falseLabel('ناموجودها')
+//                    ->queries(
+//                        true: fn (Builder $query) => $query->where('quantity', '>', 0),
+//                        false: fn (Builder $query) => $query->where('quantity', '<=', 0),
+//                    ),
+
+                SelectFilter::make('brand')
+                    ->label('برند')
+                    ->relationship('brand', 'name')
+                    ->searchable()
+                    ->multiple(),
+
+                SelectFilter::make('type')
+                    ->label('نوع محصول')
+                    ->options(ProductType::class)
+                    ->multiple(),
+
+                SelectFilter::make('status')
+                    ->label('وضعیت')
+                    ->options(ProductStatus::class)
+                    ->multiple(),
+
+//                SelectFilter::make('category')
+//                    ->label('دسته‌بندی')
+//                    ->relationship('category', 'name')
+//                    ->searchable()
+//                    ->multiple(),
+
+//                TernaryFilter::make('has_discount')
+//                    ->label('وضعیت تخفیف')
+//                    ->queries(
+//                        true: fn (Builder $query) => $query->whereHas('discounts', fn($q) => $q->active()),
+//                        false: fn (Builder $query) => $query->whereDoesntHave('discounts'),
+//                    ),
 
                 TrashedFilter::make(),
             ])

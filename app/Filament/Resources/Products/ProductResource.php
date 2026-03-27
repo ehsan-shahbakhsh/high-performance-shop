@@ -2,24 +2,19 @@
 
 namespace App\Filament\Resources\Products;
 
-use App\Filament\Resources\Products\Pages\CreateProduct;
-use App\Filament\Resources\Products\Pages\EditProduct;
-use App\Filament\Resources\Products\Pages\ListProducts;
-use App\Filament\Resources\Products\Pages\ViewProduct;
-use App\Filament\Resources\Products\RelationManagers\FilesRelationManager;
-use App\Filament\Resources\Products\RelationManagers\RelatedProductsRelationManager;
-use App\Filament\Resources\Products\RelationManagers\VariantsRelationManager;
-use App\Filament\Resources\Products\Schemas\ProductForm;
-use App\Filament\Resources\Products\Schemas\ProductInfolist;
+use App\Filament\Resources\Products\Pages\{CreateProduct, EditProduct, ListProducts, ViewProduct};
+use App\Filament\Resources\Products\RelationManagers\{RelatedProductsRelationManager, VariantsRelationManager};
+use App\Filament\Resources\Products\Schemas\{ProductForm, ProductInfolist};
 use App\Filament\Resources\Products\Tables\ProductsTable;
+use App\Filament\Resources\Variants\VariantResource;
 use App\Models\Product;
-use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\{Builder, SoftDeletingScope};
+use BackedEnum;
+use UnitEnum;
 
 class ProductResource extends Resource
 {
@@ -33,19 +28,25 @@ class ProductResource extends Resource
 
     protected static ?string $pluralModelLabel = 'محصولات';
 
-    /**
-     * @return string
-     */
-    public static function getNavigationLabel(): string
-    {
-        return 'محصولات';
-    }
+    protected static ?string $navigationLabel = 'محصولات';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static string|UnitEnum|null $navigationGroup = 'کاتالوگ';
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with(['media', 'attributeSet'])
+            ->with(['media', 'brand'])
             ->withSum('variants', 'stock_quantity');
+    }
+
+    public static function getNavigationItemActiveRoutePattern(): string|array
+    {
+        return [
+            static::getRouteBaseName() . '.*',
+            VariantResource::getRouteBaseName() . '.*',
+        ];
     }
 
     public static function form(Schema $schema): Schema
@@ -67,7 +68,6 @@ class ProductResource extends Resource
     {
         return [
             VariantsRelationManager::class,
-            FilesRelationManager::class,
             RelatedProductsRelationManager::class,
         ];
     }
