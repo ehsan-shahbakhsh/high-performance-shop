@@ -15,14 +15,22 @@ final class ShopForm
     {
         return TextInput::make($name)
             ->label($label)
-            ->numeric()
-            ->integer()
             ->required($isRequired)
             ->mask(RawJs::make('$money($input)'))
             ->prefix('تومان')
-            ->maxValue(999999999999)
             ->extraAttributes(['dir' => 'ltr'])
-            ->mutateStateForValidationUsing(fn($state) => str_replace(',', '', $state ?? ''));
+            ->mutateDehydratedStateUsing(function ($state) {
+                if (blank($state)) return null;
+
+                return str_replace(',', '', $state);
+            })
+            ->mutateStateForValidationUsing(function ($state) {
+                if (blank($state)) return null;
+
+                return str_replace(',', '', $state);
+            })
+            ->inputMode('numeric')
+            ->rule('integer');
     }
 
     public static function status(string $name, string $label, ?string $hint = null): Toggle
