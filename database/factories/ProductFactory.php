@@ -55,8 +55,8 @@ class ProductFactory extends Factory
                 ? fake()->dateTimeBetween('-1 month')
                 : null,
 
-            'min_price' => null,
-            'max_price' => null,
+            'min_price' => 0,
+            'max_price' => 0,
             'min_sale_price' => null,
             'max_sale_price' => null,
         ];
