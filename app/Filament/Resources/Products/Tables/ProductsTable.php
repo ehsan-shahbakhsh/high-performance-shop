@@ -2,19 +2,22 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Models\Product;
 use App\Enums\{ProductOutOfStockAction, ProductStatus, ProductType};
 use Filament\Actions\{
+    ActionGroup,
     BulkActionGroup,
-    DeleteBulkAction,
+    DeleteAction,
     EditAction,
-    ForceDeleteBulkAction,
-    RestoreBulkAction,
+    ForceDeleteAction,
+    RestoreAction,
     ViewAction,
 };
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\{IconColumn, SpatieMediaLibraryImageColumn, TextColumn};
-use Filament\Tables\Filters\{SelectFilter, TernaryFilter, TrashedFilter};
+use Filament\Tables\Filters\{SelectFilter, TrashedFilter};
 use Filament\Tables\Table;
+use Throwable;
 
 class ProductsTable
 {
@@ -168,12 +171,32 @@ class ProductsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+
+                ActionGroup::make([
+                    DeleteAction::make()
+                        ->handleWith(/**
+                         * @throws Throwable
+                         */ static function (Product $record): ?bool {
+                            $record->variants()->delete();
+                            return $record->deleteOrFail();
+                        }),
+
+                    ForceDeleteAction::make(),
+
+                    RestoreAction::make()
+                        ->handleWith(static function (Product $record): ?bool {
+                            if (!method_exists($record, 'restore')) {
+                                return false;
+                            }
+
+                            $record->variants()->restore();
+                            return $record->restoreOrFail();
+                        }),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
+                    //
                 ]),
             ]);
     }
