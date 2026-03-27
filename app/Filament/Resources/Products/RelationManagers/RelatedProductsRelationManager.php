@@ -3,19 +3,13 @@
 namespace App\Filament\Resources\Products\RelationManagers;
 
 use App\Enums\ProductRelationType;
+use App\Filament\Components\ShopTable;
 use App\Filament\Resources\Products\ProductResource;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use Filament\Actions\{BulkActionGroup, CreateAction, DeleteAction, DeleteBulkAction, EditAction};
+use Filament\Forms\Components\{Select, TextInput};
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
+use Filament\Tables\Columns\{ImageColumn, TextColumn};
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,8 +36,7 @@ class RelatedProductsRelationManager extends RelationManager
                     ->searchable()
                     ->preload()
                     ->required()
-                    ->columnSpanFull()
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} (SKU: {$record->sku})"),
+                    ->columnSpanFull(),
 
                 Select::make('type')
                     ->label('نوع پیشنهاد')
@@ -64,29 +57,20 @@ class RelatedProductsRelationManager extends RelationManager
             ->recordTitleAttribute('type')
             ->defaultSort('position')
             ->reorderable('position')
-            ->modifyQueryUsing(fn($query) => $query->with('relatedProduct'))
+            ->modifyQueryUsing(fn($query) => $query->with('relatedProduct.media'))
             ->columns([
-                TextColumn::make('id')
-                    ->sortable()
-                    ->label('شناسه')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ShopTable::id(),
 
-                ImageColumn::make('relatedProduct.thumbnail')
+                ImageColumn::make('relatedProduct.thumbnail_url')
                     ->label('تصویر')
                     ->circular()
                     ->toggleable(),
 
-                TextColumn::make('relatedProduct.title')
+                TextColumn::make('relatedProduct.name')
                     ->label('نام محصول')
                     ->searchable()
                     ->weight('bold')
                     ->url(fn($record) => ProductResource::getUrl('edit', ['record' => $record->related_product_id]))
-                    ->toggleable(),
-
-                TextColumn::make('relatedProduct.sku')
-                    ->label('SKU')
-                    ->color('gray')
-                    ->fontFamily('mono')
                     ->toggleable(),
 
                 TextColumn::make('type')
@@ -94,28 +78,15 @@ class RelatedProductsRelationManager extends RelationManager
                     ->badge()
                     ->toggleable(),
 
-                TextColumn::make('relatedProduct.price')
-                    ->label('قیمت')
+                TextColumn::make('relatedProduct.min_price')
+                    ->label('قیمت پایه')
                     ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
                     ->toggleable(),
 
-                TextInputColumn::make('position')
-                    ->label('ترتیب')
-                    ->sortable()
-                    ->toggleable(),
+                ShopTable::position(),
 
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('تاریخ ایجاد')
-                    ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('تاریخ آخرین بروزرسانی')
-                    ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ShopTable::createdAt(),
+                ShopTable::updatedAt(),
             ])
             ->filters([
                 SelectFilter::make('type')

@@ -11,7 +11,6 @@ enum ProductRelationType: string implements HasLabel, HasColor, HasIcon
     case Related = 'related';
     case Upsell = 'upsell';
     case CrossSell = 'cross_sell';
-    case Bundle = 'bundle';
 
     public function getLabel(): ?string
     {
@@ -19,7 +18,6 @@ enum ProductRelationType: string implements HasLabel, HasColor, HasIcon
             self::Related => 'محصولات مرتبط',
             self::Upsell => 'پیشنهاد ارتقا (Upsell)',
             self::CrossSell => 'کالای مکمل (Cross-sell)',
-            self::Bundle => 'اجزای پکیج',
         };
     }
 
@@ -29,7 +27,6 @@ enum ProductRelationType: string implements HasLabel, HasColor, HasIcon
             self::Related => 'info',
             self::Upsell => 'success',
             self::CrossSell => 'warning',
-            self::Bundle => 'primary',
         };
     }
 
@@ -39,7 +36,6 @@ enum ProductRelationType: string implements HasLabel, HasColor, HasIcon
             self::Related => 'heroicon-o-link',
             self::Upsell => 'heroicon-o-arrow-trending-up',
             self::CrossSell => 'heroicon-o-puzzle-piece',
-            self::Bundle => 'heroicon-o-rectangle-stack',
         };
     }
 }
