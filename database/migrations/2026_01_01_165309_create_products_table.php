@@ -48,9 +48,9 @@ return new class extends Migration {
                 ->comment('Denormalized. Real prices stored in product_variants.');
             $table->unsignedBigInteger('max_price')->default(0)
                 ->comment('Denormalized. Real prices stored in product_variants.');
-            $table->unsignedBigInteger('min_sale_price')->default(0)
+            $table->unsignedBigInteger('min_sale_price')->nullable()
                 ->comment('Denormalized. Real prices stored in product_variants.');
-            $table->unsignedBigInteger('max_sale_price')->default(0)
+            $table->unsignedBigInteger('max_sale_price')->nullable()
                 ->comment('Denormalized. Real prices stored in product_variants.');
 
             $table->timestamps();
