@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\RestoreOrFail;
 use Illuminate\Database\LazyLoadingViolationException;
 use App\Enums\{ProductOutOfStockAction, ProductStatus, ProductRelationType, ProductType};
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -16,11 +17,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute as CastAttribute;
 class Product extends Model implements HasMedia
 {
     use InteractsWithMedia;
-
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
     use SoftDeletes;
     use Sluggable;
+    use RestoreOrFail;
 
     protected $fillable = [
         'brand_id',
