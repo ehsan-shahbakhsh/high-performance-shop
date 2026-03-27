@@ -126,7 +126,10 @@ final class ShopForm
             ->required()
             ->prefixIcon(Heroicon::Link)
             ->maxLength(255)
-            ->unique(ignoreRecord: true)
+            ->unique(
+                ignoreRecord: true,
+                modifyRuleUsing: fn($rule) => $rule->whereNull('deleted_at'),
+            )
             ->live(onBlur: true)
             ->afterStateUpdated(fn(Set $set, ?string $state) => $set($name, SlugService::createSlug($model, $name, $state ?? '')))
             ->regex('/^[a-z0-9\-\_]+$/');
