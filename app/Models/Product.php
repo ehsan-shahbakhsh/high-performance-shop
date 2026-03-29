@@ -214,6 +214,46 @@ class Product extends Model implements HasMedia
         return $this->belongsToMany(Attribute::class, 'product_attributes');
     }
 
+    public function getAttributeValuesForSku(): array
+    {
+        $this->loadMissing([
+            'attributeValues.attribute',
+            'attributeValues.attributeOption',
+        ]);
+
+        $result = [];
+
+        foreach ($this->attributeValues as $value) {
+            // select
+            if ($value?->attribute_option_id) {
+                $result[] = [
+                    'code' => $value->attribute->code,
+                    'value' => $value->attributeOption->value,
+                    'type' => $value->attribute->type->value,
+                ];
+                continue;
+            }
+
+            if (filled($value->value_boolean)) {
+                $value->value_boolean = boolval($value->value_boolean);
+            } else if (filled($value->value_number)) {
+                $value->value_number = intval($value->value_number);
+            }
+
+            // primitive value
+            $result[] = [
+                'code' => $value->attribute->code,
+                'value' => $value->value_text ??
+                        $value->value_number ??
+                        $value->value_boolean ??
+                        $value->value_date,
+                'type' => $value->attribute->type->value,
+            ];
+        }
+
+        return $result;
+    }
+
     public function sluggable(): array
     {
         return [
