@@ -6,13 +6,14 @@ use App\Exceptions\BusinessException;
 use App\Filament\Components\ShopTable;
 use App\Models\ProductVariant;
 use App\Services\Catalog\SkuGenerator;
-use Filament\Actions\{BulkActionGroup,
+use Filament\Actions\{
+    BulkActionGroup,
     CreateAction,
     DeleteBulkAction,
     EditAction,
     ForceDeleteBulkAction,
     RestoreBulkAction,
-    ViewAction
+    ViewAction,
 };
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\{TextColumn, ToggleColumn};
@@ -45,7 +46,7 @@ class VariantsTable
                 TextColumn::make('stock_quantity')
                     ->label('موجودی')
                     ->sortable()
-                    ->color(fn($state) => match (true) {
+                    ->color(static fn($state) => match (true) {
                         intval($state) == 0 => 'danger',
                         intval($state) < 5 => 'warning',
                         default => 'success'
@@ -55,7 +56,7 @@ class VariantsTable
 
                 ToggleColumn::make('is_default')
                     ->label('پیشفرض')
-                    ->updateStateUsing(function (Model $record, $state) {
+                    ->updateStateUsing(static function (Model $record, $state) {
                         try {
                             $record->update(['is_default' => $state]);
                         } catch (BusinessException $e) {
@@ -84,7 +85,7 @@ class VariantsTable
 
                 Filter::make('out_of_stock')
                     ->label('ناموجودها')
-                    ->query(fn($query) => $query->where('stock_quantity', '<=', 0)),
+                    ->query(static fn($query) => $query->where('stock_quantity', '<=', 0)),
 
                 TrashedFilter::make(),
             ])
@@ -94,12 +95,15 @@ class VariantsTable
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->mutateDataUsing(function (array $data, $livewire) {
-                        $product = $livewire->getOwnerRecord();
+                    ->after(static function (ProductVariant $record, $livewire) {
+                        if (!$record->sku) {
+                            $product = $livewire->getOwnerRecord();
 
-                        $data['sku'] ??= resolve(SkuGenerator::class)->generate($product, attributes: []); // todo: set attributes
-
-                        return $data;
+                            $record->update([
+                                'sku' => resolve(SkuGenerator::class)
+                                    ->generate($product, attributes: $record->getAttributeValuesForSku()),
+                            ]);
+                        }
                     }),
             ])
             ->toolbarActions([

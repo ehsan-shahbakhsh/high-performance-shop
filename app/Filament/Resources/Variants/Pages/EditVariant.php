@@ -36,12 +36,6 @@ class EditVariant extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         try {
-            $data['sku'] ??= resolve(SkuGenerator::class)
-                ->generate($record->product, attributes: [], ignore: $record->id); // todo: set attributes
-
-
-            $this->form->fill($data);
-
             return parent::handleRecordUpdate($record, $data);
         } catch (BusinessException $e) {
             Notification::make()
@@ -50,6 +44,24 @@ class EditVariant extends EditRecord
                 ->send();
 
             $this->halt();
+        }
+    }
+
+    protected function afterSave(): void
+    {
+        $variant = $this->getRecord();
+
+        if (!$variant->sku) {
+            $newSku = resolve(SkuGenerator::class)
+                ->generate($variant->product, attributes: $variant->getAttributeValuesForSku());
+
+            $variant->update(['sku' => $newSku]);
+
+            $data = $this->form->getState();
+            $data['sku'] = $newSku;
+
+
+            $this->form->fill($data);
         }
     }
 
