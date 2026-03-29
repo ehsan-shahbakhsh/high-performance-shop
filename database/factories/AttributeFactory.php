@@ -34,7 +34,7 @@ class AttributeFactory extends Factory
             'is_required' => fake()->boolean(40),
             'is_variant' => fake()->boolean(40),
 
-            'position' => fake()->randomNumber(0, 100),
+            'position' => fake()->numberBetween(0, 100),
         ];
     }
 
