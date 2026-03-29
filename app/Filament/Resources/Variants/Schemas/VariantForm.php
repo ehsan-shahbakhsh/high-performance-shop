@@ -2,14 +2,22 @@
 
 namespace App\Filament\Resources\Variants\Schemas;
 
+use App\Enums\AttributeType;
 use App\Filament\Components\ShopForm;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
+use App\Models\{Attribute, AttributeOption};
+use Filament\Forms\Components\{
+    DatePicker,
+    DateTimePicker,
+    Hidden,
+    Repeater,
+    Select,
+    SpatieMediaLibraryFileUpload,
+    Textarea,
+    TextInput,
+    Toggle,
+};
+use Filament\Schemas\Components\{Grid, Section};
+use Filament\Schemas\Components\Utilities\{Get, Set};
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 
@@ -17,6 +25,14 @@ class VariantForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $livewire = $schema->getLivewire();
+
+        if (method_exists($livewire, 'getOwnerRecord')) {
+            $product = $livewire->getOwnerRecord();
+        } else {
+            $product = $schema->getRecord()?->product;
+        }
+
         return $schema
             ->components([
                 Section::make('جزئیات فنی و موجودی')
@@ -35,15 +51,7 @@ class VariantForm
 
                                 Toggle::make('is_default')
                                     ->label('تنوع پیش‌فرض محصول')
-                                    ->accepted(function ($livewire) use ($schema) {
-                                        if (method_exists($livewire, 'getOwnerRecord')) {
-                                            $product = $livewire->getOwnerRecord();
-                                        } else {
-                                            $product = $schema->getRecord()?->product;
-                                        }
-
-                                        return $product->variants()->count() === 0;
-                                    })
+                                    ->accepted($product->variants()->count() === 0)
                                     ->validationMessages([
                                         'accepted' => 'اولین تنوع محصول باید به عنوان پیش‌فرض ثبت شود.'
                                     ])
@@ -61,9 +69,90 @@ class VariantForm
                     ])
                     ->columns(),
 
+                Section::make('ویژگی‌ها')
+                    ->schema([
+                        Repeater::make('attributes')
+                            ->relationship('attributeValues')
+                            ->hiddenLabel()
+                            ->addActionLabel('افزودن ویژگی')
+                            ->schema([
+                                Hidden::make('attribute_type')
+                                    ->default(null),
+
+                                Hidden::make('product_id')
+                                    ->default($product->id),
+
+                                Select::make('attribute_id')
+                                    ->label('ویژگی')
+                                    ->options(static function () {
+                                        return Attribute::query()
+                                            ->where('is_variant', true)
+                                            ->whereNotIn('type', [AttributeType::MultiSelect, AttributeType::Textarea])
+                                            ->pluck('name', 'id');
+                                    })
+                                    ->reactive()
+                                    ->afterStateUpdated(static function ($state, Set $set) {
+                                        $type = Attribute::query()->find($state)?->type;
+
+                                        $set('attribute_type', $type);
+                                        $set('attribute_option_id', null);
+                                    })
+                                    ->afterStateHydrated(static function ($state, Set $set) {
+                                        $type = Attribute::query()->find($state)?->type;
+
+                                        $set('attribute_type', $type);
+                                    })
+                                    ->required()
+                                    ->distinct()
+                                    ->validationMessages([
+                                        'distinct' => 'امکان ثبت ویژگی تکراری وجود ندارد.',
+                                    ]),
+
+                                Select::make('attribute_option_id')
+                                    ->label('مقدار')
+                                    ->options(static function (Get $get) {
+                                        $attributeId = $get('attribute_id');
+                                        if (!$attributeId) return [];
+
+                                        return AttributeOption::query()
+                                            ->where('attribute_id', $attributeId)
+                                            ->pluck('label', 'id');
+                                    })
+                                    ->required()
+                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Select),
+
+                                Textarea::make('value_string')
+                                    ->label('مقدار')
+                                    ->rows(3)
+                                    ->required()
+                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Text),
+
+                                Toggle::make('value_boolean')
+                                    ->label('مقدار')
+                                    ->inline(false)
+                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Boolean),
+
+                                TextInput::make('value_number')
+                                    ->numeric()
+                                    ->label('مقدار')
+                                    ->required()
+                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Number),
+
+                                DatePicker::make('value_date')
+                                    ->jalali()
+                                    ->label('مقدار')
+                                    ->required()
+                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Date),
+                            ])
+                            ->columns(2)
+                            ->default([]),
+                    ])
+                    ->columnSpanFull(),
+
                 Section::make('تصاویر تنوع')
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('gallery')
+                            ->hiddenLabel()
                             ->collection('variant_gallery')
                             ->multiple()
                             ->reorderable()
@@ -89,7 +178,7 @@ class VariantForm
                             ->jalali()
                             ->hintIcon(Heroicon::QuestionMarkCircle, 'پس از این زمان، قیمت عادی محصول اعمال می‌شود'),
                     ])
-                    ->visible(fn(Get $get) => filled($get('sale_price'))),
+                    ->visible(static fn(Get $get) => filled($get('sale_price'))),
 
                 Section::make('ابعاد و وزن')
                     ->schema([
