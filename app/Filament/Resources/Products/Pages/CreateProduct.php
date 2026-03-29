@@ -27,11 +27,14 @@ class CreateProduct extends CreateRecord
                 'weight', 'length', 'width', 'height', 'is_default'
             ];
 
-            $product = parent::handleRecordCreation(Arr::except($data, $variantColumns));
+            $product = parent::handleRecordCreation(Arr::except($data, $variantColumns + ['attributes']));
+
+            if ($product instanceof Product) $this->createAttributes($product, $data['attributes']);
 
             if ($product->type === ProductType::Simple) {
                 if ($product instanceof Product && is_null($data['sku']))
-                    $data['sku'] = resolve(SkuGenerator::class)->generate($product, attributes: []); // todo: set attributes
+                    $data['sku'] = resolve(SkuGenerator::class)
+                        ->generate($product, attributes: $product->getAttributeValuesForSku());
 
                 $data['is_default'] = true;
                 $product->variants()->create(Arr::only($data, $variantColumns));
@@ -39,5 +42,45 @@ class CreateProduct extends CreateRecord
 
             return $product;
         });
+    }
+
+    private function createAttributes(Product $product, array $attributes): void
+    {
+        $attributesData = [];
+        $valuesData = [];
+        $multiData = [];
+
+        foreach ($attributes as $i => $attr) {
+            $attributesData[] = [
+                'position'      => $i + 1,
+                'attribute_id'  => $attr['attribute_id'],
+            ];
+
+            $attributeId = $attr['attribute_id'];
+            $optionIds = $attr['attribute_option_ids'] ?? null;
+
+            if (!empty($optionIds)) {
+                foreach ($optionIds as $optionId) {
+                    $multiData[] = [
+                        'attribute_id'        => $attributeId,
+                        'attribute_option_id' => $optionId,
+                    ];
+                }
+                continue;
+            }
+
+            $valuesData[] = [
+                'attribute_id'        => $attributeId,
+                'attribute_option_id' => $attr['attribute_option_id'] ?? null,
+                'value_text'          => $attr['value_text'] ?? null,
+                'value_number'        => $attr['value_number'] ?? null,
+                'value_boolean'       => $attr['value_boolean'] ?? null,
+                'value_date'          => $attr['value_date'] ?? null,
+            ];
+        }
+
+        $product->attributes()->createMany($attributesData);
+        $product->attributeValues()->createMany($valuesData);
+        $product->attributeMultiValues()->createMany($multiData);
     }
 }

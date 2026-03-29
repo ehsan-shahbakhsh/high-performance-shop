@@ -2,14 +2,13 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
-use Filament\Support\RawJs;
 use Illuminate\Validation\Rule;
 use App\Enums\{ProductType, ProductStatus, AttributeType, ProductOutOfStockAction};
 use App\Filament\Components\ShopForm;
-use App\Models\{Attribute, AttributeGroup, Brand, Product};
+use App\Models\{Attribute, AttributeOption, Brand, Product};
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Filament\Forms\Components\{DatePicker, DateTimePicker, Placeholder, RichEditor, Select};
-use Filament\Forms\Components\{SpatieMediaLibraryFileUpload, TextInput, Textarea, Toggle};
+use Filament\Forms\Components\{Hidden, Repeater, SpatieMediaLibraryFileUpload, TextInput, Textarea, Toggle};
 use Filament\Schemas\Components\{Grid, Group, Section, Tabs, Tabs\Tab};
 use Filament\Schemas\Components\Utilities\{Set, Get};
 use Filament\Schemas\Schema;
@@ -17,90 +16,6 @@ use Filament\Support\Icons\Heroicon;
 
 class ProductForm
 {
-    protected static function generateFieldComponent(Attribute $attribute)
-    {
-        $attributeName = $attribute->code;
-
-        $field = match ($attribute->type) {
-            AttributeType::Select => Select::make($attributeName)
-                ->options($attribute->options->pluck('label', 'value'))
-                ->searchable(),
-
-            AttributeType::MultiSelect => Select::make($attributeName)
-                ->options($attribute->options->pluck('label', 'value'))
-                ->multiple()
-                ->searchable(),
-
-            AttributeType::Textarea => Textarea::make($attributeName)
-                ->rows(3),
-
-            AttributeType::Boolean => Toggle::make($attributeName)
-                ->inline(false),
-
-            AttributeType::Date => DatePicker::make($attributeName),
-
-            AttributeType::Number => TextInput::make($attributeName)->numeric(),
-
-            default => TextInput::make($attributeName),
-        };
-
-        return $field
-            ->label($attribute->name)
-            ->required($attribute->is_required);
-    }
-
-    protected static function getAttributeKeysForSet(?string $setId): array
-    {
-        if (!$setId) {
-            return [];
-        }
-
-        return AttributeGroup::query()
-            ->where('attribute_set_id', $setId)
-            ->with(['attributes' => fn($query) => $query->select('attributes.id', 'attributes.code')])
-            ->orderBy('position')
-            ->get()
-            ->pluck('attributes')
-            ->flatten()
-            ->pluck('code')
-            ->toArray();
-    }
-
-    protected static function getDynamicAttributesSchema(?string $setId): array
-    {
-        if (!$setId) {
-            return [];
-        }
-
-        $groups = AttributeGroup::query()
-            ->where('attribute_set_id', $setId)
-            ->with(['attributes.options'])
-            ->orderBy('position')
-            ->get();
-
-        $schema = [];
-
-        foreach ($groups as $group) {
-            $groupFields = [];
-
-            foreach ($group->attributes as $attribute) {
-                $groupFields[] = self::generateFieldComponent($attribute);
-            }
-
-            if (empty($groupFields)) {
-                continue;
-            }
-
-            $schema[] = Section::make($group->name)
-                ->schema($groupFields)
-                ->columns(2)
-                ->collapsible()
-                ->compact();
-        }
-
-        return $schema;
-    }
-
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -145,7 +60,7 @@ class ProductForm
                         Section::make('قیمت‌گذاری، موجودی و ابعاد')
                             ->schema([
                                 Grid::make(3)->schema([
-                                    ShopForm::price('price'),
+                                    ShopForm::price(),
 
                                     ShopForm::price('sale_price', 'قیمت فروش ویژه', false)
                                         ->beforeOrEqual('price')
@@ -215,28 +130,81 @@ class ProductForm
 
                         Section::make('مشخصات فنی')
                             ->schema([
-//                                Select::make('attribute_set_id')
-//                                    ->label('مجموعه ویژگی')
-//                                    ->relationship('attributeSet', 'name')
-//                                    ->searchable()
-//                                    ->preload()
-//                                    ->live()
-//                                    ->afterStateUpdated(function ($state, Set $set) {
-//                                        $keys = self::getAttributeKeysForSet($state);
-//
-//                                        $attrs = [];
-//                                        foreach ($keys as $key) {
-//                                            $attrs[$key] = null;
-//                                        }
-//
-//                                        $set('attributes', $attrs);
-//                                    }),
+                                Repeater::make('attributes')
+                                    ->label('ویژگی‌ها')
+                                    ->schema([
+                                        Hidden::make('attribute_type')
+                                            ->default(null),
 
-//                                Group::make()
-//                                    ->schema(fn(Get $get) => self::getDynamicAttributesSchema($get('attribute_set_id')))
-//                                    ->statePath('attributes')
-//                                    ->key(fn(Get $get) => 'attributes_group_' . $get('attribute_set_id'))
-//                                    ->columnSpanFull(),
+                                        Select::make('attribute_id')
+                                            ->label('ویژگی')
+                                            ->options(function () {
+                                                return Attribute::query()
+                                                    ->where('is_variant', false)
+                                                    ->pluck('name', 'id');
+                                            })
+                                            ->reactive()
+                                            ->afterStateUpdated(function ($state, Set $set) {
+                                                $type = Attribute::query()->find($state)?->type;
+
+                                                $set('attribute_type', $type);
+                                                $set('attribute_option_id', null);
+                                                $set('attribute_option_ids', []);
+                                            })
+                                            ->required(),
+
+                                        Select::make('attribute_option_id')
+                                            ->label('مقدار')
+                                            ->options(function (Get $get) {
+                                                $attributeId = $get('attribute_id');
+                                                if (!$attributeId) return [];
+
+                                                return AttributeOption::query()
+                                                    ->where('attribute_id', $attributeId)
+                                                    ->pluck('label', 'id');
+                                            })
+                                            ->required()
+                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::Select),
+
+                                        Select::make('attribute_option_ids')
+                                            ->label('مقادیر')
+                                            ->multiple()
+                                            ->options(function (Get $get) {
+                                                $attributeId = $get('attribute_id');
+                                                if (!$attributeId) return [];
+
+                                                return AttributeOption::query()
+                                                    ->where('attribute_id', $attributeId)
+                                                    ->pluck('label', 'id');
+                                            })
+                                            ->required()
+                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::MultiSelect),
+
+                                        Textarea::make('value_text')
+                                            ->label('مقدار')
+                                            ->rows(3)
+                                            ->required()
+                                            ->visible(fn(Get $get) => in_array($get('attribute_type'), [AttributeType::Text, AttributeType::Textarea])),
+
+                                        Toggle::make('value_boolean')
+                                            ->label('مقدار')
+                                            ->inline(false)
+                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::Boolean),
+
+                                        TextInput::make('value_number')
+                                            ->numeric()
+                                            ->label('مقدار')
+                                            ->required()
+                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::Number),
+
+                                        DatePicker::make('value_date')
+                                            ->jalali()
+                                            ->label('مقدار')
+                                            ->required()
+                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::Date),
+                                    ])
+                                    ->columns(2)
+                                    ->default([]),
                             ]),
 
                         Section::make('تصاویر و مدیا')
