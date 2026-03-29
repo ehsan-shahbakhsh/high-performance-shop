@@ -194,6 +194,26 @@ class Product extends Model implements HasMedia
         return $this->belongsToMany(Tag::class);
     }
 
+    public function attributes(): HasMany
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+
+    public function attributeValues(): HasMany
+    {
+        return $this->hasMany(ProductAttributeValue::class);
+    }
+
+    public function attributeMultiValues(): HasMany
+    {
+        return $this->hasMany(ProductAttributeMultiValue::class);
+    }
+
+    public function definedAttributes(): BelongsToMany
+    {
+        return $this->belongsToMany(Attribute::class, 'product_attributes');
+    }
+
     public function sluggable(): array
     {
         return [
