@@ -44,9 +44,7 @@ class AttributeForm
                                             ->default(0),
                                     ]),
                             ])
-                            ->createOptionAction(function (Action $action) {
-                                return $action->label('ایجاد گروه جدید');
-                            }),
+                            ->createOptionAction(static fn(Action $action) => $action->label('ایجاد گروه جدید')),
 
                         TextInput::make('name')
                             ->label('نام نمایشی')
@@ -54,7 +52,7 @@ class AttributeForm
                             ->required()
                             ->maxLength(200)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (Get $get, Set $set, ?string $state, ?string $old) {
+                            ->afterStateUpdated(static function (Get $get, Set $set, ?string $state, ?string $old) {
                                 if (!filled($get('code')) || $get('code') === Str::slug($old)) {
                                     $set('code', Str::slug($state));
                                 }
@@ -75,7 +73,16 @@ class AttributeForm
                             ->required()
                             ->native(false)
                             ->live()
-                            ->afterStateUpdated(fn(Set $set) => $set('options', [])),
+                            ->afterStateUpdated(static fn(Set $set) => $set('options', []))
+                            ->rule(static function (Get $get) {
+                                return static function ($attr, $value, $fail) use ($get) {
+                                    if ($get('is_variant')) {
+                                        if (in_array($value, [AttributeType::MultiSelect->value, AttributeType::Textarea->value])) {
+                                            $fail('در حالت استفاده از این ویژگی برای تنوع محصول، انتخاب نوع‌های «چند انتخابی» و «متن طولانی» امکان‌پذیر نیست.');
+                                        }
+                                    }
+                                };
+                            }),
 
                     ])->columns(2),
 
@@ -101,14 +108,13 @@ class AttributeForm
                                     ->offIcon(Heroicon::OutlinedXMark),
 
                                 Toggle::make('is_variant')
-                                    ->label('ایجاد نوع (Variant)')
+                                    ->label('استفاده برای تنوع محصول')
                                     ->hintIcon(Heroicon::QuestionMarkCircle)
                                     ->hintIconTooltip('اگر فعال باشد، محصول با گزینه‌های این ویژگی نوع‌های مختلف خواهد داشت (مثلاً رنگ یا حافظه)')
                                     ->default(false)
                                     ->onIcon(Heroicon::Squares2x2)
                                     ->offIcon(Heroicon::OutlinedXMark)
-                                    ->onColor('info')
-
+                                    ->onColor('info'),
                             ]),
                     ]),
 
@@ -127,7 +133,7 @@ class AttributeForm
                                     ->required()
                                     ->live(onBlur: true)
                                     ->maxLength(255)
-                                    ->afterStateUpdated(function (Set $set, Get $get, ?string $state) {
+                                    ->afterStateUpdated(static function (Set $set, Get $get, ?string $state) {
                                         if (blank($get('value'))) {
                                             $set('value', $state);
                                         }
@@ -136,7 +142,7 @@ class AttributeForm
                                 TextInput::make('value')
                                     ->label('مقدار ذخیره شده')
                                     ->required()
-                                    ->default(fn(Get $get) => $get('label'))
+                                    ->default(static fn(Get $get) => $get('label'))
                                     ->maxLength(255)
                                     ->live(onBlur: true)
                                     ->hintIcon(Heroicon::QuestionMarkCircle)
@@ -149,7 +155,7 @@ class AttributeForm
                             ->reorderableWithButtons()
                             ->cloneable(),
                     ])
-                    ->visible(fn(Get $get) => in_array($get('type'), [
+                    ->visible(static fn(Get $get) => in_array($get('type'), [
                         AttributeType::Select,
                         AttributeType::MultiSelect,
                     ])),
