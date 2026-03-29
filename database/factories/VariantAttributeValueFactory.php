@@ -20,7 +20,6 @@ class VariantAttributeValueFactory extends Factory
     {
         $attribute = Attribute::factory()->create(['type' => fake()->randomElement([
             AttributeType::Text,
-            AttributeType::Textarea,
             AttributeType::Number,
             AttributeType::Boolean,
             AttributeType::Date,
@@ -35,7 +34,6 @@ class VariantAttributeValueFactory extends Factory
 
         switch ($attribute->type) {
             case AttributeType::Text:
-            case AttributeType::Textarea:
                 $valueText = fake()->word();
                 break;
 
@@ -66,7 +64,7 @@ class VariantAttributeValueFactory extends Factory
             'attribute_id' => $attribute->id,
 
             'attribute_option_id' => $attributeOptionId,
-            'value_text' => $valueText,
+            'value_string' => $valueText,
             'value_number' => $valueNumber,
             'value_boolean' => $valueBoolean,
             'value_date' => $valueDate,

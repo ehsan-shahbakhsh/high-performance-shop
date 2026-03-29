@@ -17,7 +17,7 @@ class VariantAttributeValue extends Model
         'product_variant_id',
         'attribute_id',
         'attribute_option_id',
-        'value_text',
+        'value_string',
         'value_number',
         'value_boolean',
         'value_date',
