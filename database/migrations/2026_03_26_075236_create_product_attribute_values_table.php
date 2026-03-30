@@ -19,6 +19,7 @@ return new class extends Migration
 
             $table->foreignId('attribute_option_id')->nullable()->constrained();
 
+            $table->string('value_string')->nullable();
             $table->text('value_text')->nullable();
             $table->decimal('value_number', 15, 4)->nullable();
             $table->boolean('value_boolean')->nullable();

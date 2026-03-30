@@ -52,8 +52,8 @@ class CreateProduct extends CreateRecord
 
         foreach ($attributes as $i => $attr) {
             $attributesData[] = [
-                'position'      => $i + 1,
-                'attribute_id'  => $attr['attribute_id'],
+                'position' => $i + 1,
+                'attribute_id' => $attr['attribute_id'],
             ];
 
             $attributeId = $attr['attribute_id'];
@@ -62,7 +62,7 @@ class CreateProduct extends CreateRecord
             if (!empty($optionIds)) {
                 foreach ($optionIds as $optionId) {
                     $multiData[] = [
-                        'attribute_id'        => $attributeId,
+                        'attribute_id' => $attributeId,
                         'attribute_option_id' => $optionId,
                     ];
                 }
@@ -70,12 +70,13 @@ class CreateProduct extends CreateRecord
             }
 
             $valuesData[] = [
-                'attribute_id'        => $attributeId,
+                'attribute_id' => $attributeId,
                 'attribute_option_id' => $attr['attribute_option_id'] ?? null,
-                'value_text'          => $attr['value_text'] ?? null,
-                'value_number'        => $attr['value_number'] ?? null,
-                'value_boolean'       => $attr['value_boolean'] ?? null,
-                'value_date'          => $attr['value_date'] ?? null,
+                'value_string' => $attr['value_string'] ?? null,
+                'value_text' => $attr['value_text'] ?? null,
+                'value_number' => $attr['value_number'] ?? null,
+                'value_boolean' => $attr['value_boolean'] ?? null,
+                'value_date' => $attr['value_date'] ?? null,
             ];
         }
 

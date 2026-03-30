@@ -16,6 +16,7 @@ class ProductAttributeValue extends Model
         'product_id',
         'attribute_id',
         'attribute_option_id',
+        'value_string',
         'value_text',
         'value_number',
         'value_boolean',

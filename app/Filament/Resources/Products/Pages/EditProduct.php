@@ -136,6 +136,7 @@ class EditProduct extends EditRecord
                 'attribute_id' => $attributeId,
                 'attribute_option_id' => $attr['attribute_option_id'] ?? null,
                 'value_text' => $attr['value_text'] ?? null,
+                'value_string' => $attr['value_string'] ?? null,
                 'value_number' => $attr['value_number'] ?? null,
                 'value_boolean' => $attr['value_boolean'] ?? null,
                 'value_date' => $attr['value_date'] ?? null,

@@ -28,6 +28,7 @@ class ProductAttributeValueFactory extends Factory
         ])]);
 
         $attributeOptionId = null;
+        $valueString = null;
         $valueText = null;
         $valueNumber = null;
         $valueBoolean = null;
@@ -35,8 +36,11 @@ class ProductAttributeValueFactory extends Factory
 
         switch ($attribute->type) {
             case AttributeType::Text:
+                $valueString = fake()->word();
+                break;
+
             case AttributeType::Textarea:
-                $valueText = fake()->word();
+                $valueText = fake()->words();
                 break;
 
             case AttributeType::Number:
@@ -63,6 +67,7 @@ class ProductAttributeValueFactory extends Factory
             'attribute_id' => $attribute->id,
 
             'attribute_option_id' => $attributeOptionId,
+            'value_string' => $valueString,
             'value_text' => $valueText,
             'value_number' => $valueNumber,
             'value_boolean' => $valueBoolean,

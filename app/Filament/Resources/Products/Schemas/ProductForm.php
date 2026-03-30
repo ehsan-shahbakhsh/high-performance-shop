@@ -138,13 +138,13 @@ class ProductForm
 
                                         Select::make('attribute_id')
                                             ->label('ویژگی')
-                                            ->options(function () {
+                                            ->options(static function () {
                                                 return Attribute::query()
                                                     ->where('is_variant', false)
                                                     ->pluck('name', 'id');
                                             })
                                             ->reactive()
-                                            ->afterStateUpdated(function ($state, Set $set) {
+                                            ->afterStateUpdated(static function ($state, Set $set) {
                                                 $type = Attribute::query()->find($state)?->type;
 
                                                 $set('attribute_type', $type);
@@ -164,12 +164,12 @@ class ProductForm
                                                     ->pluck('label', 'id');
                                             })
                                             ->required()
-                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::Select),
+                                            ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Select),
 
                                         Select::make('attribute_option_ids')
                                             ->label('مقادیر')
                                             ->multiple()
-                                            ->options(function (Get $get) {
+                                            ->options(static function (Get $get) {
                                                 $attributeId = $get('attribute_id');
                                                 if (!$attributeId) return [];
 
@@ -178,30 +178,35 @@ class ProductForm
                                                     ->pluck('label', 'id');
                                             })
                                             ->required()
-                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::MultiSelect),
+                                            ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::MultiSelect),
+
+                                        TextInput::make('value_string')
+                                            ->label('مقدار')
+                                            ->required()
+                                            ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Text),
 
                                         Textarea::make('value_text')
                                             ->label('مقدار')
                                             ->rows(3)
                                             ->required()
-                                            ->visible(fn(Get $get) => in_array($get('attribute_type'), [AttributeType::Text, AttributeType::Textarea])),
+                                            ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Textarea),
 
                                         Toggle::make('value_boolean')
                                             ->label('مقدار')
                                             ->inline(false)
-                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::Boolean),
+                                            ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Boolean),
 
                                         TextInput::make('value_number')
                                             ->numeric()
                                             ->label('مقدار')
                                             ->required()
-                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::Number),
+                                            ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Number),
 
                                         DatePicker::make('value_date')
                                             ->jalali()
                                             ->label('مقدار')
                                             ->required()
-                                            ->visible(fn(Get $get) => $get('attribute_type') === AttributeType::Date),
+                                            ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Date),
                                     ])
                                     ->columns(2)
                                     ->default([]),
