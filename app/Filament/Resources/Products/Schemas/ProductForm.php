@@ -128,10 +128,10 @@ class ProductForm
                             ])
                             ->visible(fn(Get $get) => $get('type') === ProductType::Simple),
 
-                        Section::make('مشخصات فنی')
+                        Section::make('ویژگی‌ها')
                             ->schema([
                                 Repeater::make('attributes')
-                                    ->label('ویژگی‌ها')
+                                    ->hiddenLabel()
                                     ->schema([
                                         Hidden::make('attribute_type')
                                             ->default(null),
@@ -209,7 +209,8 @@ class ProductForm
                                             ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Date),
                                     ])
                                     ->columns(2)
-                                    ->default([]),
+                                    ->default([])
+                                    ->addActionLabel('افزودن ویژگی'),
                             ]),
 
                         Section::make('تصاویر و مدیا')
