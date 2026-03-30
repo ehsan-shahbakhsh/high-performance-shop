@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Traits\RestoreOrFail;
 use Illuminate\Database\LazyLoadingViolationException;
-use App\Enums\{ProductOutOfStockAction, ProductStatus, ProductRelationType, ProductType};
+use App\Enums\{AttributeType, ProductOutOfStockAction, ProductStatus, ProductRelationType, ProductType};
 use Cviebrock\EloquentSluggable\Sluggable;
 use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -211,7 +211,8 @@ class Product extends Model implements HasMedia
 
     public function definedAttributes(): BelongsToMany
     {
-        return $this->belongsToMany(Attribute::class, 'product_attributes');
+        return $this->belongsToMany(Attribute::class, 'product_attributes')
+            ->orderByPivot('position');
     }
 
     public function getAttributeValuesForSku(): array
@@ -252,6 +253,56 @@ class Product extends Model implements HasMedia
         }
 
         return $result;
+    }
+
+    public function displayAttributes(): CastAttribute
+    {
+        return new CastAttribute(
+            get: function (): array {
+                $this->loadMissing([
+                    'definedAttributes',
+                    'attributeValues.attributeOption',
+                    'attributeMultiValues.attributeOption',
+                ]);
+
+                $result = [];
+
+                foreach ($this->definedAttributes as $attribute) {
+                    if ($attribute->type === AttributeType::MultiSelect) {
+                        $values = $this->attributeMultiValues->where('attribute_id', $attribute->id);
+                        $result[] = [
+                            'attribute_name' => $attribute->name,
+                            'display_value' => $values->map(static fn($value) => $value->attributeOption->label)->join('، '),
+                        ];
+                        continue;
+                    }
+
+                    $value = $this->attributeValues->firstWhere('attribute_id', $attribute->id);
+
+                    if ($attribute->type === AttributeType::Select) {
+                        $result[] = [
+                            'attribute_name' => $attribute->name,
+                            'display_value' => $value->attributeOption->label,
+                        ];
+                    } else if ($attribute->type === AttributeType::Date) {
+                        $result[] = [
+                            'attribute_name' => $attribute->name,
+                            'display_value' => verta($this->value_date)->format('Y/m/d'),
+                        ];
+                    } else {
+                        $result[] = [
+                            'attribute_name' => $attribute->name,
+                            'display_value' => $value->value_string
+                                ?? $value->value_text
+                                ?? $value->value_number
+                                ?? ($value->value_boolean ? 'بله' : 'خیر'),
+                        ];
+                    }
+                }
+
+                return $result;
+            },
+        );
     }
 
     public function sluggable(): array

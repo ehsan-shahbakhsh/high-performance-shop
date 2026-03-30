@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Models\Product;
 use Filament\Support\Icons\Heroicon;
-use Filament\Infolists\Components\{IconEntry, ImageEntry, SpatieMediaLibraryImageEntry, TextEntry};
+use Filament\Infolists\Components\{IconEntry, ImageEntry, RepeatableEntry, SpatieMediaLibraryImageEntry, TextEntry};
 use Filament\Schemas\Components\{Grid, Group, Section, Tabs, Tabs\Tab};
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
@@ -36,6 +37,7 @@ class ProductInfolist
 
                                                     TextEntry::make('brand.name')
                                                         ->label('برند')
+                                                        ->placeholder('-')
                                                         ->badge(),
 
                                                     TextEntry::make('type')
@@ -65,7 +67,7 @@ class ProductInfolist
                                             ->schema([
                                                 TextEntry::make('slug')
                                                     ->label('نامک (Slug)')
-                                                    ->url(fn($record) => url("/products/{$record->slug}"), true)
+                                                    ->url(static fn($record) => url("/products/{$record->slug}"), true)
                                                     ->color('info'),
 
                                                 TextEntry::make('out_of_stock_action')
@@ -75,6 +77,22 @@ class ProductInfolist
                                                 TextEntry::make('custom_stock_text')
                                                     ->label('متن سفارشی اتمام موجودی')
                                                     ->placeholder('-'),
+                                            ]),
+
+                                        Tab::make('ویژگی‌ها')
+                                            ->visible(static fn(Product $record) => $record->attributes()->exists())
+                                            ->icon(Heroicon::OutlinedAdjustmentsHorizontal)
+                                            ->schema([
+                                                RepeatableEntry::make('display_attributes')
+                                                    ->label('ویژگی‌های محصول')
+                                                    ->schema([
+                                                        TextEntry::make('attribute_name')
+                                                            ->label('ویژگی'),
+
+                                                        TextEntry::make('display_value')
+                                                            ->label('مقدار'),
+                                                    ])
+                                                    ->columns(2),
                                             ]),
 
                                         Tab::make('گالری رسانه')
@@ -103,22 +121,22 @@ class ProductInfolist
                                             ->schema([
                                                 TextEntry::make('min_price')
                                                     ->label('حداقل قیمت')
-                                                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                                                    ->formatStateUsing(static fn($state) => number_format($state) . ' تومان')
                                                     ->placeholder('-'),
 
                                                 TextEntry::make('max_price')
                                                     ->label('حداکثر قیمت')
-                                                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                                                    ->formatStateUsing(static fn($state) => number_format($state) . ' تومان')
                                                     ->placeholder('-'),
 
                                                 TextEntry::make('min_sale_price')
                                                     ->label('حداقل قیمت تخفیف')
-                                                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                                                    ->formatStateUsing(static fn($state) => number_format($state) . ' تومان')
                                                     ->placeholder('-'),
 
                                                 TextEntry::make('max_sale_price')
                                                     ->label('حداکثر قیمت تخفیف')
-                                                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                                                    ->formatStateUsing(static fn($state) => number_format($state) . ' تومان')
                                                     ->placeholder('-'),
                                             ]),
 
@@ -144,7 +162,7 @@ class ProductInfolist
                                         IconEntry::make('is_active')
                                             ->label('وضعیت انتشار')
                                             ->boolean()
-                                            ->tooltip(fn ($state) => $state
+                                            ->tooltip(static fn($state) => $state
                                                 ? 'این محصول در حال حاضر منتشر و برای کاربران قابل مشاهده است'
                                                 : 'این محصول هنوز منتشر نشده و برای کاربران قابل مشاهده نیست'
                                             ),
@@ -152,21 +170,21 @@ class ProductInfolist
                                         IconEntry::make('manage_stock')
                                             ->label('مدیریت انبار')
                                             ->boolean()
-                                            ->tooltip(fn ($state) => $state
+                                            ->tooltip(static fn($state) => $state
                                                 ? 'موجودی این محصول به صورت خودکار مدیریت می‌شود'
                                                 : 'موجودی این محصول مدیریت نمی‌شود و همیشه موجود فرض می‌شود'
                                             ),
 
                                         IconEntry::make('is_virtual')
                                             ->label('محصول مجازی')
-                                            ->tooltip(fn ($state) => $state
+                                            ->tooltip(static fn($state) => $state
                                                 ? 'این یک محصول غیر فیزیکی است (ارسال ندارد)'
                                                 : 'این محصول فیزیکی است و نیازمند ارسال است'
                                             ),
 
                                         IconEntry::make('is_downloadable')
                                             ->label('قابل دانلود')
-                                            ->tooltip(fn ($state) => $state
+                                            ->tooltip(static fn($state) => $state
                                                 ? 'این محصول شامل فایل دانلودی است'
                                                 : 'برای این محصول هیچ فایلی جهت دانلود وجود ندارد'
                                             ),
@@ -181,7 +199,7 @@ class ProductInfolist
                                         TextEntry::make('published_at')
                                             ->hiddenLabel()
                                             ->dateTime()
-                                            ->formatStateUsing(fn($state) => verta($state)->format('j F Y - H:i'))
+                                            ->formatStateUsing(static fn($state) => verta($state)->format('j F Y - H:i'))
                                             ->placeholder('-')
                                             ->color('success'),
                                     ]),
@@ -192,13 +210,13 @@ class ProductInfolist
                                         TextEntry::make('created_at')
                                             ->label('تاریخ ایجاد')
                                             ->dateTime()
-                                            ->formatStateUsing(fn($state) => verta($state)->format('j F Y - H:i'))
+                                            ->formatStateUsing(static fn($state) => verta($state)->format('j F Y - H:i'))
                                             ->color('gray'),
 
                                         TextEntry::make('updated_at')
                                             ->label('آخرین بروزرسانی')
                                             ->dateTime()
-                                            ->formatStateUsing(fn($state) => verta($state)->format('j F Y - H:i'))
+                                            ->formatStateUsing(static fn($state) => verta($state)->format('j F Y - H:i'))
                                             ->color('gray'),
                                     ]),
                             ])
