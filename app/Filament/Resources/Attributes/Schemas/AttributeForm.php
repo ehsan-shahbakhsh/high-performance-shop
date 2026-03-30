@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Utilities\{Get, Set};
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
+use function Pest\Laravel\instance;
 
 class AttributeForm
 {
@@ -73,7 +74,15 @@ class AttributeForm
                             ->required()
                             ->native(false)
                             ->live()
-                            ->afterStateUpdated(static fn(Set $set) => $set('options', []))
+                            ->afterStateUpdated(static function ($state, $old, Set $set) {
+                                $optionBasedTypes = [AttributeType::Select, AttributeType::MultiSelect];
+
+                                if (in_array($state, $optionBasedTypes, true) && in_array($old, $optionBasedTypes, true)) {
+                                    return;
+                                }
+
+                                $set('options', []);
+                            })
                             ->rule(static function (Get $get) {
                                 return static function ($attr, $value, $fail) use ($get) {
                                     if ($get('is_variant')) {
