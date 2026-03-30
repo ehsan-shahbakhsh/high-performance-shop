@@ -3,10 +3,12 @@
 namespace App\Filament\Resources\Variants\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
 use Filament\Support\Icons\Heroicon;
 
@@ -14,6 +16,11 @@ class VariantInfolist
 {
     public static function configure(Schema $schema): Schema
     {
+        $schema->getRecord()->loadMissing([
+            'attributeValues.attribute',
+            'attributeValues.attributeOption',
+        ]);
+
         return $schema
             ->components([
                 Section::make('تصاویر تنوع')
@@ -80,6 +87,28 @@ class VariantInfolist
                                 $state < 10 => Heroicon::ExclamationTriangle,
                                 default => Heroicon::CheckCircle,
                             }),
+                    ]),
+
+                Section::make('ویژگی‌های اختصاصی تنوع')
+                    ->icon(Heroicon::AdjustmentsHorizontal)
+                    ->collapsed()
+                    ->schema([
+                        RepeatableEntry::make('attributeValues')
+                            ->hiddenLabel()
+                            ->schema([
+                                TextEntry::make('attribute.name')
+                                    ->label('نام ویژگی')
+                                    ->weight(FontWeight::Bold)
+                                    ->color('gray'),
+
+                                TextEntry::make('display_value')
+                                    ->label('مقدار')
+                                    ->badge()
+                                    ->color('primary')
+                                    ->size(TextSize::Medium),
+                            ])
+                            ->grid(3)
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make('زمان‌بندی تخفیف')
