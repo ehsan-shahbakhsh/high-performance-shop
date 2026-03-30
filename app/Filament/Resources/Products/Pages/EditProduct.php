@@ -46,6 +46,7 @@ class EditProduct extends EditRecord
                 $attributeData = array_merge($attributeData, [
                     'attribute_option_id' => $value->attribute_option_id,
                     'value_text' => $value->value_text,
+                    'value_string' => $value->value_string,
                     'value_number' => $value->value_number,
                     'value_boolean' => $value->value_boolean,
                     'value_date' => $value->value_date,
