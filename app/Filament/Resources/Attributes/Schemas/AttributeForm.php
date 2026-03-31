@@ -83,15 +83,7 @@ class AttributeForm
 
                                 $set('options', []);
                             })
-                            ->rule(static function (Get $get) {
-                                return static function ($attr, $value, $fail) use ($get) {
-                                    if ($get('is_variant')) {
-                                        if (in_array($value, [AttributeType::MultiSelect->value, AttributeType::Textarea->value])) {
-                                            $fail('در حالت استفاده از این ویژگی برای تنوع محصول، انتخاب نوع‌های «چند انتخابی» و «متن طولانی» امکان‌پذیر نیست.');
-                                        }
-                                    }
-                                };
-                            }),
+                            ->visible(static fn(Get $get) => $get('is_variant') === false),
 
                     ])->columns(2),
 
@@ -123,7 +115,16 @@ class AttributeForm
                                     ->default(false)
                                     ->onIcon(Heroicon::Squares2x2)
                                     ->offIcon(Heroicon::OutlinedXMark)
-                                    ->onColor('info'),
+                                    ->onColor('info')
+                                    ->live()
+                                    ->afterStateUpdated(static function ($state, Set $set) {
+                                        if ($state) {
+                                            $set('type', AttributeType::Select);
+                                        } else {
+                                            $set('type', null);
+                                            $set('options', []);
+                                        }
+                                    }),
                             ]),
                     ]),
 
