@@ -87,7 +87,7 @@ class VariantForm
                                     ->options(static function () {
                                         return Attribute::query()
                                             ->where('is_variant', true)
-                                            ->whereNotIn('type', [AttributeType::MultiSelect, AttributeType::Textarea])
+                                            ->where('type', AttributeType::Select)
                                             ->pluck('name', 'id');
                                     })
                                     ->reactive()
