@@ -118,6 +118,11 @@ class ProductVariant extends Model implements HasMedia
         return $this->hasMany(VariantAttributeValue::class);
     }
 
+    public function bundleItems(): HasMany
+    {
+        return $this->hasMany(ProductBundleItem::class, 'parent_variant_id');
+    }
+
     public function getAttributeValuesForSku(): array
     {
         $this->loadMissing([
