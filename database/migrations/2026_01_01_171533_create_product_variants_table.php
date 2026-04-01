@@ -43,7 +43,7 @@ return new class extends Migration {
             $table->decimal('width', 10)->nullable()->unsigned()->comment("Variant width (cm)");
             $table->decimal('height', 10)->nullable()->unsigned()->comment("Variant height (cm)");
 
-            $table->string('signature');
+            $table->string('signature')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
