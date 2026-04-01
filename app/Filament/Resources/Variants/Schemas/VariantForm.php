@@ -6,13 +6,11 @@ use App\Enums\AttributeType;
 use App\Filament\Components\ShopForm;
 use App\Models\{Attribute, AttributeOption};
 use Filament\Forms\Components\{
-    DatePicker,
     DateTimePicker,
     Hidden,
     Repeater,
     Select,
     SpatieMediaLibraryFileUpload,
-    Textarea,
     TextInput,
     Toggle,
 };
@@ -73,12 +71,11 @@ class VariantForm
                     ->schema([
                         Repeater::make('attributes')
                             ->relationship('attributeValues')
+                            ->label('ویژگی‌ها')
                             ->hiddenLabel()
                             ->addActionLabel('افزودن ویژگی')
+                            ->required()
                             ->schema([
-                                Hidden::make('attribute_type')
-                                    ->default(null),
-
                                 Hidden::make('product_id')
                                     ->default($product->id),
 
@@ -91,16 +88,8 @@ class VariantForm
                                             ->pluck('name', 'id');
                                     })
                                     ->reactive()
-                                    ->afterStateUpdated(static function ($state, Set $set) {
-                                        $type = Attribute::query()->find($state)?->type;
-
-                                        $set('attribute_type', $type);
+                                    ->afterStateUpdated(static function (Set $set) {
                                         $set('attribute_option_id', null);
-                                    })
-                                    ->afterStateHydrated(static function ($state, Set $set) {
-                                        $type = Attribute::query()->find($state)?->type;
-
-                                        $set('attribute_type', $type);
                                     })
                                     ->required()
                                     ->distinct()
@@ -119,30 +108,7 @@ class VariantForm
                                             ->pluck('label', 'id');
                                     })
                                     ->required()
-                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Select),
-
-                                Textarea::make('value_string')
-                                    ->label('مقدار')
-                                    ->rows(3)
-                                    ->required()
-                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Text),
-
-                                Toggle::make('value_boolean')
-                                    ->label('مقدار')
-                                    ->inline(false)
-                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Boolean),
-
-                                TextInput::make('value_number')
-                                    ->numeric()
-                                    ->label('مقدار')
-                                    ->required()
-                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Number),
-
-                                DatePicker::make('value_date')
-                                    ->jalali()
-                                    ->label('مقدار')
-                                    ->required()
-                                    ->visible(static fn(Get $get) => $get('attribute_type') === AttributeType::Date),
+                                    ->visible(static fn(Get $get) => $get('attribute_id')),
                             ])
                             ->columns(2)
                             ->default([]),
