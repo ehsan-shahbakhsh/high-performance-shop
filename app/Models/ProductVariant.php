@@ -163,4 +163,11 @@ class ProductVariant extends Model implements HasMedia
 
         return $result;
     }
+
+    public static function makeSignature(array $optionValueIds): string
+    {
+        sort($optionValueIds);
+
+        return implode('-', $optionValueIds);
+    }
 }
