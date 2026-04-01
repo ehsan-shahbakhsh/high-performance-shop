@@ -95,6 +95,13 @@ class VariantsTable
             ])
             ->headerActions([
                 CreateAction::make()
+                    ->mutateDataUsing(static function (array $data, CreateAction $action): array {
+                        $optionsId = array_column($action->getRawData()['attributes'], 'attribute_option_id');
+
+                        $data['signature'] = ProductVariant::makeSignature($optionsId);
+
+                        return $data;
+                    })
                     ->after(static function (ProductVariant $record, $livewire) {
                         if (!$record->sku) {
                             $product = $livewire->getOwnerRecord();

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Variants\Pages;
 use App\Exceptions\BusinessException;
 use App\Filament\Resources\Products\ProductResource;
 use App\Filament\Resources\Variants\VariantResource;
+use App\Models\ProductVariant;
 use App\Services\Catalog\SkuGenerator;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
@@ -36,6 +37,10 @@ class EditVariant extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         try {
+            $optionsId = array_column($this->form->getRawState()['attributes'], 'attribute_option_id');
+
+            $data['signature'] = ProductVariant::makeSignature($optionsId);
+
             return parent::handleRecordUpdate($record, $data);
         } catch (BusinessException $e) {
             Notification::make()
