@@ -44,6 +44,8 @@ class ProductVariantFactory extends Factory
             'length' => fake()->optional()->numberBetween(5, 50),
             'width' => fake()->optional()->numberBetween(5, 50),
             'height' => fake()->optional()->numberBetween(5, 50),
+
+            'signature' => '',
         ];
     }
 }

@@ -32,6 +32,7 @@ class ProductVariant extends Model implements HasMedia
         'length',
         'width',
         'height',
+        'signature',
     ];
 
     protected $casts = [

@@ -43,6 +43,8 @@ return new class extends Migration {
             $table->decimal('width', 10)->nullable()->unsigned()->comment("Variant width (cm)");
             $table->decimal('height', 10)->nullable()->unsigned()->comment("Variant height (cm)");
 
+            $table->string('signature');
+
             $table->timestamps();
             $table->softDeletes();
 
@@ -50,6 +52,7 @@ return new class extends Migration {
                 ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
 
             $table->unique(['sku', 'unique_keeper']);
+            $table->unique(['product_id', 'unique_keeper', 'signature']);
         });
     }
 
