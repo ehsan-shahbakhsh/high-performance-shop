@@ -148,11 +148,6 @@ class Product extends Model implements HasMedia
         return $this->type === ProductType::Variable;
     }
 
-    public function files(): HasMany
-    {
-        return $this->hasMany(ProductFile::class)->orderBy('position');
-    }
-
     public function productRelations(): HasMany
     {
         return $this->hasMany(ProductRelation::class, 'product_id');

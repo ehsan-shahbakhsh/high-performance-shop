@@ -6,7 +6,6 @@ use App\Enums\ProductRelationType;
 use App\Enums\ProductType;
 use App\Models\Inventory;
 use App\Models\Product;
-use App\Models\ProductFile;
 use App\Models\ProductRelation;
 use App\Models\ProductVariant;
 use App\Models\Warehouse;
@@ -21,13 +20,12 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $tehran = Warehouse::factory()->create(['name' => 'تهران']);
-        $shiraz = Warehouse::factory()->create(['name' => 'شیراز']);
 
         Product::factory()
             ->variable()
             ->count(5)
             ->create()
-            ->each(function ($product) use ($tehran, $shiraz) {
+            ->each(function ($product) use ($tehran) {
                 ProductVariant::factory()
                     ->count(3)
                     ->for($product)
@@ -36,17 +34,6 @@ class ProductSeeder extends Seeder
                             ->count(1)
                             ->state(['warehouse_id' => $tehran->id])
                     )
-                    ->create();
-            });
-
-        Product::factory()
-            ->count(3)
-            ->state(['type' => ProductType::Downloadable])
-            ->create()
-            ->each(function ($product) {
-                ProductFile::factory()
-                    ->count(5)
-                    ->for($product)
                     ->create();
             });
 
