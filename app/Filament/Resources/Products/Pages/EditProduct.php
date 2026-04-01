@@ -4,14 +4,32 @@ namespace App\Filament\Resources\Products\Pages;
 
 use App\Enums\AttributeType;
 use App\Enums\ProductType;
+use App\Filament\Components\ShopForm;
 use App\Filament\Resources\Products\ProductResource;
+use App\Models\Attribute;
+use App\Models\AttributeOption;
 use App\Models\Product;
 use App\Services\Catalog\SkuGenerator;
+use App\Services\Catalog\VariantGenerator;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -152,6 +170,103 @@ class EditProduct extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('generateVariants')
+                ->label('تولید واریانت‌ها (تنوع محصول)')
+                ->icon(Heroicon::OutlinedSquares2x2)
+                ->color('primary')
+                ->schema([
+                    Grid::make(2)
+                        ->schema([
+                            ShopForm::price()
+                                ->columnSpan(1),
+
+                            Placeholder::make('variants_count')
+                                ->label('تعداد واریانت‌های قابل ساخت')
+                                ->content(static function (Get $get) {
+                                    $attributes = $get('attributes') ?? [];
+
+                                    if (blank($attributes)) return '0 واریانت ساخته خواهد شد';
+
+                                    $count = 0;
+
+                                    foreach ($attributes as $attr) {
+                                        $options = $attr['attribute_option_ids'] ?? [];
+
+                                        if (filled($options) && $count == 0) $count = 1;
+
+                                        $count *= max(count($options), 1);
+                                    }
+
+                                    return $count . ' واریانت ساخته خواهد شد';
+                                })
+                                ->columnSpan(1),
+                        ]),
+
+                    Section::make('ویژگی‌ها')
+                        ->schema([
+                            Repeater::make('attributes')
+                                ->hiddenLabel()
+                                ->addActionLabel('افزودن ویژگی')
+                                ->schema([
+                                    Select::make('attribute_id')
+                                        ->label('ویژگی')
+                                        ->options(static function () {
+                                            return Attribute::query()
+                                                ->where('is_variant', true)
+                                                ->where('type', AttributeType::Select)
+                                                ->pluck('name', 'id');
+                                        })
+                                        ->reactive()
+                                        ->afterStateUpdated(static function ($state, Set $set) {
+                                            $set('attribute_option_ids', []);
+                                        })
+                                        ->required()
+                                        ->distinct()
+                                        ->validationMessages([
+                                            'distinct' => 'امکان ثبت ویژگی تکراری وجود ندارد.',
+                                        ]),
+
+                                    Select::make('attribute_option_ids')
+                                        ->label('مقادیر')
+                                        ->multiple()
+                                        ->options(static function (Get $get) {
+                                            $attributeId = $get('attribute_id');
+                                            if (!$attributeId) return [];
+
+                                            return AttributeOption::query()
+                                                ->where('attribute_id', $attributeId)
+                                                ->pluck('label', 'id');
+                                        })
+                                        ->required()
+                                        ->lazy()
+                                        ->visible(static fn(Get $get) => $get('attribute_id')),
+                                ])
+                                ->columns(2)
+                                ->default([])
+                                ->live(),
+                        ])
+                        ->columnSpanFull(),
+                ])
+                ->action(function (array $data, Action $action) {
+                    try {
+                        $newVariantsCount = resolve(VariantGenerator::class)->generate(
+                            $this->record,
+                            $data['attributes'],
+                            $data['price'],
+                        );
+
+                        $action->success();
+                        $action->successRedirectUrl($this->getResourceUrl('edit', ['record' => $action->getRecord()]));
+                        $action->successNotificationTitle("{$newVariantsCount} واریانت جدید با موفقیت ساخته شد.");
+                    } catch (\Throwable $e) {
+                        report($e);
+
+                        $action->failureNotificationTitle('در ایجاد واریانت‌های محصول مشکلی پیش آمده است');
+                        $action->failure();
+                        $action->halt();
+                    }
+                }),
+
             ViewAction::make(),
             DeleteAction::make(),
             ForceDeleteAction::make(),
