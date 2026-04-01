@@ -18,12 +18,7 @@ return new class extends Migration
             $table->foreignId('product_variant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('attribute_id')->constrained();
 
-            $table->foreignId('attribute_option_id')->nullable()->constrained();
-
-            $table->string('value_string')->nullable();
-            $table->decimal('value_number', 15, 4)->nullable();
-            $table->boolean('value_boolean')->nullable();
-            $table->date('value_date')->nullable();
+            $table->foreignId('attribute_option_id')->constrained();
 
             $table->timestamps();
 

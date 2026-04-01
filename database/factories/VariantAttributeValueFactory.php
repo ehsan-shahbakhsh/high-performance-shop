@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\AttributeType;
-use App\Models\{Attribute, AttributeOption, Product, ProductVariant, VariantAttributeValue};
+use App\Models\{Attribute, AttributeOption, ProductVariant, VariantAttributeValue};
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,56 +18,17 @@ class VariantAttributeValueFactory extends Factory
      */
     public function definition(): array
     {
-        $attribute = Attribute::factory()->create(['type' => fake()->randomElement([
-            AttributeType::Text,
-            AttributeType::Number,
-            AttributeType::Boolean,
-            AttributeType::Date,
-            AttributeType::Select,
-        ])]);
-
-        $attributeOptionId = null;
-        $valueText = null;
-        $valueNumber = null;
-        $valueBoolean = null;
-        $valueDate = null;
-
-        switch ($attribute->type) {
-            case AttributeType::Text:
-                $valueText = fake()->word();
-                break;
-
-            case AttributeType::Number:
-                $valueNumber = fake()->randomFloat(2, 1, 999);
-                break;
-
-            case AttributeType::Boolean:
-                $valueBoolean = fake()->boolean();
-                break;
-
-            case AttributeType::Date:
-                $valueDate = fake()->date();
-                break;
-
-            case AttributeType::Select:
-                $option = AttributeOption::factory()->create(['attribute_id' => $attribute->id]);
-                $attributeOptionId = $option->id;
-                break;
-
-        }
-
-        $product = Product::factory()->create();
-
         return [
-            'product_id' => $product->id,
-            'product_variant_id' => ProductVariant::factory()->state(['product_id' => $product->id]),
-            'attribute_id' => $attribute->id,
+            'product_variant_id' => ProductVariant::factory(),
+            'product_id' => function (array $attributes) {
+                return ProductVariant::query()->find($attributes['product_variant_id'])->product_id;
+            },
 
-            'attribute_option_id' => $attributeOptionId,
-            'value_string' => $valueText,
-            'value_number' => $valueNumber,
-            'value_boolean' => $valueBoolean,
-            'value_date' => $valueDate,
+            'attribute_option_id' => AttributeOption::factory()
+                ->for(Attribute::factory()->state(['type' => AttributeType::Select])),
+            'attribute_id' => function (array $attributes) {
+                return AttributeOption::query()->find($attributes['attribute_option_id'])->attribute_id;
+            },
         ];
     }
 }
