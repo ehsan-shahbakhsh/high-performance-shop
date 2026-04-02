@@ -12,9 +12,9 @@ class CartCalculator
             ->selectRaw('
                 COUNT(*) as items_count,
                 SUM(quantity) as items_qty_sum,
-                SUM(unit_price_snapshot * quantity) as subtotal
+                SUM(price_when_added * quantity) as subtotal
             ')
-            ->first();
+            ->first(); // todo: check if need real-time price of variant
 
         $subtotal = (int) ($totals->subtotal ?? 0);
         $discount = 0; // TODO

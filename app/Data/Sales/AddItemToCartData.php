@@ -3,6 +3,7 @@
 namespace App\Data\Sales;
 
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\Validation\Uuid;
 use Spatie\LaravelData\Attributes\Validation\RequiredWithout;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 
@@ -12,11 +13,10 @@ class AddItemToCartData extends Data
         #[Nullable, RequiredWithout('session_id')]
         public ?int    $userId,
 
-        #[Nullable, RequiredWithout('user_id')]
+        #[Nullable, RequiredWithout('user_id'), Uuid]
         public ?string $sessionId,
 
-        public int     $productId,
-        public ?int    $variantId,
+        public int     $variantId,
         public int     $quantity,
     )
     {
