@@ -14,8 +14,7 @@ return new class extends Migration {
         Schema::create('carts', function (Blueprint $table) {
             $table->ulid('id')->primary();
 
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->string('session_id')->nullable()->index();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
             $table->enum('type', CartType::cases())->default(CartType::Main)->index();
 
@@ -45,8 +44,6 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->index(['user_id', 'status']);
-
-            $table->index(['session_id', 'status']);
 
             $table->index(['user_id', 'type', 'status']);
 

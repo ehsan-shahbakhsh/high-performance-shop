@@ -19,15 +19,14 @@ class CartItem extends Model
      */
     protected $fillable = [
         'cart_id',
-        'product_id',
-        'variant_id',
+        'product_variant_id',
         'quantity',
-        'unit_price_snapshot',
+        'price_when_added',
     ];
 
     protected $casts = [
         'quantity' => 'integer',
-        'unit_price_snapshot' => 'integer',
+        'price_when_added' => 'integer',
     ];
 
     public function cart(): BelongsTo
@@ -35,13 +34,8 @@ class CartItem extends Model
         return $this->belongsTo(Cart::class);
     }
 
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class);
-    }
-
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::class, 'variant_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 }

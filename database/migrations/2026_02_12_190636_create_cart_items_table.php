@@ -16,20 +16,15 @@ return new class extends Migration
 
             $table->foreignUlid('cart_id')->constrained()->cascadeOnDelete();
 
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('variant_id')->nullable()->constrained('product_variants')->nullOnDelete();
+            $table->foreignId('product_variant_id')->constrained()->cascadeOnDelete();
 
             $table->unsignedInteger('quantity')->default(1);
 
-            $table->unsignedBigInteger('variant_key')->virtualAs('COALESCE(`variant_id`, 0)');
-
-            $table->unsignedBigInteger('unit_price_snapshot');
+            $table->unsignedBigInteger('price_when_added');
 
             $table->timestamps();
 
-            $table->index(['cart_id', 'product_id']);
-
-            $table->unique(['cart_id', 'product_id', 'variant_key'], 'uniq_cart_product_variant');
+            $table->unique(['cart_id', 'product_variant_id']);
         });
     }
 

@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Cart;
 use App\Models\CartItem;
-use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,33 +22,21 @@ class CartItemFactory extends Factory
         return [
             'cart_id' => Cart::factory(),
 
-            'product_id' => Product::factory(),
-            'variant_id' => null,
+            'product_variant_id' => ProductVariant::factory(),
 
-            'quantity' => fake()->numberBetween(1, 3),
+            'quantity' => fake()->numberBetween(1, 10),
 
-            'unit_price_snapshot' => fake()->numberBetween(10000, 500000),
+            'price_when_added' => fake()->numberBetween(10000, 500000),
         ];
-    }
-
-    public function withVariant(): static
-    {
-        return $this->state(fn() => [
-            'variant_id' => ProductVariant::factory(),
-        ]);
     }
 
     public function quantity(int $qty): static
     {
-        return $this->state(fn() => [
-            'quantity' => $qty,
-        ]);
+        return $this->state(['quantity' => $qty]);
     }
 
     public function price(int $price): static
     {
-        return $this->state(fn() => [
-            'unit_price_snapshot' => $price,
-        ]);
+        return $this->state(['price_when_added' => $price]);
     }
 }

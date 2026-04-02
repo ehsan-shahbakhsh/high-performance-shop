@@ -21,7 +21,6 @@ class CartFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'session_id' => null,
 
             'type' => CartType::Main,
 
@@ -38,17 +37,9 @@ class CartFactory extends Factory
         ];
     }
 
-    public function guest(): static
-    {
-        return $this->state(fn() => [
-            'user_id' => null,
-            'session_id' => fake()->uuid(),
-        ]);
-    }
-
     public function locked(): static
     {
-        return $this->state(fn() => [
+        return $this->state([
             'locked_at' => now(),
             'lock_token' => Str::uuid(),
         ]);
@@ -56,7 +47,7 @@ class CartFactory extends Factory
 
     public function checkedOut(): static
     {
-        return $this->state(fn() => [
+        return $this->state([
             'status' => CartStatus::CheckedOut,
             'completed_at' => now(),
         ]);
@@ -64,7 +55,7 @@ class CartFactory extends Factory
 
     public function abandoned(): static
     {
-        return $this->state(fn() => [
+        return $this->state([
             'status' => CartStatus::Abandoned,
             'abandoned_at' => now(),
         ]);
@@ -72,6 +63,6 @@ class CartFactory extends Factory
 
     public function secondary(): static
     {
-        return $this->state(fn() => ['type' => CartType::Secondary]);
+        return $this->state(['type' => CartType::Secondary]);
     }
 }
