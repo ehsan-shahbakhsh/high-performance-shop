@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api\V1\Sales\Cart;
 use App\Actions\Sales\Cart\{AddItemToCartAction, MoveCartItemAction, RemoveItemFromCartAction, UpdateCartItemAction};
 use App\Data\Sales\AddItemToCartData;
 use App\Models\Cart;
-use App\Enums\{CartStatus, CartType};
+use App\Enums\CartType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Sales\Cart\{MoveCartItemRequest, StoreCartItemRequest, UpdateCartItemRequest};
-use App\Http\Resources\V1\Sales\{CartResource, CartItemResource};
+use App\Http\Resources\V1\Sales\CartItemResource;
 use App\Http\Responses\ApiResponse;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
@@ -27,10 +27,11 @@ class CartItemController extends Controller
         $cartItem = $action->execute(AddItemToCartData::validateAndCreate([
             'user_id' => $request->user()?->id,
             'session_id' => $request->header('Session-Id'),
-            'product_id' => $inputs['product_id'],
-            'variant_id' => $inputs['variant_id'] ?? null,
+            'variant_id' => $inputs['variant_id'],
             'quantity' => intval($inputs['quantity']),
         ]));
+
+        // todo: check need to load variant and product or not
 
         return ApiResponse::success(CartItemResource::make($cartItem), 'کالا با موفقیت به سبد خرید اضافه شد.');
     }
@@ -38,32 +39,39 @@ class CartItemController extends Controller
     /**
      * @throws Throwable
      */
-    public function update(UpdateCartItemRequest $request, CartItem $item, UpdateCartItemAction $action)
+    public function update(UpdateCartItemRequest $request, int $itemId, UpdateCartItemAction $action)
     {
         $sessionId = $request->header('Session-Id');
 
-        Gate::authorize('update', [$item, $sessionId]);
+        if ($request->user()) Gate::authorize('update', CartItem::query()->findOrFail($itemId));
 
         $quantity = intval($request->validated('quantity'));
+        $item = $action->execute($itemId, $quantity, $sessionId);
 
-        $item = $action->execute($item, $quantity);
+        if ($quantity > 0) {
+            return ApiResponse::success(CartItemResource::make($item), 'تعداد محصول در سبد خرید بروزرسانی شد.');
+        }
 
-        $message = $quantity > 0
-            ? 'تعداد محصول در سبد خرید بروزرسانی شد.'
-            : 'محصول از سبد خرید حذف شد.';
-        return ApiResponse::success(CartItemResource::make($item), $message);
+        return ApiResponse::deleted('محصول از سبد خرید حذف شد.');
     }
 
     /**
      * @throws Throwable
      */
-    public function destroy(Request $request, CartItem $item, RemoveItemFromCartAction $action)
+    public function destroy(Request $request, int $itemId, RemoveItemFromCartAction $action)
     {
-        Gate::authorize('delete', [$item, $request->header('Session-Id')]);
+        $user = $request->user();
+        $sessionId = $request->header('Session-Id');
 
-        $action->execute($request->user(), $item);
+        if (!$user && !$sessionId) {
+            return ApiResponse::unauthorized('برای این عملیات باید وارد حساب کاربری شوید یا شناسه نشست (Session-Id) معتبر ارسال کنید.');
+        }
 
-        return ApiResponse::success(message: 'محصول با موفقیت از سبد خرید حذف شد.');
+        if ($user) Gate::authorize('delete', CartItem::query()->findOrFail($itemId));
+
+        $action->execute($itemId, $sessionId);
+
+        return ApiResponse::deleted('محصول با موفقیت از سبد خرید حذف شد.');
     }
 
     /**

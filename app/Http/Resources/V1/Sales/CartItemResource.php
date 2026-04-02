@@ -16,17 +16,16 @@ class CartItemResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $isPersisted = $this->resource->exists;
+
         return [
-            'id' => $this->id,
+            'id' => $isPersisted ? $this->id : $this->product_variant_id,
+
+            'product_variant_id' => $this->product_variant_id,
             'quantity' => $this->quantity,
-            'unit_price_snapshot' => $this->unit_price_snapshot,
+            'price_when_added' => $this->price_when_added,
 
-            'references' => [
-                'product_id' => $this->product_id,
-                'variant_id' => $this->variant_id,
-            ],
-
-            'product' => ProductCartResource::make($this->whenLoaded('product')),
+            'product' => ProductCartResource::make($this->whenLoaded('variant.product')),
             'variant' => VariantCartResource::make($this->whenLoaded('variant')),
 
             'timestamps' => [
