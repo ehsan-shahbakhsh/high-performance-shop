@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Sales\Cart;
 
-use App\Enums\CartStatus;
+use App\Enums\CartType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,13 +25,7 @@ class MoveCartItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'destination_cart_id' => [
-                'required',
-                'ulid',
-                Rule::exists('carts', 'id')
-                    ->where('user_id', $this->user()->id)
-                    ->where('status', CartStatus::Active),
-            ],
+            'target_type' => ['required', 'string', Rule::enum(CartType::class)],
         ];
     }
 }
