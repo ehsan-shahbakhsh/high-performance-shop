@@ -5,10 +5,11 @@ namespace App\Actions\Sales\Cart;
 use App\Data\Sales\AddItemToCartData;
 use App\Enums\{CartType, CartStatus};
 use App\Exceptions\BusinessException;
-use App\Models\{Cart, CartItem, Product, ProductVariant};
-use App\Services\Catalog\ProductPriceResolver;
+use App\Models\{Cart, CartItem, ProductVariant};
 use App\Services\Sales\Cart\CartCalculator;
 use Illuminate\Support\Facades\DB;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -17,10 +18,7 @@ readonly class AddItemToCartAction
     /**
      * Create a new class instance.
      */
-    public function __construct(
-        private ProductPriceResolver $priceResolver,
-        private CartCalculator       $cartCalculator,
-    )
+    public function __construct(private CartCalculator $cartCalculator)
     {
     }
 
@@ -29,49 +27,90 @@ readonly class AddItemToCartAction
      */
     public function execute(AddItemToCartData $data): CartItem
     {
-        return DB::transaction(function () use ($data) {
-            $product = Product::query()->findOrFail($data->productId);
+        if ($data->sessionId) {
+            return $this->addToGuestCart($data->variantId, $data->sessionId, $data->quantity);
+        }
+
+        return $this->addToUserCart($data->variantId, $data->userId, $data->quantity);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws BusinessException
+     */
+    private function addToGuestCart(int $variantId, string $sessionId, int $quantity): CartItem
+    {
+        $variant = ProductVariant::query()->with('product')->findOrFail($variantId);
+        $redis = resolve('redis');
+
+        $redisKey = "cart:$sessionId";
+        $items = json_decode($redis->get($redisKey) ?: '[]', true);
+
+        $existingQuantity = $items[$variantId]['quantity'] ?? 0;
+        $newQuantity = $existingQuantity + $quantity;
+
+        if ($variant->product->manage_stock && $variant->stock_quantity < $newQuantity) {
+            throw new BusinessException(
+                'موجودی کافی نیست یا کالا در سبد دیگران رزرو شده است.',
+                httpCode: Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
+
+        $variantData = [
+            'product_variant_id' => $variantId,
+            'quantity' => $newQuantity,
+            'price_when_added' => $variant->final_price,
+        ];
+
+        $items[$variantId] = $variantData;
+
+        $redis->setex($redisKey, 14 * 86400, json_encode($items));
+
+        return new CartItem($variantData);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    private function addToUserCart(int $variantId, int $userId, int $quantity): CartItem
+    {
+        return DB::transaction(function () use ($variantId, $userId, $quantity) {
             $variant = ProductVariant::query()
-                ->where('product_id', $data->productId)
-                ->whereKey($data->variantId)
+                ->with('product')
+                ->whereKey($variantId)
                 ->lockForUpdate()
-                ->first();
+                ->firstOrFail();
 
             $cart = Cart::query()
-                ->whereKey($this->getOrCreateCart($data)->id)
+                ->whereKey($this->getOrCreateCart($userId)->id)
                 ->lockForUpdate()
-                ->first();
+                ->firstOr();
 
             $cartItem = $cart->items()
-                ->where('product_id', $data->productId)
-                ->when(
-                    $data->variantId,
-                    fn($q) => $q->where('variant_id', $data->variantId),
-                    fn($q) => $q->whereNull('variant_id')
-                )
+                ->where('product_variant_id', $variantId)
                 ->lockForUpdate()
                 ->first();
 
             $newQuantity = $cartItem
-                ? $cartItem->quantity + $data->quantity
-                : $data->quantity;
+                ? $cartItem->quantity + $quantity
+                : $quantity;
 
-            if ($product->manage_stock && $variant && $variant->stock_quantity < $newQuantity) {
+            if ($variant->product->manage_stock && $variant->stock_quantity < $newQuantity) {
                 throw new BusinessException(
                     'موجودی کافی نیست یا کالا در سبد دیگران رزرو شده است.',
                     httpCode: Response::HTTP_UNPROCESSABLE_ENTITY,
                 );
             }
 
-            $quantity = $data->quantity;
             if ($cartItem) {
-                $cartItem->increment('quantity', $quantity);
+                $cartItem->quantity = $newQuantity;
+                $cartItem->save();
             } else {
                 $cartItem = $cart->items()->create([
-                    'product_id' => $data->productId,
-                    'variant_id' => $data->variantId,
+                    'product_variant_id' => $variantId,
                     'quantity' => $quantity,
-                    'unit_price_snapshot' => $this->priceResolver->resolve($product, $variant),
+                    'price_when_added' => $variant->final_price,
                 ]);
             }
 
@@ -97,19 +136,12 @@ readonly class AddItemToCartAction
         });
     }
 
-    private function getOrCreateCart(AddItemToCartData $data): Cart
+    private function getOrCreateCart(int $userId): Cart
     {
-        $attributes = [
+        return Cart::query()->firstOrCreate([
             'status' => CartStatus::Active,
             'type' => CartType::Main,
-        ];
-
-        if ($data->userId) {
-            $attributes['user_id'] = $data->userId;
-        } else {
-            $attributes['session_id'] = $data->sessionId;
-        }
-
-        return Cart::query()->firstOrCreate($attributes);
+            'user_id' => $userId,
+        ]);
     }
 }

@@ -42,7 +42,7 @@ class MoveCartItemAction
             }
 
             $existingItem = $destinationCart->items()
-                ->where('product_id', $cartItem->product_id)
+                ->where('product_variant_id', $cartItem->product_variant_id)
                 ->lockForUpdate()
                 ->first();
 
