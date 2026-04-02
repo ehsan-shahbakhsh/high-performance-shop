@@ -31,5 +31,8 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="REDIS_DB" value="2"/>
+        <env name="REDIS_CACHE_DB" value="3"/>
+        <env name="REDIS_PREFIX" value="testing_"/>
     </php>
 </phpunit>

@@ -24,3 +24,9 @@ function mockGoogleUser($id = 'google-123', $email = 'test@gmail.com'): void
         ->with('google')
         ->andReturn($provider);
 }
+
+uses()
+    ->beforeEach(function () {
+        \Illuminate\Support\Facades\Redis::flushdb();
+    })
+    ->in('Feature');
