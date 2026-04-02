@@ -3,67 +3,35 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use function Pest\Laravel\{patchJson, assertDatabaseHas, assertDatabaseMissing};
-use App\Models\{User, Cart, CartItem, Product, ProductVariant};
+use App\Models\{User, CartItem, Product, ProductVariant};
 use App\Enums\CartStatus;
 use Laravel\Sanctum\Sanctum;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 describe('validation', function () {
-    it('requires quantity', function () {
+    it('validates quantity field correctly', function ($invalidQuantity) {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
         $mainCart = $user->mainCart;
         $cartItem = CartItem::factory()->for($mainCart)->create();
 
-        patchJson("/api/v1/cart-items/{$cartItem->id}")
+        patchJson("/api/v1/cart-items/{$cartItem->id}", [
+            'quantity' => $invalidQuantity
+        ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('quantity');
-    });
-
-    it('requires integer quantity', function () {
-        $user = User::factory()->create();
-        Sanctum::actingAs($user);
-
-        $mainCart = $user->mainCart;
-        $cartItem = CartItem::factory()->for($mainCart)->create();
-
-        patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 'foo'])
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('quantity');
-    });
-
-    it('rejects negative quantity', function () {
-        $user = User::factory()->create();
-        Sanctum::actingAs($user);
-
-        $mainCart = $user->mainCart;
-        $cartItem = CartItem::factory()->for($mainCart)->create();
-
-        patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => -1])
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('quantity');
-    });
+    })->with([
+        'missing' => null,
+        'string' => 'foo',
+        'negative' => -1,
+    ]);
 });
 
 describe('core logic and happy path', function () {
-    it('user can update own cart item', function () {
-        $user = User::factory()->create();
-        Sanctum::actingAs($user);
-
-        $mainCart = $user->mainCart;
-        $cartItem = CartItem::factory()->for($mainCart)->create();
-
-        patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 3])
-            ->assertOk()
-            ->assertJsonPath('message', 'تعداد محصول در سبد خرید بروزرسانی شد.');
-
-        assertDatabaseHas('cart_items', [
-            'id' => $cartItem->id,
-        ]);
-    });
-
     it('removes cart item when quantity is zero', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -76,31 +44,39 @@ describe('core logic and happy path', function () {
             ->assertJsonPath('message', 'محصول از سبد خرید حذف شد.');
 
         assertDatabaseMissing('cart_items', [
-            'id' => $cartItem->id
+            'id' => $cartItem->id,
         ]);
     });
 
     it('guest can update own cart item', function () {
         $sessionId = fake()->uuid();
 
-        $cart = Cart::factory()->create(['session_id' => $sessionId]);
-        $cartItem = CartItem::factory()->for($cart)->create();
+        $variant = ProductVariant::factory()->create(['stock_quantity' => 5]);
+        Redis::setex("cart:$sessionId", 14 * 86400, json_encode([
+            $variant->id => [
+                'product_variant_id' => $variant->id,
+                'quantity' => 2,
+                'price_when_added' => $variant->final_price,
+            ],
+        ]));
 
-        patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 3], ['Session-Id' => $sessionId])
+        patchJson("/api/v1/cart-items/{$variant->id}", ['quantity' => 3], ['Session-Id' => $sessionId])
             ->assertOk()
             ->assertJsonPath('message', 'تعداد محصول در سبد خرید بروزرسانی شد.');
 
-        assertDatabaseHas('cart_items', [
-            'id' => $cartItem->id,
-        ]);
+        $items = json_decode(Redis::get("cart:$sessionId"), true);
+        expect($items[$variant->id]['quantity'])->toBe(3);
     });
 
-    it('updates quantity correctly', function () {
+    it('updates quantity correctly for authenticated user', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $mainCart = $user->mainCart;
-        $cartItem = CartItem::factory()->for($mainCart)->quantity(2)->create();
+        $cartItem = CartItem::factory()
+            ->for(ProductVariant::factory()->state(['stock_quantity' => 5]), 'variant')
+            ->for($user->mainCart)
+            ->quantity(2)
+            ->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 5])
             ->assertOk()
@@ -112,8 +88,7 @@ describe('core logic and happy path', function () {
         ]);
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 3])
-            ->assertOk()
-            ->assertJsonPath('message', 'تعداد محصول در سبد خرید بروزرسانی شد.');
+            ->assertOk();
 
         assertDatabaseHas('cart_items', [
             'id' => $cartItem->id,
@@ -133,7 +108,12 @@ describe('core logic and happy path', function () {
             'total' => 3800,
         ]);
 
-        $item1 = CartItem::factory()->for($mainCart)->quantity(2)->price(500)->create();
+        $item1 = CartItem::factory()
+            ->for($mainCart)
+            ->for(ProductVariant::factory()->state(['stock_quantity' => 5]), 'variant')
+            ->quantity(2)
+            ->price(500)
+            ->create();
 
         CartItem::factory()->for($mainCart)->quantity(4)->price(700)->create();
 
@@ -152,6 +132,35 @@ describe('core logic and happy path', function () {
             ->and($mainCart->subtotal)->toBe(5300)
             ->and($mainCart->total)->toBe(5300);
     });
+
+    it('updates cart version and last_activity_at when an item is updated', function () {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $mainCart = $user->mainCart;
+        $cartItem = CartItem::factory()
+            ->for(ProductVariant::factory()->state(['stock_quantity' => 5]), 'variant')
+            ->for($mainCart)
+            ->quantity(2)
+            ->create();
+
+        $initialVersion = $mainCart->version;
+
+        $initialActivity = now()->subMinutes(10);
+        $mainCart->update(['last_activity_at' => $initialActivity]);
+
+        $now = now();
+        Carbon::setTestNow($now);
+
+        patchJson("/api/v1/cart-items/{$cartItem->id}", [
+            'quantity' => 5
+        ])->assertOk();
+
+        $mainCart->refresh();
+
+        expect($mainCart->version)->toBe($initialVersion + 1)
+            ->and($mainCart->last_activity_at->timestamp)->toBe($now->timestamp);
+    });
 });
 
 describe('edge cases and errors', function () {
@@ -165,17 +174,6 @@ describe('edge cases and errors', function () {
         $otherUserCartItem = CartItem::factory()->for($mainCart)->create();
 
         patchJson("/api/v1/cart-items/{$otherUserCartItem->id}", ['quantity' => 3])
-            ->assertForbidden();
-    });
-
-    it('guest cannot update other session cart', function () {
-        $sessionId = fake()->uuid();
-        $anotherSessionId = fake()->uuid();
-
-        $cart = Cart::factory()->create(['session_id' => $anotherSessionId]);
-        $anotherUserCartItem = CartItem::factory()->for($cart)->create();
-
-        patchJson("/api/v1/cart-items/{$anotherUserCartItem->id}", ['quantity' => 3], ['Session-Id' => $sessionId])
             ->assertForbidden();
     });
 
@@ -212,9 +210,13 @@ describe('edge cases and errors', function () {
 
         $mainCart = $user->mainCart;
 
-        $product = Product::factory()->create(['manage_stock' => true]);
-        $variant = ProductVariant::factory()->for($product)->create(['stock_quantity' => 5]);
-        $cartItem = CartItem::factory()->for($mainCart)->for($product)->for($variant, 'variant')->create();
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->state(['manage_stock' => true]))
+            ->create(['stock_quantity' => 5]);
+        $cartItem = CartItem::factory()
+            ->for($mainCart)
+            ->for($variant, 'variant')
+            ->create();
 
         patchJson("/api/v1/cart-items/{$cartItem->id}", ['quantity' => 8])
             ->assertUnprocessable()

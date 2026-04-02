@@ -2,15 +2,12 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use function Pest\Laravel\{getJson, assertDatabaseHas};
+use function Pest\Laravel\getJson;
 use App\Models\{User, Cart};
-use App\Enums\{CartType, CartStatus};
+use App\Enums\CartType;
 use Laravel\Sanctum\Sanctum;
 
 uses(TestCase::class, RefreshDatabase::class);
-
-describe('validation', function () {
-});
 
 describe('core logic and happy path', function () {
     it('returns authenticated user main cart', function () {
@@ -50,17 +47,43 @@ describe('core logic and happy path', function () {
                     'meta',
                 ],
             ])
-            ->assertJsonFragment(['id' => $cart->id]);
+            ->assertJsonPath('data.id', $cart->id);
     });
 
     it('returns guest cart using session id', function () {
         $sessionId = fake()->uuid();
 
-        $cart = Cart::factory()->create(['session_id' => $sessionId]);
-
         getJson('/api/v1/cart', ['Session-Id' => $sessionId])
             ->assertOk()
-            ->assertJsonPath('data.id', $cart->id);
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'type',
+                    'status',
+
+                    'financials' => [
+                        'subtotal',
+                        'discount_total',
+                        'shipping_total',
+                        'total',
+                    ],
+
+                    'summary' => [
+                        'items_count',
+                        'total_quantity',
+                    ],
+
+                    'is_locked',
+
+                    'timestamps' => [
+                        'last_activity_at',
+                        'created_at',
+                    ],
+
+                    'meta',
+                ],
+            ])
+            ->assertJsonPath('data.id', $sessionId);
     });
 
     it('returns only active cart even if others exist', function () {
@@ -76,19 +99,6 @@ describe('core logic and happy path', function () {
             ->assertOk();
 
         expect($response->json('data.id'))->toBe($activeCart->id);
-    });
-
-    it('creates cart for guest if none exists', function () {
-        $sessionId = fake()->uuid();
-
-        getJson('/api/v1/cart', ['Session-Id' => $sessionId])
-            ->assertOk();
-
-        assertDatabaseHas('carts', [
-            'session_id' => $sessionId,
-            'type' => CartType::Main,
-            'status' => CartStatus::Active,
-        ]);
     });
 
     it('returns the requested cart type when provided', function () {

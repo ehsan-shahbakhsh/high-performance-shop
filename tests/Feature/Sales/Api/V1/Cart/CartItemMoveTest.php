@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use function Pest\Laravel\{postJson, assertDatabaseHas, assertDatabaseMissing};
-use App\Models\{Product, User, CartItem};
+use App\Models\{ProductVariant, User, CartItem};
 use App\Enums\CartType;
 use Laravel\Sanctum\Sanctum;
 
@@ -109,19 +109,19 @@ describe('core logic and happy path', function () {
     it('merges quantity when destination cart already has the same product', function () {
         $user = User::factory()->create();
 
-        $product = Product::factory()->create();
+        $variant = ProductVariant::factory()->create();
 
         $mainCart = $user->mainCart;
         $sourceItem = CartItem::factory()
             ->for($mainCart)
-            ->for($product)
+            ->for($variant, 'variant')
             ->quantity(3)
             ->create();
 
         $secondaryCart = $user->secondaryCart;
         $destinationItem = CartItem::factory()
             ->for($secondaryCart)
-            ->for($product)
+            ->for($variant, 'variant')
             ->quantity(2)
             ->create();
 
@@ -146,7 +146,7 @@ describe('core logic and happy path', function () {
         expect(
             CartItem::query()
                 ->where('cart_id', $secondaryCart->id)
-                ->where('product_id', $product->id)
+                ->where('product_variant_id', $variant->id)
                 ->count()
         )->toBe(1);
     });

@@ -5,30 +5,15 @@ use Tests\TestCase;
 use function Pest\Laravel\{postJson, assertDatabaseHas};
 use Laravel\Sanctum\Sanctum;
 use App\Models\{Product, Cart, User, ProductVariant, CartItem};
-use App\Enums\ProductType;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 describe('validation', function () {
-    it('fails when product does not exist', function () {
+    it('fails when variant does not exist', function () {
         postJson('/api/v1/cart-items', [
-            'product_id' => 999,
-            'quantity' => 1,
-        ], [
-            'Session-Id' => fake()->uuid(),
-        ])
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('product_id');
-    });
-
-    it('fails when variant does not belong to product', function () {
-        $product = Product::factory()->create();
-        $variant = ProductVariant::factory()->create();
-
-        postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
-            'variant_id' => $variant->id,
+            'variant_id' => 999,
             'quantity' => 1,
         ], [
             'Session-Id' => fake()->uuid(),
@@ -38,10 +23,10 @@ describe('validation', function () {
     });
 
     it('fails if neither user nor session id provided', function () {
-        $product = Product::factory()->simple()->create();
+        $variant = ProductVariant::factory()->create();
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
+            'variant_id' => $variant->id,
             'quantity' => 1,
         ])
             ->assertUnprocessable()
@@ -52,10 +37,10 @@ describe('validation', function () {
     });
 
     it('fails when quantity is less than one', function () {
-        $product = Product::factory()->simple()->create();
+        $variant = ProductVariant::factory()->create();
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
+            'variant_id' => $variant->id,
             'quantity' => 0,
         ], [
             'Session-Id' => fake()->uuid(),
@@ -64,105 +49,118 @@ describe('validation', function () {
             ->assertJsonValidationErrors('quantity');
     });
 
-    it('fails when variant is required but not provided', function () {
-        $variableProduct = Product::factory()
-            ->has(ProductVariant::factory()->count(3), 'variants')
-            ->create(['type' => ProductType::Variable]);
-        $virtualProduct = Product::factory()
-            ->has(ProductVariant::factory()->count(3), 'variants')
-            ->create(['type' => ProductType::Virtual]);
+    it('fails when variant is inactive', function () {
+        $inactiveVariant = ProductVariant::factory()->create(['is_active' => false]);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $variableProduct->id,
+            'variant_id' => $inactiveVariant->id,
             'quantity' => 1,
-        ], [
-            'Session-Id' => fake()->uuid(),
-        ])
+        ], ['Session-Id' => fake()->uuid()])
             ->assertUnprocessable()
-            ->assertJsonPath('errors.variant_id.0', 'برای این محصول باید یک تنوع (رنگ/سایز) انتخاب کنید.');
+            ->assertJsonValidationErrors('variant_id');
+    });
 
+    it('fails when the parent product is inactive', function () {
+        $inactiveProduct = Product::factory()->create(['is_active' => false]);
+        $variant = ProductVariant::factory()->create([
+            'product_id' => $inactiveProduct->id,
+            'is_active' => true,
+        ]);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $virtualProduct->id,
+            'variant_id' => $variant->id,
             'quantity' => 1,
-        ], [
-            'Session-Id' => fake()->uuid(),
-        ])
+        ], ['Session-Id' => fake()->uuid()])
             ->assertUnprocessable()
-            ->assertJsonPath('errors.variant_id.0', 'برای این محصول باید یک تنوع انتخاب کنید.');
+            ->assertJsonValidationErrors('variant_id');
+    });
+
+    it('fails when quantity is not an integer', function () {
+        $variant = ProductVariant::factory()->create();
+
+        postJson('/api/v1/cart-items', [
+            'variant_id' => $variant->id,
+            'quantity' => 'two',
+        ], ['Session-Id' => fake()->uuid()])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('quantity');
     });
 });
 
 describe('core logic and happy path', function () {
-    it('creates cart if none exists for session', function () {
+    it('successfully adds a new variant to the cart for an authenticated user', function () {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $mainCart = $user->mainCart;
+        $variant = ProductVariant::factory()->create(['is_active' => true, 'stock_quantity' => 1]);
+        $quantity = 1;
+
+        expect($mainCart->items()->count())->toBe(0);
+
+        postJson('/api/v1/cart-items', [
+            'variant_id' => $variant->id,
+            'quantity' => $quantity,
+        ])->assertOk();
+
+        assertDatabaseHas('cart_items', [
+            'cart_id' => $mainCart->id,
+            'product_variant_id' => $variant->id,
+            'quantity' => $quantity,
+        ]);
+    });
+
+    it('successfully adds a variant to the cart for a guest user', function () {
+        $variant = ProductVariant::factory()->create(['is_active' => true, 'stock_quantity' => 2]);
         $sessionId = fake()->uuid();
-        $product = Product::factory()->simple()->create();
-
-        expect(Cart::query()->where('session_id', $sessionId)->count())->toBe(0);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
-            'quantity' => 1,
-        ], [
-            'Session-Id' => $sessionId,
-        ])->assertOk();
+            'variant_id' => $variant->id,
+            'quantity' => 2,
+        ], ['Session-Id' => $sessionId])
+            ->assertOk();
 
-        expect(Cart::query()->where('session_id', $sessionId)->count())->toBe(1);
+        $cartData = Redis::get("cart:$sessionId");
+        expect($cartData)->not->toBeNull()
+            ->and(json_decode($cartData, true))
+            ->toHaveLength(1);
     });
 
-    it('creates new cart item when product not in cart', function () {
+    it('increments quantity when item already exists with user', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
 
         $mainCart = $user->mainCart;
-        $product = Product::factory()->simple()->create();
+        $variant = ProductVariant::factory()->create(['stock_quantity' => 15]);
 
-        expect(CartItem::query()->where('cart_id', $mainCart->id)->count())->toBe(0);
-
-        postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
-            'quantity' => 1,
-        ])->assertOk();
-
-        $item = CartItem::query()->where('cart_id', $mainCart->id)->first();
-
-        expect($item)->not->toBeNull()
-            ->and($item)
-            ->product_id->toBe($product->id)
-            ->quantity->toBe(1);
-    });
-
-    it('increments quantity when item already exists', function () {
-        $user = User::factory()->create();
-
-        Sanctum::actingAs($user);
-
-        $mainCart = $user->mainCart;
-        $product = Product::factory()->simple()->create();
-
-        $cartItem = CartItem::factory()->quantity(10)->for($product)->for($mainCart)->create();
+        $cartItem = CartItem::factory()
+            ->quantity(10)
+            ->for($variant, 'variant')
+            ->for($mainCart)
+            ->create();
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
+            'variant_id' => $variant->id,
             'quantity' => 5,
         ])->assertOk();
 
         expect($cartItem->fresh()->quantity)->toBe(15);
     });
 
-    it('stores price snapshot when item is created', function () {
+    it('stores price when item is created', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
 
         $mainCart = $user->mainCart;
-        $product = Product::factory()->simple()->create([
+        $variant = ProductVariant::factory()->create([
             'price' => 10_000,
             'sale_price' => 7_000,
+            'stock_quantity' => 5,
         ]);
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
+            'variant_id' => $variant->id,
             'quantity' => 5,
         ])->assertOk();
 
@@ -170,23 +168,23 @@ describe('core logic and happy path', function () {
 
         expect($item)->not->toBeNull()
             ->and($item)
-            ->product_id->toBe($product->id)
+            ->product_variant_id->toBe($variant->id)
             ->quantity->toBe(5)
-            ->unit_price_snapshot->toBe(7_000);
+            ->price_when_added->toBe(7_000);
     });
 
     it('updates cart version after modification', function () {
         $user = User::factory()->create();
 
         $mainCart = $user->mainCart;
-        $product = Product::factory()->simple()->create();
+        $variant = ProductVariant::factory()->create(['stock_quantity' => 4]);
 
         $initialVersion = $mainCart->version;
 
         Sanctum::actingAs($user);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
+            'variant_id' => $variant->id,
             'quantity' => 2,
         ])->assertOk();
 
@@ -194,7 +192,7 @@ describe('core logic and happy path', function () {
             ->and($mainCart->fresh()->version)->toBe($initialVersion + 1);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
+            'variant_id' => $variant->id,
             'quantity' => 2,
         ])->assertOk();
 
@@ -212,12 +210,12 @@ describe('core logic and happy path', function () {
         $mainCart = $user->mainCart;
         $mainCart->update(['last_activity_at' => now()]);
 
-        $product = Product::factory()->simple()->create();
+        $variant = ProductVariant::factory()->create(['stock_quantity' => 2]);
 
         Carbon::setTestNow(now()->addMinutes(5));
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
+            'variant_id' => $variant->id,
             'quantity' => 2,
         ])->assertOk();
 
@@ -233,11 +231,11 @@ describe('core logic and happy path', function () {
         $mainCart = $user->mainCart;
         $mainCart->update(['subtotal' => 0]);
 
-        $productA = Product::factory()->simple()->create(['sale_price' => 100]);
-        $productB = Product::factory()->simple()->create(['sale_price' => 300]);
+        $variantA = ProductVariant::factory()->create(['sale_price' => 100, 'stock_quantity' => 2]);
+        $variantB = ProductVariant::factory()->create(['sale_price' => 300, 'stock_quantity' => 5]);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $productA->id,
+            'variant_id' => $variantA->id,
             'quantity' => 2,
         ])->assertOk();
 
@@ -248,7 +246,7 @@ describe('core logic and happy path', function () {
             ->and($mainCart->items_qty_sum)->toBe(2);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $productB->id,
+            'variant_id' => $variantB->id,
             'quantity' => 5,
         ])->assertOk();
 
@@ -259,70 +257,17 @@ describe('core logic and happy path', function () {
             ->and($mainCart->items_qty_sum)->toBe(7);
     });
 
-    it('creates separate cart items when different variants of the same product are added', function () {
-        $user = User::factory()->create();
-
-        Sanctum::actingAs($user);
-
-        $mainCart = $user->mainCart;
-
-        $product = Product::factory()->variable()->create(['manage_stock' => false]);
-        $variantA = ProductVariant::factory()->create(['product_id' => $product->id, 'sale_price' => 100]);
-        $variantB = ProductVariant::factory()->create(['product_id' => $product->id, 'sale_price' => 150]);
-
-        postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
-            'variant_id' => $variantA->id,
-            'quantity' => 2,
-        ])->assertOk();
-
-        postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
-            'variant_id' => $variantB->id,
-            'quantity' => 3,
-        ])->assertOk();
-
-        expect(CartItem::query()->where('cart_id', $mainCart->id)->count())->toBe(2);
-
-        $itemA = CartItem::query()->where('cart_id', $mainCart->id)->where('variant_id', $variantA->id)->first();
-        expect($itemA->quantity)->toBe(2)
-            ->and($itemA->unit_price_snapshot)->toEqual(100);
-
-        $itemB = CartItem::query()->where('cart_id', $mainCart->id)->where('variant_id', $variantB->id)->first();
-        expect($itemB->quantity)->toBe(3)
-            ->and($itemB->unit_price_snapshot)->toEqual(150);
-    });
-
-    it('adds item to existing cart', function () {
-        $user = User::factory()->create();
-
-        Sanctum::actingAs($user);
-
-        $mainCart = $user->mainCart;
-        $product = Product::factory()->simple()->create();
-
-        postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
-            'quantity' => 1,
-        ])->assertOk();
-
-        assertDatabaseHas('cart_items', [
-            'product_id' => $product->id,
-            'cart_id' => $mainCart->id,
-        ]);
-    });
-
     it('increments quantity instead of creating duplicate cart items on rapid requests', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
 
         $mainCart = $user->mainCart;
-        $product = Product::factory()->simple()->create();
+        $variant = ProductVariant::factory()->create(['stock_quantity' => 10]);
 
         for ($i = 0; $i < 10; $i++) {
             postJson('/api/v1/cart-items', [
-                'product_id' => $product->id,
+                'variant_id' => $variant->id,
                 'quantity' => 1,
             ])->assertOk();
         }
@@ -330,20 +275,40 @@ describe('core logic and happy path', function () {
         expect(
             CartItem::query()
                 ->where('cart_id', $mainCart->id)
-                ->where('product_id', $product->id)
+                ->where('product_variant_id', $variant->id)
                 ->count()
         )->toBe(1);
 
         assertDatabaseHas('cart_items', [
             'cart_id' => $mainCart->id,
-            'product_id' => $product->id,
+            'product_variant_id' => $variant->id,
             'quantity' => 10,
+        ]);
+    });
+
+    it('uses original price when sale_price is null', function () {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $variant = ProductVariant::factory()->create([
+            'price' => 15_000,
+            'sale_price' => null,
+        ]);
+
+        postJson('/api/v1/cart-items', [
+            'variant_id' => $variant->id,
+            'quantity' => 1,
+        ])->assertOk();
+
+        assertDatabaseHas('cart_items', [
+            'product_variant_id' => $variant->id,
+            'price_when_added' => 15_000,
         ]);
     });
 });
 
 describe('edge cases and errors', function () {
-    it('fails when stock is insufficient', function () {
+    it('fails when adding a product that is out of stock', function () {
         $product = Product::factory()->create(['manage_stock' => true]);
 
         $variant = ProductVariant::factory()->create([
@@ -357,34 +322,50 @@ describe('edge cases and errors', function () {
             'quantity' => 5,
         ], [
             'Session-Id' => fake()->uuid(),
-        ])->assertUnprocessable();
+        ])
+            ->assertUnprocessable()
+            ->assertJsonPath('message', 'موجودی کافی نیست یا کالا در سبد دیگران رزرو شده است.');
     });
 
-    it('fails when product is inactive', function () {
-        $product = Product::factory()->create(['is_active' => false]);
+    it('fails when total quantity (existing + new) exceeds available stock', function () {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->state(['manage_stock' => true]))
+            ->create(['stock_quantity' => 4]);
+
+        $mainCart = $user->mainCart;
+
+        CartItem::factory()
+            ->for($variant, 'variant')
+            ->for($mainCart)
+            ->create(['quantity' => 2]);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
-            'quantity' => 1,
-        ], [
-            'Session-Id' => fake()->uuid(),
-        ])->assertUnprocessable();
-    });
+            'variant_id' => $variant->id,
+            'quantity' => 3,
+        ])
+            ->assertUnprocessable()
+            ->assertJsonPath('message', 'موجودی کافی نیست یا کالا در سبد دیگران رزرو شده است.');
 
-    it('fails when variant is inactive', function () {
-        $product = Product::factory()->create();
-
-        $variant = ProductVariant::factory()->create([
-            'product_id' => $product->id,
-            'is_active' => false,
+        assertDatabaseHas('cart_items', [
+            'cart_id' => $mainCart->id,
+            'product_variant_id' => $variant->id,
+            'quantity' => 2,
         ]);
+    });
+
+    it('fails for guest user without a valid session id', function () {
+        $variant = ProductVariant::factory()->create(['stock_quantity' => 10]);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
             'variant_id' => $variant->id,
             'quantity' => 1,
         ], [
-            'Session-Id' => fake()->uuid(),
-        ])->assertUnprocessable();
+            'Session-Id' => '',
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('session_id');
     });
 });
