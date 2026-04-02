@@ -20,13 +20,9 @@ class CartItemPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, CartItem $cartItem, ?string $sessionId): bool
+    public function view(User $user, CartItem $cartItem): bool
     {
-        if ($user) {
-            return $user->id === $cartItem->cart->user_id;
-        }
-
-        return $sessionId && $sessionId === $cartItem->cart->session_id;
+        return $user->id === $cartItem->cart->user_id;
     }
 
     /**
@@ -40,33 +36,17 @@ class CartItemPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(?User $user, CartItem $cartItem, ?string $sessionId): bool
+    public function update(User $user, CartItem $cartItem): bool
     {
-        if (!$this->canModifyCart($cartItem)) {
-            return false;
-        }
-
-        if ($user) {
-            return $user->id === $cartItem->cart->user_id;
-        }
-
-        return $sessionId !== null && $sessionId === $cartItem->cart->session_id;
+        return $this->canModifyCart($cartItem) && $user->id === $cartItem->cart->user_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(?User $user, CartItem $cartItem, ?string $sessionId): bool
+    public function delete(User $user, CartItem $cartItem): bool
     {
-        if (!$this->canModifyCart($cartItem)) {
-            return false;
-        }
-
-        if ($user) {
-            return $user->id === $cartItem->cart->user_id;
-        }
-
-        return $sessionId !== null && $sessionId === $cartItem->cart->session_id;
+        return $this->canModifyCart($cartItem) && $user->id === $cartItem->cart->user_id;
     }
 
     /**
