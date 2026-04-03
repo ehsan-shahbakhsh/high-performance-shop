@@ -3,11 +3,9 @@
 namespace App\Actions\Sales\Wishlist;
 
 use App\Exceptions\BusinessException;
-use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Wishlist;
 use App\Models\WishlistItem;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -17,33 +15,26 @@ class AddWishlistItemAction
     /**
      * @throws Throwable
      */
-    public function execute(Wishlist $wishlist, int $productId, ?int $variantId): WishlistItem
+    public function execute(Wishlist $wishlist, int $variantId): WishlistItem
     {
-        return DB::transaction(function () use ($wishlist, $productId, $variantId) {
-            Wishlist::query()
+        return DB::transaction(function () use ($wishlist, $variantId) {
+            $wishlist = Wishlist::query()
                 ->whereKey($wishlist->id)
                 ->lockForUpdate()
                 ->first();
 
-            $product = Product::query()->findOrFail($productId);
-
-            $variant = null;
-
-            if ($variantId) {
-                $variant = ProductVariant::query()->findOrFail($variantId);
-
-                if ($variant->product_id !== $product->id) {
-                    throw new BusinessException(
-                        'تنوع انتخاب شده متعلق به این محصول نمی‌باشد.',
-                        code: Response::HTTP_UNPROCESSABLE_ENTITY,
-                    );
-                }
+            if ($wishlist->items()->count() >= config('commerce.wishlist.max_items_per_list')) {
+                throw new BusinessException(
+                    'این لیست علاقه‌مندی به حداکثر تعداد آیتم مجاز رسیده است.',
+                    httpCode: Response::HTTP_UNPROCESSABLE_ENTITY,
+                );
             }
+
+            $variant = ProductVariant::query()->findOrFail($variantId);
 
             $itemExists = WishlistItem::query()
                 ->where('wishlist_id', $wishlist->id)
-                ->where('product_id', $product->id)
-                ->when($variant, fn(Builder $query) => $query->where('variant_id', $variant->id))
+                ->where('product_variant_id', $variant->id)
                 ->exists();
 
             if ($itemExists) {
@@ -55,8 +46,7 @@ class AddWishlistItemAction
 
             return WishlistItem::query()->create([
                 'wishlist_id' => $wishlist->id,
-                'product_id' => $product->id,
-                'variant_id' => $variant?->id,
+                'product_variant_id' => $variant->id,
             ]);
         });
     }

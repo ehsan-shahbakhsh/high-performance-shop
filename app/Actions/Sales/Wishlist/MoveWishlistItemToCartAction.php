@@ -10,21 +10,14 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-readonly class MoveWishlistItemToCartAction
+class MoveWishlistItemToCartAction
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct(private ProductPriceResolver $priceResolver)
-    {
-    }
-
     /**
      * @throws Throwable
      */
-    public function execute(User $user, WishlistItem $wishlistItem, ?int $variantId): CartItem
+    public function execute(User $user, WishlistItem $wishlistItem): CartItem
     {
-        return DB::transaction(function () use ($user, $wishlistItem, $variantId) {
+        return DB::transaction(function () use ($user, $wishlistItem) {
             $wishlistItem = WishlistItem::query()
                 ->whereKey($wishlistItem->id)
                 ->lockForUpdate()
@@ -32,62 +25,16 @@ readonly class MoveWishlistItemToCartAction
 
             $mainCart = $user->mainCart()->lockForUpdate()->first();
 
-            $product = $wishlistItem->product;
-            if (!$product) {
-                throw new BusinessException(
-                    'محصول مورد نظر یافت نشد.',
-                    httpCode: Response::HTTP_NOT_FOUND,
-                );
-            }
-            if (!$product->is_active) {
+            $variant = $wishlistItem->variant;
+            if (!$variant->is_active || !$variant->product->isAvailable()) {
                 throw new BusinessException(
                     'این محصول در حال حاضر غیرفعال است و امکان خرید آن وجود ندارد.',
                     httpCode: Response::HTTP_UNPROCESSABLE_ENTITY,
                 );
             }
 
-            $variant = $variantId
-                ? ProductVariant::query()
-                    ->where('product_id', $product->id)
-                    ->whereKey($variantId)
-                    ->first()
-                : $wishlistItem->variant;
-
-            if (!$variant) {
-                $variantsCount = $product->variants()->count();
-
-                if ($variantsCount === 1) {
-                    $variant = $product->variants()->first();
-                } elseif ($variantsCount > 1) {
-                    throw new BusinessException(
-                        'لطفاً ابتدا تنوع مورد نظر این محصول را انتخاب کنید.',
-                        httpCode: Response::HTTP_UNPROCESSABLE_ENTITY,
-                        errorCode: 'VARIANT_SELECTION_REQUIRED',
-                    );
-                }
-            }
-
-            if ($variant && !$variant->is_active) {
-                throw new BusinessException(
-                    'این تنوع از محصول در حال حاضر در دسترس نیست.',
-                    httpCode: Response::HTTP_UNPROCESSABLE_ENTITY,
-                );
-            }
-
-            if ($variant && $product->manage_stock && $variant->stock_quantity < 1) {
-                throw new BusinessException(
-                    'موجودی این محصول به پایان رسیده است.',
-                    httpCode: Response::HTTP_CONFLICT,
-                );
-            }
-
             $cartItemExists = $mainCart->items()
-                ->where('product_id', $wishlistItem->product_id)
-                ->when(
-                    $variant,
-                    fn($query) => $query->where('variant_id', $variant->id),
-                    fn($query) => $query->whereNull('variant_id')
-                )
+                ->where('product_variant_id', $wishlistItem->product_variant_id)
                 ->exists();
             if ($cartItemExists) {
                 throw new BusinessException(
@@ -96,12 +43,18 @@ readonly class MoveWishlistItemToCartAction
                 );
             }
 
+            if ($variant->product->manage_stock && $variant->stock_quantity < 1) {
+                throw new BusinessException(
+                    'موجودی این محصول به پایان رسیده است.',
+                    httpCode: Response::HTTP_CONFLICT,
+                );
+            }
+
             $cartItem = $mainCart->items()
                 ->create([
-                    'product_id' => $wishlistItem->product_id,
-                    'variant_id' => $variant?->id,
+                    'product_variant_id' => $wishlistItem->product_variant_id,
                     'quantity' => 1,
-                    'unit_price_snapshot' => $this->priceResolver->resolve($product, $variant),
+                    'price_when_added' => $variant->final_price,
                 ]);
 
             $wishlistItem->deleteOrFail();
