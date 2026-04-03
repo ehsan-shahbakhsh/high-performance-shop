@@ -18,10 +18,6 @@ class ProductCartResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'sku' => $this->sku,
-
-            'price' => $this->price,
-            'sale_price' => $this->sale_price,
 
             'is_active' => $this->is_active,
 
