@@ -19,7 +19,10 @@ class WishlistItemResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'product' => ProductWishlistResource::make($this->whenLoaded('product')),
+            'product' => $this->when(
+                $this->relationLoaded('variant') && $this->variant->relationLoaded('product'),
+                fn() => ProductWishlistResource::make($this->variant->product),
+            ),
             'variant' => VariantResource::make($this->whenLoaded('variant')),
         ];
     }
