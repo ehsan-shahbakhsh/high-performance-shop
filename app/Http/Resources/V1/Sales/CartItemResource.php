@@ -25,7 +25,10 @@ class CartItemResource extends JsonResource
             'quantity' => $this->quantity,
             'price_when_added' => $this->price_when_added,
 
-            'product' => ProductCartResource::make($this->whenLoaded('variant.product')),
+            'product' => $this->when(
+                $this->relationLoaded('variant') && $this->variant->relationLoaded('product'),
+                fn() => ProductCartResource::make($this->variant->product),
+            ),
             'variant' => VariantCartResource::make($this->whenLoaded('variant')),
 
             'timestamps' => [
