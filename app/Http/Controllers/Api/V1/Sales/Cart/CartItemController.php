@@ -31,7 +31,7 @@ class CartItemController extends Controller
             'quantity' => intval($inputs['quantity']),
         ]));
 
-        // todo: check need to load variant and product or not
+        $cartItem->load('variant.product.media');
 
         return ApiResponse::success(CartItemResource::make($cartItem), 'کالا با موفقیت به سبد خرید اضافه شد.');
     }
