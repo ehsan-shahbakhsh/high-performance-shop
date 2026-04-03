@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1\Sales\Wishlist;
 
-use App\Http\Requests\Api\V1\Sales\Wishlist\MoveWishlistItemToCartRequest;
 use Illuminate\Http\Request;
 use App\Actions\Sales\Wishlist\{MoveWishlistItemToCartAction, AddWishlistItemAction};
 use App\Http\Controllers\Controller;
@@ -20,7 +19,7 @@ class WishlistItemController extends Controller
         Gate::authorize('view', $wishlist);
 
         $items = $wishlist->items()
-            ->with(['product.media', 'variant'])
+            ->with(['variant.media', 'variant.product.media'])
             ->latest('id')
             ->cursorPaginate();
 
@@ -36,11 +35,10 @@ class WishlistItemController extends Controller
 
         $item = $action->execute(
             $wishlist,
-            $request->validated('product_id'),
             $request->validated('variant_id'),
         );
 
-        $item->load(['product.media', 'variant']);
+        $item->load(['variant.media', 'variant.product.media']);
 
         return ApiResponse::created(WishlistItemResource::make($item), 'محصول به لیست اضافه شد.');
     }
@@ -57,11 +55,11 @@ class WishlistItemController extends Controller
     /**
      * @throws Throwable
      */
-    public function moveToCart(MoveWishlistItemToCartRequest $request, Wishlist $wishlist, WishlistItem $item, MoveWishlistItemToCartAction $action)
+    public function moveToCart(Request $request, Wishlist $wishlist, WishlistItem $item, MoveWishlistItemToCartAction $action)
     {
         Gate::authorize('moveToCart', $item);
 
-        $action->execute($request->user(), $item, $request->validated('variant_id'));
+        $action->execute($request->user(), $item);
 
         return ApiResponse::success(message: 'محصول با موفقیت به سبد خرید افزوده شد.');
     }
