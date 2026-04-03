@@ -10,6 +10,7 @@ return [
     'wishlist' => [
         'max_per_user' => 20,
         'default_name' => 'علاقه‌مندی‌ها',
+        'max_items_per_list' => 100,
     ],
 
 ];
