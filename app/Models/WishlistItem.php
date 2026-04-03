@@ -12,7 +12,7 @@ class WishlistItem extends Model
     /** @use HasFactory<WishlistItemFactory> */
     use HasFactory;
 
-    protected $fillable = ['wishlist_id', 'product_id', 'variant_id'];
+    protected $fillable = ['wishlist_id', 'product_variant_id'];
 
     protected $perPage = 20;
 
@@ -21,13 +21,8 @@ class WishlistItem extends Model
         return $this->belongsTo(Wishlist::class);
     }
 
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class);
-    }
-
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::class, 'variant_id');
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 }

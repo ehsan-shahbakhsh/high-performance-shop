@@ -2,8 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\{Product, ProductVariant};
-use App\Models\{Wishlist, WishlistItem};
+use App\Models\{Wishlist, WishlistItem, ProductVariant};
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,20 +19,7 @@ class WishlistItemFactory extends Factory
     {
         return [
             'wishlist_id' => Wishlist::factory(),
-            'product_id' => Product::factory(),
-            'variant_id' => null,
+            'product_variant_id' => ProductVariant::factory(),
         ];
-    }
-
-    public function withVariant(?ProductVariant $variant = null): static
-    {
-        return $this->state(function () use ($variant) {
-            $variant ??= ProductVariant::factory()->create();
-
-            return [
-                'variant_id' => $variant->id,
-                'product_id' => $variant->product_id,
-            ];
-        });
     }
 }

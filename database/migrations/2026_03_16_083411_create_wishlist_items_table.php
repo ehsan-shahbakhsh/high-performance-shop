@@ -15,14 +15,11 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('wishlist_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained();
-
-            $table->foreignId('variant_id')->nullable()->constrained('product_variants');
-            $table->unsignedBigInteger('variant_key')->virtualAs('COALESCE(`variant_id`, 0)');
+            $table->foreignId('product_variant_id')->constrained();
 
             $table->timestamps();
 
-            $table->unique(['wishlist_id', 'product_id', 'variant_key']);
+            $table->unique(['wishlist_id', 'product_variant_id']);
         });
     }
 
