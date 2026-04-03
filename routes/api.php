@@ -61,8 +61,8 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('cart-items')->controller(CartItemController::class)->group(function () {
             Route::post('/', 'store');
-            Route::match(['put', 'patch'], '{item}', 'update');
-            Route::delete('{item}', 'destroy');
+            Route::match(['put', 'patch'], '{itemId}', 'update');
+            Route::delete('{itemId}', 'destroy');
         });
     });
 });
