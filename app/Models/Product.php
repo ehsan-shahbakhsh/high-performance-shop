@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute as CastAttribute;
 class Product extends Model implements HasMedia
 {
     use InteractsWithMedia;
+
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
     use SoftDeletes;
@@ -289,8 +290,8 @@ class Product extends Model implements HasMedia
                             'attribute_name' => $attribute->name,
                             'display_value' => $value->value_string
                                 ?? $value->value_text
-                                ?? $value->value_number
-                                ?? ($value->value_boolean ? 'بله' : 'خیر'),
+                                    ?? $value->value_number
+                                    ?? ($value->value_boolean ? 'بله' : 'خیر'),
                         ];
                     }
                 }
@@ -298,6 +299,23 @@ class Product extends Model implements HasMedia
                 return $result;
             },
         );
+    }
+
+    public function isAvailable(): bool
+    {
+        if (!$this->is_active) {
+            return false;
+        }
+
+        if ($this->status !== ProductStatus::Published) {
+            return false;
+        }
+
+        if ($this->published_at !== null && $this->published_at->isFuture()) {
+            return false;
+        }
+
+        return true;
     }
 
     public function sluggable(): array
