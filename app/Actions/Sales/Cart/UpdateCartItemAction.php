@@ -81,7 +81,7 @@ readonly class UpdateCartItemAction
     {
         return DB::transaction(function () use ($cartItemId, $quantity) {
             $cartItem = CartItem::query()
-                ->with('variant.product')
+                ->with('variant.product.media')
                 ->whereKey($cartItemId)
                 ->lockForUpdate()
                 ->firstOrFail();
