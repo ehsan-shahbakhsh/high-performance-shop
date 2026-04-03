@@ -9,7 +9,7 @@ use Laravel\Sanctum\Sanctum;
 uses(TestCase::class, RefreshDatabase::class);
 
 describe('validation', function () {
-    it('requires product_id', function () {
+    it('requires variant_id', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
@@ -18,10 +18,10 @@ describe('validation', function () {
 
         postJson("/api/v1/wishlists/{$wishlist->id}/items", [])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors('product_id');
+            ->assertJsonValidationErrors('variant_id');
     });
 
-    it('validates product exists', function () {
+    it('validates variant_id exists', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
@@ -29,65 +29,81 @@ describe('validation', function () {
         $wishlist = Wishlist::factory()->for($user)->create();
 
         postJson("/api/v1/wishlists/{$wishlist->id}/items", [
-            'product_id' => 999999
-        ])
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('product_id');
-    });
-
-    it('validates variant exists', function () {
-        $user = User::factory()->create();
-
-        Sanctum::actingAs($user);
-
-        $wishlist = Wishlist::factory()->for($user)->create();
-        $product = Product::factory()->create();
-
-        postJson("/api/v1/wishlists/{$wishlist->id}/items", [
-            'product_id' => $product->id,
             'variant_id' => 999999
         ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('variant_id');
     });
 
-    it('validates that the variant belongs to the given product', function () {
+    it('validates variant_id is active', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
 
         $wishlist = Wishlist::factory()->for($user)->create();
 
-        $product = Product::factory()->create();
-        $otherProduct = Product::factory()->create();
-
-        $variant = ProductVariant::factory()->for($otherProduct)->create();
+        $variant = ProductVariant::factory()->create(['is_active' => false]);
 
         postJson("/api/v1/wishlists/{$wishlist->id}/items", [
-            'product_id' => $product->id,
-            'variant_id' => $variant->id,
+            'variant_id' => $variant->id
         ])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['variant_id']);
+            ->assertJsonValidationErrors('variant_id');
+    });
+
+    it('validates parent product is active', function () {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $wishlist = Wishlist::factory()->for($user)->create();
+
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->state(['is_active' => false]))
+            ->create(['is_active' => true]);
+
+        postJson("/api/v1/wishlists/{$wishlist->id}/items", [
+            'variant_id' => $variant->id
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('variant_id');
+    });
+
+    it('fails if the parent product status is not published', function () {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $wishlist = Wishlist::factory()->for($user)->create();
+
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->draft())
+            ->create(['is_active' => true]);
+
+        postJson("/api/v1/wishlists/{$wishlist->id}/items", [
+            'variant_id' => $variant->id
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('variant_id');
     });
 });
 
 describe('core logic and happy path', function () {
-    it('adds product to wishlist', function () {
+    it('adds variant to wishlist', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
 
         $wishlist = Wishlist::factory()->for($user)->create();
-        $product = Product::factory()->create();
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['stock_quantity' => 1]);
 
-        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['product_id' => $product->id])
+        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['variant_id' => $variant->id])
             ->assertCreated()
             ->assertJsonPath('message', 'محصول به لیست اضافه شد.');
 
         assertDatabaseHas('wishlist_items', [
             'wishlist_id' => $wishlist->id,
-            'product_id' => $product->id
+            'product_variant_id' => $variant->id
         ]);
     });
 
@@ -97,20 +113,22 @@ describe('core logic and happy path', function () {
         Sanctum::actingAs($user);
 
         $wishlist = Wishlist::factory()->for($user)->create();
-        $product = Product::factory()->create();
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['stock_quantity' => 1]);
 
-        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['product_id' => $product->id])
+        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['variant_id' => $variant->id])
             ->assertCreated()
-            ->assertJsonPath('data.product.id', $product->id);
+            ->assertJsonPath('data.variant.id', $variant->id);
     });
 });
 
 describe('edge cases and errors', function () {
     it('returns unauthorized when user is not authenticated', function () {
         $wishlist = Wishlist::factory()->create();
-        $product = Product::factory()->create();
+        $variant = ProductVariant::factory()->create();
 
-        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['product_id' => $product->id])
+        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['variant_id' => $variant->id])
             ->assertUnauthorized();
     });
 
@@ -119,25 +137,29 @@ describe('edge cases and errors', function () {
         $otherUser = User::factory()->create();
 
         $wishlist = Wishlist::factory()->for($user)->create();
-        $product = Product::factory()->create();
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create();
 
         Sanctum::actingAs($otherUser);
 
-        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['product_id' => $product->id])
+        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['variant_id' => $variant->id])
             ->assertForbidden();
     });
 
-    it('prevents adding duplicate product to wishlist', function () {
+    it('prevents adding duplicate variant to wishlist', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
 
         $wishlist = Wishlist::factory()->for($user)->create();
-        $product = Product::factory()->create();
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create();
 
-        WishlistItem::factory()->for($wishlist)->for($product)->create();
+        WishlistItem::factory()->for($wishlist)->for($variant, 'variant')->create();
 
-        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['product_id' => $product->id])
+        postJson("/api/v1/wishlists/{$wishlist->id}/items", ['variant_id' => $variant->id])
             ->assertUnprocessable()
             ->assertJsonPath('message', 'این محصول قبلاً در این لیست وجود دارد.');
     });

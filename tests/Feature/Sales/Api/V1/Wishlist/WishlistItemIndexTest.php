@@ -27,7 +27,7 @@ describe('core logic and happy path', function () {
             ->assertJsonCount(3, 'data');
     });
 
-    it('loads product for each wishlist item', function () {
+    it('loads product and variant for each wishlist item', function () {
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
@@ -45,7 +45,10 @@ describe('core logic and happy path', function () {
                         'id',
                         'product' => [
                             'id',
-                        ]
+                        ],
+                        'variant' => [
+                            'id',
+                        ],
                     ]
                 ]
             ]);
