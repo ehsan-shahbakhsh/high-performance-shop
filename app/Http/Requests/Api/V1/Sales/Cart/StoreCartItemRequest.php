@@ -32,10 +32,10 @@ class StoreCartItemRequest extends FormRequest
                 Rule::exists('product_variants', 'id')
                     ->where('is_active', true),
                 function (string $attribute, mixed $value, Closure $fail) {
-                    $variant = ProductVariant::with('product:id,is_active')
+                    $variant = ProductVariant::with('product:id,is_active,status,published_at')
                         ->find($value);
 
-                    if (!$variant->product->is_active) {
+                    if (!$variant->product->isAvailable()) {
                         $fail('این محصول در حال حاضر غیرفعال است و امکان خرید آن وجود ندارد.');
                     }
                 },
