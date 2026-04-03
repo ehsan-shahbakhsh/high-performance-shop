@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Api\V1\Sales\Wishlist;
 
+use App\Models\ProductVariant;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Closure;
 
 class StoreWishlistItemRequest extends FormRequest
 {
@@ -24,23 +26,19 @@ class StoreWishlistItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => [
-                'required', 'integer',
-                Rule::exists('products', 'id')->where('is_active', true),
-            ],
             'variant_id' => [
-                'nullable', 'integer',
+                'bail', 'required', 'integer',
                 Rule::exists('product_variants', 'id')
-                    ->where('product_id', $this->product_id)
                     ->where('is_active', true),
-            ],
-        ];
-    }
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $variant = ProductVariant::with('product:id,is_active,status,published_at')
+                        ->find($value);
 
-    public function messages(): array
-    {
-        return [
-            'variant_id.exists' => 'تنوع انتخاب شده معتبر نیست یا متعلق به این محصول نمی‌باشد.',
+                    if (!$variant->product->isAvailable()) {
+                        $fail('این محصول در حال حاضر غیرفعال است و امکان خرید آن وجود ندارد.');
+                    }
+                },
+            ],
         ];
     }
 }
