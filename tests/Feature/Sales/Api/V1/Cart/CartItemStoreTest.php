@@ -23,7 +23,9 @@ describe('validation', function () {
     });
 
     it('fails if neither user nor session id provided', function () {
-        $variant = ProductVariant::factory()->create();
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create();
 
         postJson('/api/v1/cart-items', [
             'variant_id' => $variant->id,
@@ -93,7 +95,9 @@ describe('core logic and happy path', function () {
         Sanctum::actingAs($user);
 
         $mainCart = $user->mainCart;
-        $variant = ProductVariant::factory()->create(['is_active' => true, 'stock_quantity' => 1]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['is_active' => true, 'stock_quantity' => 1]);
         $quantity = 1;
 
         expect($mainCart->items()->count())->toBe(0);
@@ -111,7 +115,9 @@ describe('core logic and happy path', function () {
     });
 
     it('successfully adds a variant to the cart for a guest user', function () {
-        $variant = ProductVariant::factory()->create(['is_active' => true, 'stock_quantity' => 2]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['is_active' => true, 'stock_quantity' => 2]);
         $sessionId = fake()->uuid();
 
         postJson('/api/v1/cart-items', [
@@ -132,7 +138,9 @@ describe('core logic and happy path', function () {
         Sanctum::actingAs($user);
 
         $mainCart = $user->mainCart;
-        $variant = ProductVariant::factory()->create(['stock_quantity' => 15]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['stock_quantity' => 15]);
 
         $cartItem = CartItem::factory()
             ->quantity(10)
@@ -154,11 +162,13 @@ describe('core logic and happy path', function () {
         Sanctum::actingAs($user);
 
         $mainCart = $user->mainCart;
-        $variant = ProductVariant::factory()->create([
-            'price' => 10_000,
-            'sale_price' => 7_000,
-            'stock_quantity' => 5,
-        ]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create([
+                'price' => 10_000,
+                'sale_price' => 7_000,
+                'stock_quantity' => 5,
+            ]);
         postJson('/api/v1/cart-items', [
             'variant_id' => $variant->id,
             'quantity' => 5,
@@ -177,7 +187,9 @@ describe('core logic and happy path', function () {
         $user = User::factory()->create();
 
         $mainCart = $user->mainCart;
-        $variant = ProductVariant::factory()->create(['stock_quantity' => 4]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['stock_quantity' => 4]);
 
         $initialVersion = $mainCart->version;
 
@@ -210,7 +222,9 @@ describe('core logic and happy path', function () {
         $mainCart = $user->mainCart;
         $mainCart->update(['last_activity_at' => now()]);
 
-        $variant = ProductVariant::factory()->create(['stock_quantity' => 2]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['stock_quantity' => 2]);
 
         Carbon::setTestNow(now()->addMinutes(5));
 
@@ -231,8 +245,12 @@ describe('core logic and happy path', function () {
         $mainCart = $user->mainCart;
         $mainCart->update(['subtotal' => 0]);
 
-        $variantA = ProductVariant::factory()->create(['sale_price' => 100, 'stock_quantity' => 2]);
-        $variantB = ProductVariant::factory()->create(['sale_price' => 300, 'stock_quantity' => 5]);
+        $variantA = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['sale_price' => 100, 'stock_quantity' => 2]);
+        $variantB = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['sale_price' => 300, 'stock_quantity' => 5]);
 
         postJson('/api/v1/cart-items', [
             'variant_id' => $variantA->id,
@@ -263,7 +281,9 @@ describe('core logic and happy path', function () {
         Sanctum::actingAs($user);
 
         $mainCart = $user->mainCart;
-        $variant = ProductVariant::factory()->create(['stock_quantity' => 10]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['stock_quantity' => 10]);
 
         for ($i = 0; $i < 10; $i++) {
             postJson('/api/v1/cart-items', [
@@ -290,10 +310,12 @@ describe('core logic and happy path', function () {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $variant = ProductVariant::factory()->create([
-            'price' => 15_000,
-            'sale_price' => null,
-        ]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create([
+                'price' => 15_000,
+                'sale_price' => null,
+            ]);
 
         postJson('/api/v1/cart-items', [
             'variant_id' => $variant->id,
@@ -309,15 +331,11 @@ describe('core logic and happy path', function () {
 
 describe('edge cases and errors', function () {
     it('fails when adding a product that is out of stock', function () {
-        $product = Product::factory()->create(['manage_stock' => true]);
-
-        $variant = ProductVariant::factory()->create([
-            'product_id' => $product->id,
-            'stock_quantity' => 1,
-        ]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published()->state(['manage_stock' => true]))
+            ->create(['stock_quantity' => 1]);
 
         postJson('/api/v1/cart-items', [
-            'product_id' => $product->id,
             'variant_id' => $variant->id,
             'quantity' => 5,
         ], [
@@ -332,7 +350,7 @@ describe('edge cases and errors', function () {
         Sanctum::actingAs($user);
 
         $variant = ProductVariant::factory()
-            ->for(Product::factory()->state(['manage_stock' => true]))
+            ->for(Product::factory()->published()->state(['manage_stock' => true]))
             ->create(['stock_quantity' => 4]);
 
         $mainCart = $user->mainCart;
@@ -357,7 +375,9 @@ describe('edge cases and errors', function () {
     });
 
     it('fails for guest user without a valid session id', function () {
-        $variant = ProductVariant::factory()->create(['stock_quantity' => 10]);
+        $variant = ProductVariant::factory()
+            ->for(Product::factory()->published())
+            ->create(['stock_quantity' => 10]);
 
         postJson('/api/v1/cart-items', [
             'variant_id' => $variant->id,
