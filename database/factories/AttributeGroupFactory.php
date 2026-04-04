@@ -19,7 +19,7 @@ class AttributeGroupFactory extends Factory
     {
         return [
             'name' => ucfirst(fake()->unique()->word()),
-            'position' => fake()->randomNumber(0, 100),
+            'position' => fake()->numberBetween(0, 100),
         ];
     }
 }
