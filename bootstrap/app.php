@@ -22,7 +22,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Responses\ApiResponse;
-use App\Http\Middleware\OptionalSanctumAuth;
+use App\Http\Middleware\{OptionalSanctumAuth, AppendLogContext};
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -33,6 +33,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(AppendLogContext::class);
+
         $middleware->alias([
             'auth.optional' => OptionalSanctumAuth::class,
         ]);
