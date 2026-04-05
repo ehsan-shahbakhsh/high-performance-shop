@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,12 +19,15 @@ class AppendLogContext
     {
         $requestId = (string)Str::uuid();
 
-        Log::shareContext([
-            'request_id' => $requestId,
-            'user_id' => $request->user()?->id ?? 'guest',
+        Context::add([
+            'request-id' => $requestId,
             'ip' => $request->ip(),
         ]);
 
-        return $next($request);
+        $response = $next($request);
+
+        $response->headers->set('Request-Id', $requestId);
+
+        return $response;
     }
 }
