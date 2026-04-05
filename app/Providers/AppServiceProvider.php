@@ -3,14 +3,13 @@
 namespace App\Providers;
 
 use Filament\Actions\Action;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\Authenticated;
+use Illuminate\Support\Facades\{Context, Date, RateLimiter, DB};
 use App\Models\{ProductVariant, Warehouse, User};
 use App\Observers\{ProductVariantObserver, WarehouseObserver, UserObserver};
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use App\Sms\Interfaces\SmsDriverInterface;
 use App\Sms\Drivers\LogDriver;
@@ -79,6 +78,10 @@ class AppServiceProvider extends ServiceProvider
 
                 $action->success();
             });
+        });
+
+        \Event::listen(function (Authenticated $event) {
+            Context::add('user-id', $event->user->id);
         });
     }
 }
