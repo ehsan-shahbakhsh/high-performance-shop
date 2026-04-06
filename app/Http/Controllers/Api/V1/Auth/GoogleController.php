@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Actions\Auth\Otp\HandleSocialLoginAction;
 use App\Data\Auth\SocialUserData;
 use App\Enums\SocialAccountProvider;
+use App\Events\Auth\UserAuthenticated;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\Auth\AuthUserResource;
 use App\Http\Responses\ApiResponse;
@@ -36,6 +37,8 @@ class GoogleController extends Controller
             );
 
             $result = $action->execute($data);
+
+            event(new UserAuthenticated($result->user, $request->header('Session-Id')));
 
             return ApiResponse::success([
                 'user' => new AuthUserResource($result->user),
