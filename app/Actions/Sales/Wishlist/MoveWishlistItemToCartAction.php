@@ -2,10 +2,8 @@
 
 namespace App\Actions\Sales\Wishlist;
 
-use App\Enums\ProductType;
 use App\Exceptions\BusinessException;
-use App\Services\Catalog\ProductPriceResolver;
-use App\Models\{CartItem, ProductVariant, User, WishlistItem};
+use App\Models\{CartItem, User, WishlistItem};
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
