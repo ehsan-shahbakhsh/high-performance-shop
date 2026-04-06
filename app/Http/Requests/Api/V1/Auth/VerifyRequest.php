@@ -28,7 +28,7 @@ class VerifyRequest extends FormRequest
             'identifier' => [
                 'required', 'string',
                 $isEmailIntent
-                    ? 'email:rfc,dns'
+                    ? 'email:rfc,strict'
                     : 'regex:/^09\d{9}$/'
             ],
             'code' => ['required', 'int', 'digits:4'],
