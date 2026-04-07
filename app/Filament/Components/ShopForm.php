@@ -5,6 +5,7 @@ namespace App\Filament\Components;
 use App\Models\Icon;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\{Select, TextInput, Toggle};
 use Filament\Schemas\Components\Utilities\{Get, Set};
 use Filament\Support\{RawJs, Icons\Heroicon};
@@ -131,7 +132,7 @@ final class ShopForm
                 modifyRuleUsing: fn($rule) => $rule->whereNull('deleted_at'),
             )
             ->live(onBlur: true)
-            ->afterStateUpdated(fn(Set $set, ?string $state) => $set($name, SlugService::createSlug($model, $name, $state ?? '')))
+            ->afterStateUpdated(fn(Set $set, ?string $state, ?Model $record) => $set($name, SlugService::createSlug($record ?? $model, $name, $state ?? '')))
             ->regex('/^[a-z0-9\-\_]+$/');
 
         if ($generateFrom) {
@@ -139,10 +140,11 @@ final class ShopForm
                 Action::make('generateSlug')
                     ->icon(Heroicon::ArrowPath)
                     ->tooltip('ساخت مجدد اسلاگ')
-                    ->action(function (Get $get, Set $set) use ($generateFrom, $model, $name) {
+                    ->action(function (Get $get, Set $set, ?Model $record) use ($generateFrom, $model, $name) {
                         $set(
                             $name,
-                            SlugService::createSlug($model,
+                            SlugService::createSlug(
+                                $record ?? $model,
                                 $name,
                                 $get($generateFrom) ?? '',
                             )
