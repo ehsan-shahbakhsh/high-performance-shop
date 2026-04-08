@@ -9,15 +9,17 @@ class CartCalculator
     public function recalculate(Cart $cart): void
     {
         $totals = $cart->items()
+            ->join('product_variants as v', 'v.id', '=', 'cart_items.product_variant_id')
             ->selectRaw('
                 COUNT(*) as items_count,
-                SUM(quantity) as items_qty_sum,
-                SUM(price_when_added * quantity) as subtotal
+                SUM(cart_items.quantity) as items_qty_sum,
+                SUM(v.price * cart_items.quantity) as subtotal,
+                SUM((v.price - COALESCE(v.sale_price, v.price)) * cart_items.quantity) as discount_total
             ')
-            ->first(); // todo: check if need real-time price of variant
+            ->first();
 
-        $subtotal = (int) ($totals->subtotal ?? 0);
-        $discount = 0; // TODO
+        $subtotal = (int)($totals->subtotal ?? 0);
+        $discount = (int)($totals->discount_total ?? 0);
         $shipping = 0; // TODO
 
         $total = $subtotal - $discount + $shipping;
