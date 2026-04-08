@@ -50,7 +50,7 @@ class CartController extends Controller
             $cart->items_count = count($items);
             $cart->items_qty_sum = 0;
             $cart->subtotal = 0;
-            $cart->discount_total = 0; // TODO
+            $cart->discount_total = 0;
             $cart->shipping_total = 0; // TODO
             $cart->total = 0;
             $cart->version = 0;
@@ -61,7 +61,8 @@ class CartController extends Controller
 
                 if ($variant) {
                     $cart->items_qty_sum += $item['quantity'];
-                    $cart->subtotal += $variant->final_price;
+                    $cart->subtotal += $variant->price;
+                    $cart->discount_total += ($variant->price - $variant->final_price) * $item['quantity'];
 
                     $cartItem = new CartItem([
                         'id' => $variant->id,
