@@ -340,33 +340,7 @@ class ProductForm
                                     ->required()
                                     ->default(ProductType::Simple)
                                     ->live()
-                                    ->rule(function (Get $get, ?Product $record) {
-                                        return function ($attribute, $value, $fail) use ($record) {
-                                            if (!$record) {
-                                                return;
-                                            }
-
-                                            $variantsCount = $record->variants()->count();
-
-                                            // Variable → Simple
-                                            if (
-                                                $record->type === ProductType::Variable &&
-                                                $value === ProductType::Simple &&
-                                                $variantsCount > 1
-                                            ) {
-                                                $fail('برای تبدیل محصول به ساده باید فقط یک تنوع باقی بماند.');
-                                            }
-
-                                            // Bundle → Simple
-                                            if (
-                                                $record->type === ProductType::Bundle &&
-                                                $value === ProductType::Simple &&
-                                                $variantsCount > 1
-                                            ) {
-                                                $fail('برای تبدیل باندل به محصول ساده باید فقط یک تنوع داشته باشد.');
-                                            }
-                                        };
-                                    }),
+                                    ->disabledOn('edit'),
 
                                 Select::make('status')
                                     ->label('وضعیت')
