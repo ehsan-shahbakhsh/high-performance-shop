@@ -247,10 +247,18 @@ describe('core logic and happy path', function () {
 
         $variantA = ProductVariant::factory()
             ->for(Product::factory()->published())
-            ->create(['sale_price' => 100, 'stock_quantity' => 2]);
+            ->create([
+                'price' => 150,
+                'sale_price' => 100,
+                'stock_quantity' => 2,
+            ]);
         $variantB = ProductVariant::factory()
             ->for(Product::factory()->published())
-            ->create(['sale_price' => 300, 'stock_quantity' => 5]);
+            ->create([
+                'price' => 400,
+                'sale_price' => 300,
+                'stock_quantity' => 5,
+            ]);
 
         postJson('/api/v1/cart-items', [
             'variant_id' => $variantA->id,
@@ -259,7 +267,9 @@ describe('core logic and happy path', function () {
 
         $mainCart->refresh();
 
-        expect($mainCart->subtotal)->toBe(200)
+        expect($mainCart->subtotal)->toBe(300)
+            ->and($mainCart->total)->toBe(200)
+            ->and($mainCart->discount_total)->toBe(100)
             ->and($mainCart->items_count)->toBe(1)
             ->and($mainCart->items_qty_sum)->toBe(2);
 
@@ -270,7 +280,9 @@ describe('core logic and happy path', function () {
 
         $mainCart->refresh();
 
-        expect($mainCart->subtotal)->toBe(1700)
+        expect($mainCart->subtotal)->toBe(2300)
+            ->and($mainCart->total)->toBe(1700)
+            ->and($mainCart->discount_total)->toBe(600)
             ->and($mainCart->items_count)->toBe(2)
             ->and($mainCart->items_qty_sum)->toBe(7);
     });

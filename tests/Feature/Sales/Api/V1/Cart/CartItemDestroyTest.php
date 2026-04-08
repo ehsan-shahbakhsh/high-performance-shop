@@ -60,13 +60,28 @@ describe('core logic and happy path', function () {
         $mainCart->update([
             'items_count' => 2,
             'items_qty_sum' => 3,
-            'subtotal' => 1700,
+            'discount_total' => 300,
+            'subtotal' => 2000,
             'total' => 1700,
         ]);
 
-        $item1 = CartItem::factory()->for($mainCart)->quantity(2)->price(500)->create();
+        $item1 = CartItem::factory()
+            ->for($mainCart)
+            ->for(ProductVariant::factory()->state([
+                'price' => 650,
+                'sale_price' => 500,
+            ]), 'variant')
+            ->quantity(2)
+            ->create();
 
-        CartItem::factory()->for($mainCart)->quantity(1)->price(700)->create();
+        CartItem::factory()
+            ->for($mainCart)
+            ->for(ProductVariant::factory()->state([
+                'price' => 700,
+                'sale_price' => null,
+            ]), 'variant')
+            ->quantity(1)
+            ->create();
 
         deleteJson("/api/v1/cart-items/{$item1->id}")
             ->assertOk();
@@ -79,6 +94,7 @@ describe('core logic and happy path', function () {
 
         expect($mainCart->items_count)->toBe(1)
             ->and($mainCart->items_qty_sum)->toBe(1)
+            ->and($mainCart->discount_total)->toBe(0)
             ->and($mainCart->subtotal)->toBe(700)
             ->and($mainCart->total)->toBe(700);
     });
