@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Variants\Tables;
 
+use App\Enums\ProductType;
 use App\Exceptions\BusinessException;
 use App\Filament\Components\ShopTable;
 use App\Models\ProductVariant;
@@ -101,6 +102,25 @@ class VariantsTable
                         $data['signature'] = ProductVariant::makeSignature($optionsId);
 
                         return $data;
+                    })
+                    ->before(static function ($livewire, CreateAction $action) {
+                        $product = $livewire->getOwnerRecord();
+
+                        if ($product->type !== ProductType::Bundle) return;
+
+                        $hasOptionlessVariant = $product->variants()
+                            ->doesntHave('attributeValues')
+                            ->exists();
+
+                        if ($hasOptionlessVariant) {
+                            Notification::make()
+                                ->danger()
+                                ->title('خطای ساخت واریانت')
+                                ->body('این محصول دارای یک واریانت بدون ویژگی است، بنابراین امکان ساخت واریانت دیگری برای آن وجود ندارد.')
+                                ->send();
+
+                            $action->halt();
+                        }
                     })
                     ->after(static function (ProductVariant $record, $livewire) {
                         if (!$record->sku) {
