@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Variants\Schemas;
 
 use App\Enums\AttributeType;
+use App\Enums\ProductType;
 use App\Filament\Components\ShopForm;
 use App\Models\{Attribute, AttributeOption};
 use Filament\Forms\Components\{
@@ -18,6 +19,8 @@ use Filament\Schemas\Components\{Grid, Section};
 use Filament\Schemas\Components\Utilities\{Get, Set};
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Closure;
+use Illuminate\Database\Eloquent\Model;
 
 class VariantForm
 {
@@ -74,7 +77,7 @@ class VariantForm
                             ->label('ویژگی‌ها')
                             ->hiddenLabel()
                             ->addActionLabel('افزودن ویژگی')
-                            ->required()
+                            ->required($product->type === ProductType::Variable)
                             ->schema([
                                 Hidden::make('product_id')
                                     ->default($product->id),
@@ -111,7 +114,18 @@ class VariantForm
                                     ->visible(static fn(Get $get) => $get('attribute_id')),
                             ])
                             ->columns(2)
-                            ->default([]),
+                            ->default([])
+                            ->rule(static function (Get $get, ?Model $record) use ($product) {
+                                return function (string $attribute, mixed $value, Closure $fail) use ($get, $product, $record) {
+                                    $hasOptionVariants = $product->variants()
+                                        ->when($record, static fn($query) => $query->whereKeyNot($record->id))
+                                        ->has('attributeValues')->exists();
+
+                                    if (empty($value) && $hasOptionVariants) {
+                                        $fail('ثبت ویژگی الزامی است؛ زیرا این محصول در حال حاضر دارای واریانت‌های ویژگی‌دار می‌باشد.');
+                                    }
+                                };
+                            }),
                     ])
                     ->columnSpanFull(),
 
