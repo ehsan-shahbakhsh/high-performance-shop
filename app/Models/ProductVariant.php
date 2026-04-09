@@ -49,7 +49,7 @@ class ProductVariant extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('variant_gallery')
-            ->useDisk('public')
+            ->useDisk('media')
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
