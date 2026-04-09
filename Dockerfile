@@ -24,7 +24,7 @@ RUN docker-php-ext-install pdo_mysql mbstring pcntl bcmath
 RUN pecl install redis \
     && docker-php-ext-enable redis
 
-RUN pecl install openswoole \
+RUN pecl install openswoole-25.2.0 \
     && docker-php-ext-enable openswoole
 
 RUN apt-get update && apt-get install -y \
@@ -36,6 +36,14 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-install exif
 
 RUN apt-get update && apt-get install -y sqlite3 libsqlite3-dev
+
+RUN apt-get update && apt-get install -y \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
