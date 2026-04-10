@@ -12,7 +12,7 @@ class City extends Model
     /** @use HasFactory<CityFactory> */
     use HasFactory;
 
-    protected $fillable = ['province_id', 'name', 'name_en', 'slug', 'latitude', 'latitude', 'is_active', 'has_shipping'];
+    protected $fillable = ['province_id', 'name', 'name_en', 'slug', 'latitude', 'longitude', 'is_active', 'has_shipping'];
 
     protected $casts = [
         'is_active' => 'boolean',
