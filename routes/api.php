@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Auth\{
 use App\Http\Controllers\Api\V1\Catalog\ProductCategoryController;
 use App\Http\Controllers\Api\V1\Sales\Cart\{CartController, CartItemController};
 use App\Http\Controllers\Api\V1\Sales\Wishlist\{WishlistController, WishlistItemController};
+use App\Http\Controllers\Api\V1\Customer\AddressController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -54,6 +55,8 @@ Route::prefix('v1')->group(function () {
 
                 Route::post('{item}/move-to-cart', 'moveToCart');
             });
+
+        Route::apiResource('addresses', AddressController::class)->except('show');
     });
 
     Route::middleware('auth.optional')->group(function () {
