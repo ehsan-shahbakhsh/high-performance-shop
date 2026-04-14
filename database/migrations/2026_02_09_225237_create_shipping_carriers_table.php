@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('shipping_carriers', function (Blueprint $table) {
             $table->id();
 
-            $table->string('code')->unique();
+            $table->string('code');
             $table->string('name');
 
             $table->string('tracking_url_template')->nullable();
@@ -26,6 +26,12 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
 
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unsignedTinyInteger('unique_keeper')
+                ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
+
+            $table->unique(['code', 'unique_keeper']);
         });
     }
 

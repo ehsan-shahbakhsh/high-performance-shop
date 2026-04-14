@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,9 +13,9 @@ return new class extends Migration
         Schema::create('shipping_methods', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('carrier_id')->constrained('shipping_carriers')->cascadeOnDelete();
+            $table->foreignId('carrier_id')->constrained('shipping_carriers');
 
-            $table->string('code')->unique();
+            $table->string('code');
             $table->string('name');
             $table->text('description')->nullable();
 
@@ -25,7 +24,7 @@ return new class extends Migration
 
             $table->boolean('is_cod_supported')->default(false);
 
-            $table->unsignedInteger('max_weight')->nullable();
+            $table->unsignedInteger('max_weight')->nullable()->comment('Maximum allowed weight in grams');
 
             $table->json('settings')->nullable();
 
@@ -33,6 +32,12 @@ return new class extends Migration
             $table->unsignedInteger('position')->default(0);
 
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unsignedTinyInteger('unique_keeper')
+                ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
+
+            $table->unique(['code', 'unique_keeper']);
         });
     }
 

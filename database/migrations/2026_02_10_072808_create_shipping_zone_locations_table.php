@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->unique(['zone_id', 'province_id', 'city_id', 'type'], 'zone_loc_unique');
+            $table->unique(['zone_id', 'province_id', 'city_id'], 'zone_loc_unique');
         });
     }
 

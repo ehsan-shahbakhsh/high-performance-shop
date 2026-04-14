@@ -36,8 +36,6 @@ return new class extends Migration
             $table->json('conditions')->nullable();
 
             $table->timestamps();
-
-            $table->unique(['shipping_method_id', 'shipping_zone_id']);
         });
     }
 
