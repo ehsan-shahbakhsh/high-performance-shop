@@ -2,14 +2,17 @@
 
 namespace App\Filament\Resources\ShippingMethods\Tables;
 
+use App\Filament\Components\ShopTable;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
 class ShippingMethodsTable
@@ -20,10 +23,7 @@ class ShippingMethodsTable
             ->defaultSort('position')
             ->reorderable('position')
             ->columns([
-                TextColumn::make('id')
-                    ->sortable()
-                    ->label('شناسه')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ShopTable::id(),
 
                 TextColumn::make('carrier.name')
                     ->label('شرکت حمل‌ونقل')
@@ -68,30 +68,13 @@ class ShippingMethodsTable
                     ->sortable()
                     ->toggleable(),
 
-                TextInputColumn::make('position')
-                    ->label('موقعیت')
-                    ->rules(['required', 'int', 'min:1'])
-                    ->type('number')
-                    ->sortable()
-                    ->width(80)
-                    ->toggleable(),
+                ShopTable::position(),
 
-                ToggleColumn::make('is_active')
-                    ->label('وضعیت')
-                    ->toggleable(),
+                ShopTable::status(),
 
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('تاریخ ایجاد')
-                    ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('تاریخ آخرین بروزرسانی')
-                    ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ShopTable::createdAt(),
+                ShopTable::updatedAt(),
+                ShopTable::deletedAt(),
             ])
             ->filters([
                 TernaryFilter::make('is_active')
@@ -99,13 +82,21 @@ class ShippingMethodsTable
                     ->placeholder('همه موارد')
                     ->trueLabel('فقط فعال‌ها')
                     ->falseLabel('فقط غیرفعال‌ها'),
+
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),
+
+                ActionGroup::make([
+                    DeleteAction::make(),
+                    ForceDeleteAction::make(),
+                    RestoreAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    //
                 ]),
             ]);
     }

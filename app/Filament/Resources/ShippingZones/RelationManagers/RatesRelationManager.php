@@ -2,24 +2,16 @@
 
 namespace App\Filament\Resources\ShippingZones\RelationManagers;
 
-use App\Filament\Components\ShopForm;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use App\Enums\Shipping\{ConditionType, MatchType, Operator};
+use App\Filament\Components\{ShopForm, ShopTable};
+use App\Models\{Brand, Product, ProductCategory};
+use Filament\Actions\{BulkActionGroup, CreateAction, DeleteAction, DeleteBulkAction, EditAction};
+use Filament\Forms\Components\{Hidden, Repeater, Select, TextInput};
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\{Grid, Section};
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Filament\Support\RawJs;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
@@ -51,44 +43,15 @@ class RatesRelationManager extends RelationManager
 
                 Section::make('محاسبه هزینه (تومان)')
                     ->schema([
-                        TextInput::make('base_price')
-                            ->label('هزینه پایه')
-                            ->required()
-                            ->numeric()
-                            ->mask(RawJs::make('$money($input)'))
-                            ->prefix('تومان')
-                            ->maxValue(999999999999)
-                            ->extraAttributes(['dir' => 'ltr'])
-                            ->mutateStateForValidationUsing(fn($state) => str_replace(',', '', $state)),
+                        ShopForm::price('base_price', 'هزینه پایه'),
 
-                        TextInput::make('price_per_kg')
-                            ->label('هزینه هر کیلو اضافه')
-                            ->numeric()
-                            ->helperText('اگر خالی باشد، فقط هزینه پایه محاسبه می‌شود.')
-                            ->mask(RawJs::make('$money($input)'))
-                            ->prefix('تومان')
-                            ->maxValue(999999999999)
-                            ->extraAttributes(['dir' => 'ltr'])
-                            ->mutateStateForValidationUsing(fn($state) => str_replace(',', '', $state)),
+                        ShopForm::price('price_per_kg', 'هزینه هر کیلو اضافه', isRequired: false)
+                            ->helperText('اگر خالی باشد، فقط هزینه پایه محاسبه می‌شود.'),
 
-                        TextInput::make('free_shipping_over')
-                            ->label('رایگان برای سفارش‌های بالای...')
-                            ->numeric()
-                            ->mask(RawJs::make('$money($input)'))
-                            ->prefix('تومان')
-                            ->maxValue(999999999999)
-                            ->extraAttributes(['dir' => 'ltr'])
-                            ->mutateStateForValidationUsing(fn($state) => str_replace(',', '', $state)),
+                        ShopForm::price('free_shipping_over', 'رایگان برای سفارش‌های بالای...', isRequired: false),
 
-                        TextInput::make('cod_fee')
-                            ->label('هزینه اضافه پرداخت در محل')
-                            ->numeric()
-                            ->default(0)
-                            ->mask(RawJs::make('$money($input)'))
-                            ->prefix('تومان')
-                            ->maxValue(999999999999)
-                            ->extraAttributes(['dir' => 'ltr'])
-                            ->mutateStateForValidationUsing(fn($state) => str_replace(',', '', $state)),
+                        ShopForm::price('cod_fee', 'هزینه اضافه پرداخت در محل', isRequired: false)
+                            ->default(0),
                     ]),
 
                 Section::make('شروط اعمال (محدودیت‌ها)')
@@ -105,24 +68,8 @@ class RatesRelationManager extends RelationManager
                                     ->label('حداکثر وزن (گرم)')
                                     ->numeric(),
 
-                                TextInput::make('min_subtotal')
-                                    ->label('حداقل مبلغ سفارش')
-                                    ->numeric()
-                                    ->columnSpanFull()
-                                    ->mask(RawJs::make('$money($input)'))
-                                    ->prefix('تومان')
-                                    ->maxValue(999999999999)
-                                    ->extraAttributes(['dir' => 'ltr'])
-                                    ->mutateStateForValidationUsing(fn($state) => str_replace(',', '', $state)),
-                                TextInput::make('max_subtotal')
-                                    ->label('حداکثر مبلغ سفارش')
-                                    ->numeric()
-                                    ->columnSpanFull()
-                                    ->mask(RawJs::make('$money($input)'))
-                                    ->prefix('تومان')
-                                    ->maxValue(999999999999)
-                                    ->extraAttributes(['dir' => 'ltr'])
-                                    ->mutateStateForValidationUsing(fn($state) => str_replace(',', '', $state)),
+                                ShopForm::price('min_subtotal', 'حداقل مبلغ سفارش', isRequired: false),
+                                ShopForm::price('max_subtotal', 'حداکثر مبلغ سفارش', isRequired: false),
                             ]),
                     ]),
 
@@ -138,13 +85,13 @@ class RatesRelationManager extends RelationManager
                                     ->numeric()
                                     ->requiredWith('max_virtual')
                                     ->live()
-                                    ->suffix(fn (Get $get) => match ((int)$get('unit_virtual')) {
+                                    ->suffix(static fn(Get $get) => match ((int)$get('unit_virtual')) {
                                         1440 => 'روز',
                                         60 => 'ساعت',
                                         default => 'دقیقه',
                                     })
                                     ->dehydrated(false)
-                                    ->afterStateHydrated(function ($component, Get $get, ?Model $record) {
+                                    ->afterStateHydrated(static function ($component, Get $get, ?Model $record) {
                                         if (!$record || $record->min_delivery_time === null) return;
 
                                         $min = $record->min_delivery_time;
@@ -162,13 +109,13 @@ class RatesRelationManager extends RelationManager
                                     ->numeric()
                                     ->requiredWith('min_virtual')
                                     ->live()
-                                    ->suffix(fn (Get $get) => match ((int)$get('unit_virtual')) {
+                                    ->suffix(static fn(Get $get) => match ((int)$get('unit_virtual')) {
                                         1440 => 'روز',
                                         60 => 'ساعت',
                                         default => 'دقیقه',
                                     })
                                     ->dehydrated(false)
-                                    ->afterStateHydrated(function ($component, ?Model $record) {
+                                    ->afterStateHydrated(static function ($component, ?Model $record) {
                                         if (!$record || $record->max_delivery_time === null) return;
 
                                         $min = $record->min_delivery_time ?? 0;
@@ -192,7 +139,7 @@ class RatesRelationManager extends RelationManager
                                     ->selectablePlaceholder(false)
                                     ->live()
                                     ->dehydrated(false)
-                                    ->afterStateHydrated(function ($component, ?Model $record) {
+                                    ->afterStateHydrated(static function ($component, ?Model $record) {
                                         if (!$record) return;
 
                                         $min = $record->min_delivery_time ?? 0;
@@ -210,12 +157,95 @@ class RatesRelationManager extends RelationManager
                                     }),
 
                                 Hidden::make('min_delivery_time')
-                                    ->dehydrateStateUsing(fn (Get $get) => (int)$get('min_virtual') * (int)$get('unit_virtual')),
+                                    ->dehydrateStateUsing(static fn(Get $get) => (int)$get('min_virtual') * (int)$get('unit_virtual')),
 
                                 Hidden::make('max_delivery_time')
-                                    ->dehydrateStateUsing(fn (Get $get) => (int)$get('max_virtual') * (int)$get('unit_virtual')),
+                                    ->dehydrateStateUsing(static fn(Get $get) => (int)$get('max_virtual') * (int)$get('unit_virtual')),
                             ])
                     ]),
+
+                Section::make('شرایط پیشرفته (Conditions)')
+                    ->description('تعریف شروط خاص برای اعمال این نرخ ارسال (مثلاً: در صورتی که تعداد اقلام سبد خرید بیشتر از ۳ باشد)')
+                    ->schema([
+                        Select::make('conditions.matchType')
+                            ->label('نوع تطابق شروط')
+                            ->options(MatchType::class)
+                            ->default(MatchType::All)
+                            ->selectablePlaceholder(false)
+                            ->required(),
+
+                        Repeater::make('conditions.rules')
+                            ->label('قوانین')
+                            ->addActionLabel('افزودن شرط جدید')
+                            ->defaultItems(0)
+                            ->columns(3)
+                            ->schema([
+                                Select::make('type')
+                                    ->label('نوع شرط')
+                                    ->options(ConditionType::class)
+                                    ->required()
+                                    ->live(),
+
+                                Select::make('operator')
+                                    ->label('عملگر')
+                                    ->options(static function (Get $get) {
+                                        return match ($get('type')) {
+                                            ConditionType::ItemsCount => Operator::numericOptions(),
+                                            default => Operator::relationOptions(),
+                                        };
+                                    })
+                                    ->required()
+                                    ->live(),
+
+                                Select::make('value_id')
+                                    ->label('مقدار')
+                                    ->required()
+                                    ->options(static function (Get $get) {
+                                        return match ($get('type')) {
+                                            ConditionType::Categories => ProductCategory::query()->pluck('name', 'id'),
+                                            ConditionType::Products => Product::query()->pluck('name', 'id'),
+                                            ConditionType::Brands => Brand::query()->pluck('name', 'id'),
+                                            default => [],
+                                        };
+                                    })
+                                    ->searchable()
+                                    ->visible(static function (Get $get): bool {
+                                        if ($get('type') === ConditionType::ItemsCount) return false;
+
+                                        if (in_array($get('operator'), [Operator::In, Operator::NotIn])) return false;
+
+                                        return true;
+                                    }),
+
+                                Select::make('value_ids')
+                                    ->label('مقادیر')
+                                    ->required()
+                                    ->multiple()
+                                    ->options(static function (Get $get) {
+                                        return match ($get('type')) {
+                                            ConditionType::Categories => ProductCategory::query()->pluck('name', 'id'),
+                                            ConditionType::Products => Product::query()->pluck('name', 'id'),
+                                            ConditionType::Brands => Brand::query()->pluck('name', 'id'),
+                                            default => [],
+                                        };
+                                    })
+                                    ->searchable()
+                                    ->visible(static function (Get $get): bool {
+                                        if ($get('type') === ConditionType::ItemsCount) return false;
+
+                                        if (!in_array($get('operator'), [Operator::In, Operator::NotIn])) return false;
+
+                                        return true;
+                                    }),
+
+                                TextInput::make('value')
+                                    ->label('مقدار')
+                                    ->numeric()
+                                    ->required()
+                                    ->visible(static fn(Get $get) => $get('type') === ConditionType::ItemsCount),
+                            ]),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -224,12 +254,9 @@ class RatesRelationManager extends RelationManager
         return $table
             ->defaultSort('position')
             ->reorderable('position')
-            ->modifyQueryUsing(fn($query) => $query->with('shippingMethod'))
+            ->modifyQueryUsing(static fn($query) => $query->with('shippingMethod'))
             ->columns([
-                TextColumn::make('id')
-                    ->sortable()
-                    ->label('شناسه')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ShopTable::id(),
 
                 TextColumn::make('shippingMethod.name')
                     ->label('روش ارسال')
@@ -240,49 +267,31 @@ class RatesRelationManager extends RelationManager
 
                 TextColumn::make('base_price')
                     ->label('هزینه پایه')
-                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                    ->formatStateUsing(static fn($state) => number_format($state) . ' تومان')
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('free_shipping_over')
                     ->label('سقف رایگان')
-                    ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+                    ->formatStateUsing(static fn($state) => number_format($state) . ' تومان')
                     ->placeholder('-')
                     ->toggleable(),
 
                 TextColumn::make('weight_limit')
                     ->label('محدودیت وزن')
-                    ->state(fn(Model $record) => ($record->min_weight ? $record->min_weight . ' تا ' : 'تا ') .
+                    ->state(static fn(Model $record) => ($record->min_weight ? $record->min_weight . ' تا ' : 'تا ') .
                         ($record->max_weight ? $record->max_weight . ' گرم' : '∞')
                     )
                     ->badge()
                     ->color('gray')
                     ->toggleable(),
 
-                TextInputColumn::make('position')
-                    ->label('موقعیت')
-                    ->rules(['required', 'int', 'min:1'])
-                    ->type('number')
-                    ->sortable()
-                    ->width(80)
-                    ->toggleable(),
+                ShopTable::position(),
 
-                ToggleColumn::make('is_active')
-                    ->label('وضعیت')
-                    ->toggleable(),
+                ShopTable::status(),
 
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('تاریخ ایجاد')
-                    ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('تاریخ آخرین بروزرسانی')
-                    ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ShopTable::createdAt(),
+                ShopTable::updatedAt(),
             ])
             ->filters([
                 //

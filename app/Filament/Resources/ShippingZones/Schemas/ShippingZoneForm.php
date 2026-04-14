@@ -55,7 +55,14 @@ class ShippingZoneForm
                                 Repeater::make('locations')
                                     ->relationship()
                                     ->label('مکان')
-                                    ->itemLabel(fn(array $state): ?string => Province::query()->find($state['province_id'] ?? null)?->name ?? 'مکان جدید')
+                                    ->itemLabel(static function (array $state): ?string {
+                                        $provinceName = Province::query()->find($state['province_id'] ?? null)?->name;
+                                        $cityName = City::query()->find($state['city_id'] ?? null)?->name;
+
+                                        if (!$provinceName && !$cityName) return 'مکان جدید';
+
+                                        return collect([$provinceName, $cityName])->filter()->implode(' - ');
+                                    })
                                     ->schema([
                                         Grid::make()
                                             ->columns(3)
@@ -64,14 +71,16 @@ class ShippingZoneForm
                                                     ->label('استان')
                                                     ->options(Province::all()->pluck('name', 'id'))
                                                     ->searchable()
-                                                    ->required()
+                                                    ->nullable()
+                                                    ->placeholder('همه استان‌ها (کل کشور)')
+                                                    ->helperText('خالی بگذارید تا شامل کل کشور شود.')
                                                     ->live()
-                                                    ->afterStateUpdated(fn(Set $set) => $set('city_id', null)),
+                                                    ->afterStateUpdated(static fn(Set $set) => $set('city_id', null)),
 
                                                 Select::make('city_id')
                                                     ->label('شهر')
                                                     ->placeholder('همه شهرها')
-                                                    ->options(function (Get $get) {
+                                                    ->options(static function (Get $get) {
                                                         $provinceId = $get('province_id');
                                                         if (!$provinceId) {
                                                             return [];
@@ -81,7 +90,8 @@ class ShippingZoneForm
                                                     ->searchable()
                                                     ->preload()
                                                     ->nullable()
-                                                    ->helperText('خالی بگذارید تا شامل کل استان شود'),
+                                                    ->distinct()
+                                                    ->helperText('خالی بگذارید تا شامل کل استان شود.'),
 
                                                 ToggleButtons::make('type')
                                                     ->label('وضعیت پوشش')
@@ -93,7 +103,7 @@ class ShippingZoneForm
                                     ])
                                     ->addActionLabel('افزودن مکان جدید')
                                     ->collapsible()
-                                    ->collapseAllAction(fn($action) => $action->label('بستن همه'))
+                                    ->collapseAllAction(static fn($action) => $action->label('بستن همه'))
                                     ->defaultItems(1),
                             ]),
                     ])

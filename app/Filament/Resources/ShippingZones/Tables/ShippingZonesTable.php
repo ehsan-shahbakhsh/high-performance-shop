@@ -2,14 +2,12 @@
 
 namespace App\Filament\Resources\ShippingZones\Tables;
 
+use App\Filament\Components\ShopTable;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
@@ -21,10 +19,7 @@ class ShippingZonesTable
             ->defaultSort('position')
             ->reorderable('position')
             ->columns([
-                TextColumn::make('id')
-                    ->sortable()
-                    ->label('شناسه')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ShopTable::id(),
 
                 TextColumn::make('name')
                     ->label('نام')
@@ -38,30 +33,12 @@ class ShippingZonesTable
                     ->color('gray')
                     ->toggleable(),
 
-                TextInputColumn::make('position')
-                    ->label('موقعیت')
-                    ->rules(['required', 'int', 'min:1'])
-                    ->type('number')
-                    ->sortable()
-                    ->width(80)
-                    ->toggleable(),
+                ShopTable::position(),
 
-                ToggleColumn::make('is_active')
-                    ->label('وضعیت')
-                    ->toggleable(),
+                ShopTable::status(),
 
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('تاریخ ایجاد')
-                    ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('تاریخ آخرین بروزرسانی')
-                    ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ShopTable::createdAt(),
+                ShopTable::updatedAt(),
             ])
             ->filters([
                 TernaryFilter::make('is_active')
