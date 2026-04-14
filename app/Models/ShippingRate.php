@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Data\Shipping\ShippingConditionsData;
 use Database\Factories\ShippingRateFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -48,7 +49,7 @@ class ShippingRate extends Model
         'max_subtotal' => 'integer',
         'min_delivery_time' => 'integer',
         'max_delivery_time' => 'integer',
-        'conditions' => 'json',
+        'conditions' => ShippingConditionsData::class,
     ];
 
     public function shippingZone(): BelongsTo
