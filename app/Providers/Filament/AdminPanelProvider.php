@@ -47,6 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'کاتالوگ',
+                'مارکتینگ و فروش',
                 'مدیریت مناطق',
                 'مدیریت ارسال',
             ])
