@@ -13,10 +13,18 @@ return new class extends Migration
     {
         Schema::create('discount_rules', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('discount_id')->constrained()->cascadeOnDelete();
+
             $table->string('type');
             $table->string('operator', 20);
-            $table->json('value');
+
+            $table->string('value_string')->nullable();
+            $table->bigInteger('value_integer')->nullable();
+            $table->decimal('value_float', 16, 4)->nullable();
+            $table->boolean('value_boolean')->nullable();
+            $table->json('value_json')->nullable();
+
             $table->timestamps();
         });
     }

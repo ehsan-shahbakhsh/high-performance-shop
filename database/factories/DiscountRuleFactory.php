@@ -24,40 +24,71 @@ class DiscountRuleFactory extends Factory
         $allowedOperators = array_keys($type->allowedOperators());
         $operator = fake()->randomElement($allowedOperators);
 
-        $value = match ($type) {
-            DiscountRuleType::CartSubtotal,
-            DiscountRuleType::TotalSpent => fake()->numberBetween(100_000, 5_000_000),
+        $valueString = null;
+        $valueInteger = null;
+        $valueFloat = null;
+        $valueBoolean = null;
+        $valueJson = null;
 
-            DiscountRuleType::CartQuantity,
-            DiscountRuleType::OrderCount => fake()->numberBetween(1, 10),
+        switch ($type) {
+            case DiscountRuleType::CartSubtotal:
+            case DiscountRuleType::TotalSpent:
+                $valueInteger = fake()->numberBetween(100_000, 5_000_000);
+                break;
 
-            DiscountRuleType::CartWeight => fake()->numberBetween(500, 5000),
+            case DiscountRuleType::CartQuantity:
+            case DiscountRuleType::OrderCount:
+                $valueInteger = fake()->numberBetween(1, 10);
+                break;
 
-            DiscountRuleType::CartContainsProduct,
-            DiscountRuleType::CartContainsCategory,
-            DiscountRuleType::CartContainsBrand,
-            DiscountRuleType::UserId => [fake()->numberBetween(1, 15), fake()->numberBetween(16, 30)],
+            case DiscountRuleType::CartWeight:
+                $valueInteger = fake()->numberBetween(500, 5000);
+                break;
+
+            case DiscountRuleType::CartContainsProduct:
+            case DiscountRuleType::CartContainsCategory:
+            case DiscountRuleType::CartContainsBrand:
+            case DiscountRuleType::UserId:
+                $valueJson = [fake()->numberBetween(1, 15), fake()->numberBetween(16, 30)];
+                break;
 
 //            DiscountRuleType::UserGroup => fake()->randomElements(['VIP', 'B2B', 'Regular'], fake()->numberBetween(1, 2)),
 
-            DiscountRuleType::ShippingCity,
-            DiscountRuleType::ShippingProvince => fake()->randomElements(['تهران', 'اصفهان', 'مشهد', 'شیراز', 'تبریز'], fake()->numberBetween(1, 3)),
+            case DiscountRuleType::ShippingCity:
+            case DiscountRuleType::ShippingProvince:
+                $valueJson = fake()->randomElements(['تهران', 'اصفهان', 'مشهد', 'شیراز', 'تبریز'], fake()->numberBetween(1, 3));
+                break;
 
-            DiscountRuleType::ShippingMethod => fake()->randomElement(['post', 'tipax', 'peyk']),
-            DiscountRuleType::PaymentMethod => fake()->randomElement(['online', 'cod', 'wallet']),
+            case DiscountRuleType::ShippingMethod:
+                $valueString = fake()->randomElement(['post', 'tipax', 'peyk']);
+                break;
 
-            DiscountRuleType::DayOfWeek => fake()->randomElements([1, 2, 3, 4, 5, 6, 7], fake()->numberBetween(1, 3)),
+            case DiscountRuleType::PaymentMethod:
+                $valueString = fake()->randomElement(['online', 'cod', 'wallet']);
+                break;
 
-            DiscountRuleType::IsFirstOrder => fake()->boolean(),
+            case DiscountRuleType::DayOfWeek:
+                $valueJson = fake()->randomElements([1, 2, 3, 4, 5, 6, 7], fake()->numberBetween(1, 3));
+                break;
 
-            DiscountRuleType::TimeRange => fake()->time('H:i') . '-' . fake()->time('H:i'),
-        };
+            case DiscountRuleType::IsFirstOrder:
+                $valueBoolean = fake()->boolean();
+                break;
+
+            case DiscountRuleType::TimeRange:
+                $valueJson = ['start' => fake()->time('H:i'), 'end' => fake()->time('H:i')];
+                break;
+        }
 
         return [
             'discount_id' => Discount::factory(),
             'type' => $type,
             'operator' => $operator,
-            'value' => $value,
+            'value_string' => $valueString,
+            'value_integer' => $valueInteger,
+            'value_float' => $valueFloat,
+            'value_boolean' => $valueBoolean,
+            'value_json' => $valueJson,
         ];
     }
 }
