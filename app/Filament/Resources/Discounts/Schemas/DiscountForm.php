@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Discounts\Schemas;
 
 use App\Enums\{DiscountConditionMatchType,
-    DiscountRuleOperator,
     DiscountRuleType,
     DiscountScope,
     DiscountStrategy,
@@ -88,32 +87,50 @@ class DiscountForm
                         Grid::make(3)->schema([
                             Select::make('type')
                                 ->label('نوع محاسبه')
-                                ->options(DiscountType::class)
+                                ->options(static function (Get $get) {
+                                    return match ($get('scope')) {
+                                        DiscountScope::Order => [
+                                            DiscountType::Fixed->value => DiscountType::Fixed->getLabel(),
+                                            DiscountType::Percentage->value => DiscountType::Percentage->getLabel(),
+                                        ],
+                                        DiscountScope::Item => [
+                                            DiscountType::Fixed->value => DiscountType::Fixed->getLabel(),
+                                            DiscountType::Percentage->value => DiscountType::Percentage->getLabel(),
+                                            DiscountType::BuyXGetY->value => DiscountType::BuyXGetY->getLabel(),
+                                        ],
+                                        DiscountScope::Shipping => [
+                                            DiscountType::Fixed->value => DiscountType::Fixed->getLabel(),
+                                            DiscountType::Percentage->value => DiscountType::Percentage->getLabel(),
+                                            DiscountType::FreeShipping->value => DiscountType::FreeShipping->getLabel(),
+                                        ],
+                                        default => [],
+                                    };
+                                })
                                 ->required()
                                 ->live()
                                 ->afterStateUpdated(static fn($state, Set $set) => match ($state) {
-                                    DiscountType::Fixed => $set('max_discount_amount', null),
+                                    DiscountType::Fixed->value => $set('max_discount_amount', null),
                                     default => null,
                                 }),
 
                             TextInput::make('amount')
-                                ->label(static fn(Get $get) => $get('type') === DiscountType::Percentage ? 'درصد تخفیف' : 'مبلغ تخفیف')
+                                ->label(static fn(Get $get) => $get('type') === DiscountType::Percentage->value ? 'درصد تخفیف' : 'مبلغ تخفیف')
                                 ->numeric()
                                 ->required()
                                 ->extraAttributes(['dir' => 'ltr'])
-                                ->visible(static fn(Get $get) => in_array($get('type'), [DiscountType::Percentage, DiscountType::Fixed]))
-                                ->prefix(static fn(Get $get) => $get('type') === DiscountType::Percentage ? '%' : 'تومان')
-                                ->maxValue(static fn(Get $get) => $get('type') === DiscountType::Percentage ? 100 : null),
+                                ->visible(static fn(Get $get) => in_array($get('type'), [DiscountType::Percentage->value, DiscountType::Fixed->value]))
+                                ->prefix(static fn(Get $get) => $get('type') === DiscountType::Percentage->value ? '%' : 'تومان')
+                                ->maxValue(static fn(Get $get) => $get('type') === DiscountType::Percentage->value ? 100 : null),
 
                             TextInput::make('max_discount_amount')
                                 ->label('سقف تخفیف (تومان)')
                                 ->numeric()
-                                ->visible(static fn(Get $get) => $get('type') === DiscountType::Percentage)
+                                ->visible(static fn(Get $get) => $get('type') === DiscountType::Percentage->value)
                                 ->placeholder('بی‌نهایت'),
                         ]),
 
                         Fieldset::make('تنظیمات طرح یکی بخر یکی ببر')
-                            ->visible(static fn(Get $get) => $get('type') === DiscountType::BuyXGetY)
+                            ->visible(static fn(Get $get) => $get('type') === DiscountType::BuyXGetY->value)
                             ->schema([
                                 TextInput::make('action_settings.bogo.buy_qty')
                                     ->label('تعداد خرید (X)')
@@ -260,7 +277,7 @@ class DiscountForm
                                         ->options(static fn(Get $get) => $get('type')?->allowedOperators())
                                         ->columnSpan(1),
 
-                                    TextInput::make('value')
+                                    TextInput::make('value_integer')
                                         ->label('مقدار عددی')
                                         ->numeric()
                                         ->required()
@@ -273,7 +290,7 @@ class DiscountForm
                                         ]))
                                         ->columnSpan(1),
 
-                                    Select::make('value')
+                                    Select::make('value_json')
                                         ->label('انتخاب آیتم‌ها')
                                         ->multiple()
                                         ->searchable()
@@ -310,42 +327,38 @@ class DiscountForm
                                         })
                                         ->columnSpan(1),
 
-//                                    Select::make('value')
+//                                    Select::make('value_json')
 //                                        ->label('انتخاب تگ‌های کاربر')
 //                                        ->multiple()
 //                                        ->searchable()
 //                                        ->required()
-//                                        ->visible(fn(Get $get) => $get('type') === DiscountRuleType::UserGroup)
-//                                        ->options(fn() => Tag::getWithType('user_groups')->pluck('name', 'id'))
+//                                        ->visible(static fn(Get $get) => $get('type') === DiscountRuleType::UserGroup)
+//                                        ->options(static fn() => Tag::getWithType('user_groups')->pluck('name', 'id'))
 //                                        ->columnSpan(1),
 
-                                    Select::make('value')
+                                    Toggle::make('value_boolean')
                                         ->label('وضعیت')
-                                        ->options([
-                                            'true' => 'بله (سفارش اول است)',
-                                            'false' => 'خیر (سفارش اول نیست)',
-                                        ])
+                                        ->inline(false)
                                         ->visible(static fn(Get $get) => $get('type') === DiscountRuleType::IsFirstOrder)
-                                        ->required()
                                         ->columnSpan(1),
 
                                     Grid::make(2)
                                         ->visible(static fn(Get $get) => $get('type') === DiscountRuleType::TimeRange)
                                         ->schema([
-                                            TimePicker::make('value.start')
+                                            TimePicker::make('value_json.start')
                                                 ->label('از ساعت')
                                                 ->required()
                                                 ->seconds(false)
                                                 ->displayFormat('H:i')
                                                 ->format('H:i'),
 
-                                            TimePicker::make('value.end')
+                                            TimePicker::make('value_json.end')
                                                 ->label('تا ساعت')
                                                 ->required()
                                                 ->seconds(false)
                                                 ->displayFormat('H:i')
                                                 ->format('H:i')
-                                                ->after('value.start'),
+                                                ->after('value_json.start'),
                                         ]),
                                 ]),
                             ])
