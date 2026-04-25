@@ -11,6 +11,7 @@ use App\Enums\{DiscountConditionMatchType,
 use App\Filament\Components\ShopForm;
 use App\Models\{Brand, Product, ProductCategory, ProductVariant, User};
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -268,7 +269,13 @@ class DiscountForm
                                         ->options(DiscountRuleType::class)
                                         ->required()
                                         ->live()
-                                        ->afterStateUpdated(static fn(Set $set) => $set('value', null))
+                                        ->afterStateUpdated(static function (Set $set) {
+                                            $set('value_string', null);
+                                            $set('value_integer', null);
+                                            $set('value_float', null);
+                                            $set('value_boolean', null);
+                                            $set('value_json', null);
+                                        })
                                         ->columnSpan(2),
 
                                     Select::make('operator')
@@ -276,6 +283,23 @@ class DiscountForm
                                         ->required()
                                         ->options(static fn(Get $get) => $get('type')?->allowedOperators())
                                         ->columnSpan(1),
+
+                                    Hidden::make('value_json')
+                                        ->default(null)
+                                        ->afterStateHydrated(static function ($state, Set $set, Get $get) {
+                                            if ($state) {
+                                                if ($get('type') === DiscountRuleType::TimeRange) {
+                                                    $set('time_range', $state);
+                                                } else if (in_array($get('type'), [
+                                                    DiscountRuleType::CartContainsProduct,
+                                                    DiscountRuleType::CartContainsCategory,
+                                                    DiscountRuleType::CartContainsBrand,
+                                                    DiscountRuleType::UserId,
+                                                ])) {
+                                                    $set('value_json_select', $state);
+                                                }
+                                            }
+                                        }),
 
                                     TextInput::make('value_integer')
                                         ->label('مقدار عددی')
@@ -290,7 +314,7 @@ class DiscountForm
                                         ]))
                                         ->columnSpan(1),
 
-                                    Select::make('value_json')
+                                    Select::make('value_json_select')
                                         ->label('انتخاب آیتم‌ها')
                                         ->multiple()
                                         ->searchable()
@@ -325,7 +349,8 @@ class DiscountForm
                                             DiscountRuleType::UserId => User::query()->findMany($values)->pluck('name', 'id'),
                                             default => [],
                                         })
-                                        ->columnSpan(1),
+                                        ->columnSpan(1)
+                                        ->afterStateUpdated(static fn(Set $set, $state) => $set('value_json', $state)),
 
 //                                    Select::make('value_json')
 //                                        ->label('انتخاب تگ‌های کاربر')
@@ -345,21 +370,30 @@ class DiscountForm
                                     Grid::make(2)
                                         ->visible(static fn(Get $get) => $get('type') === DiscountRuleType::TimeRange)
                                         ->schema([
-                                            TimePicker::make('value_json.start')
+                                            TimePicker::make('time_range.start')
                                                 ->label('از ساعت')
                                                 ->required()
                                                 ->seconds(false)
                                                 ->displayFormat('H:i')
-                                                ->format('H:i'),
+                                                ->format('H:i')
+                                                ->live()
+                                                ->afterStateUpdated(static function ($state, Set $set) {
+                                                    $set('value_json.start', $state);
+                                                }),
 
-                                            TimePicker::make('value_json.end')
+                                            TimePicker::make('time_range.end')
                                                 ->label('تا ساعت')
                                                 ->required()
                                                 ->seconds(false)
                                                 ->displayFormat('H:i')
                                                 ->format('H:i')
-                                                ->after('value_json.start'),
-                                        ]),
+                                                ->live()
+                                                ->after('time_range.start')
+                                                ->afterStateUpdated(static function ($state, Set $set) {
+                                                    $set('value_json.end', $state);
+                                                }),
+                                        ])
+                                        ->columnSpanFull(),
                                 ]),
                             ])
                             ->defaultItems(0)
