@@ -10,6 +10,7 @@ use App\Enums\{DiscountConditionMatchType,
 };
 use App\Filament\Components\ShopForm;
 use App\Models\{Brand, Product, ProductCategory, ProductVariant, User};
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MorphToSelect;
@@ -291,6 +292,8 @@ class DiscountForm
                                             if ($state) {
                                                 if ($get('type') === DiscountRuleType::TimeRange) {
                                                     $set('time_range', $state);
+                                                } else if ($get('type') === DiscountRuleType::DayOfWeek) {
+                                                    $set('value_json_days', $state);
                                                 } else if (in_array($get('type'), [
                                                     DiscountRuleType::CartContainsProduct,
                                                     DiscountRuleType::CartContainsCategory,
@@ -314,6 +317,23 @@ class DiscountForm
                                             DiscountRuleType::OrderCount,
                                         ]))
                                         ->columnSpan(1),
+
+                                    CheckboxList::make('value_json_days')
+                                        ->label('روزهای هفته')
+                                        ->options([
+                                            0 => 'شنبه',
+                                            1 => 'یکشنبه',
+                                            2 => 'دوشنبه',
+                                            3 => 'سه‌شنبه',
+                                            4 => 'چهارشنبه',
+                                            5 => 'پنجشنبه',
+                                            6 => 'جمعه',
+                                        ])
+                                        ->columns(2)
+                                        ->required()
+                                        ->columnSpanFull()
+                                        ->visible(static fn(Get $get) => $get('type') === DiscountRuleType::DayOfWeek)
+                                        ->afterStateUpdated(static fn(Set $set, $state) => $set('value_json', $state)),
 
                                     Select::make('value_json_select')
                                         ->label('انتخاب آیتم‌ها')
