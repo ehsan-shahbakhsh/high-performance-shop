@@ -51,7 +51,7 @@ enum DiscountRuleType: string implements HasLabel, HasColor, HasIcon
 
             self::IsFirstOrder => DiscountRuleOperator::booleanOperators(),
 
-            self::DayOfWeek => array_merge(DiscountRuleOperator::equalityOperators(), DiscountRuleOperator::arrayOperators()),
+            self::DayOfWeek => DiscountRuleOperator::arrayOperators(),
 
             default => [DiscountRuleOperator::Equals],
         };
