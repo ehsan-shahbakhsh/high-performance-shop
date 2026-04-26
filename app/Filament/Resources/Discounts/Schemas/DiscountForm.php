@@ -245,7 +245,8 @@ class DiscountForm
                             ])
                             ->defaultItems(0)
                             ->addActionLabel('افزودن شرط جدید (محصول/دسته‌بندی)')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->visible(static fn(Get $get) => $get('type') === DiscountScope::Item),
                     ]),
 
                 Section::make('قوانین و شروط تخفیف')
