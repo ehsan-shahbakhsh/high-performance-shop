@@ -358,19 +358,27 @@ class DiscountForm
                                                 ->where('name', 'like', "%{$search}%")
                                                 ->limit(20)->pluck('name', 'id'),
                                             DiscountRuleType::UserId => User::query()
-                                                ->where('name', 'like', "%{$search}%")
-                                                ->orWhere('mobile', 'like', "%{$search}%")
-                                                ->limit(20)->pluck('name', 'id'),
+                                                ->selectRaw("id, CONCAT(CONCAT_WS(' ', first_name, last_name), ' (', COALESCE(mobile, email), ')') as label")
+                                                ->where(static function ($query) use ($search) {
+                                                    $query->whereRaw("CONCAT_WS(' ', first_name, last_name) like ?", ["%{$search}%"])
+                                                        ->orWhere('mobile', 'like', "%{$search}%")
+                                                        ->orWhere('email', 'like', "%{$search}%");
+                                                })
+                                                ->limit(20)
+                                                ->pluck('label', 'id'),
                                             default => [],
                                         })
                                         ->getOptionLabelsUsing(static fn(array $values, Get $get) => match ($get('type')) {
                                             DiscountRuleType::CartContainsProduct => Product::query()->findMany($values)->pluck('name', 'id'),
                                             DiscountRuleType::CartContainsCategory => ProductCategory::query()->findMany($values)->pluck('name', 'id'),
                                             DiscountRuleType::CartContainsBrand => Brand::query()->findMany($values)->pluck('name', 'id'),
-                                            DiscountRuleType::UserId => User::query()->findMany($values)->pluck('name', 'id'),
+                                            DiscountRuleType::UserId => User::query()
+                                                ->whereIn('id', $values)
+                                                ->selectRaw("id, CONCAT(CONCAT_WS(' ', first_name, last_name), ' (', COALESCE(mobile, email), ')') as label")
+                                                ->pluck('label', 'id'),
                                             default => [],
                                         })
-                                        ->columnSpan(1)
+                                        ->columnSpanFull()
                                         ->afterStateUpdated(static fn(Set $set, $state) => $set('value_json', $state)),
 
 //                                    Select::make('value_json')
