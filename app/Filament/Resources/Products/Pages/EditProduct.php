@@ -2,36 +2,20 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
-use App\Enums\AttributeType;
-use App\Enums\ProductType;
+use App\Enums\{AttributeType, ProductType};
 use App\Filament\Components\ShopForm;
 use App\Filament\Resources\Products\ProductResource;
-use App\Models\Attribute;
-use App\Models\AttributeOption;
-use App\Models\Product;
-use App\Services\Catalog\SkuGenerator;
-use App\Services\Catalog\VariantGenerator;
-use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
+use App\Models\{Attribute, AttributeOption, Product};
+use App\Services\Catalog\{SkuGenerator, VariantGenerator};
+use Filament\Actions\{Action, DeleteAction, ForceDeleteAction, RestoreAction, ViewAction};
+use Filament\Forms\Components\{Placeholder, Repeater, Select};
 use Filament\Resources\Pages\EditRecord;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\{Grid, Section};
+use Filament\Schemas\Components\Utilities\{Get, Set};
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Throwable;
 
 class EditProduct extends EditRecord
 {
@@ -268,9 +252,23 @@ class EditProduct extends EditRecord
                 }),
 
             ViewAction::make(),
-            DeleteAction::make(),
+            DeleteAction::make()
+                ->handleWith(/**
+                 * @throws Throwable
+                 */ static function (Product $record): ?bool {
+                    $record->variants()->delete();
+                    return $record->deleteOrFail();
+                }),
             ForceDeleteAction::make(),
-            RestoreAction::make(),
+            RestoreAction::make()
+                ->handleWith(static function (Product $record): ?bool {
+                    if (!method_exists($record, 'restore')) {
+                        return false;
+                    }
+
+                    $record->variants()->restore();
+                    return $record->restoreOrFail();
+                }),
         ];
     }
 }
