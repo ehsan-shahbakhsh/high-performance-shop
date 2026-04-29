@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute as CastAttribute;
 
 class Cart extends Model
 {
@@ -91,5 +92,19 @@ class Cart extends Model
             'locked_at' => null,
             'lock_token' => null,
         ]);
+    }
+
+    public function totalWeight(): CastAttribute
+    {
+        return new CastAttribute(
+            get: function () {
+                $defaultWeight = config('commerce.cart.default_product_weight', 500);
+
+                return (int) ($this->items()
+                    ->join('product_variants as v', 'v.id', '=', 'cart_items.product_variant_id')
+                    ->selectRaw('SUM(COALESCE(v.weight, ?) * cart_items.quantity) AS total', [$defaultWeight])
+                    ->value('total') ?? 0);
+            },
+        );
     }
 }
