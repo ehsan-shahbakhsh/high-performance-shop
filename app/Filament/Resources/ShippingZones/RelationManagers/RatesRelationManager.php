@@ -8,7 +8,7 @@ use App\Models\{Brand, Product, ProductCategory};
 use Filament\Actions\{BulkActionGroup, CreateAction, DeleteAction, DeleteBulkAction, EditAction};
 use Filament\Forms\Components\{Hidden, Repeater, Select, TextInput};
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Components\{Grid, Section};
+use Filament\Schemas\Components\{Grid, Section, Utilities\Set};
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -184,7 +184,12 @@ class RatesRelationManager extends RelationManager
                                     ->label('نوع شرط')
                                     ->options(ConditionType::class)
                                     ->required()
-                                    ->live(),
+                                    ->live()
+                                    ->afterStateUpdated(static function (Set $set) {
+                                        $set('value_id', null);
+                                        $set('value_ids', null);
+                                        $set('value', null);
+                                    }),
 
                                 Select::make('operator')
                                     ->label('عملگر')
