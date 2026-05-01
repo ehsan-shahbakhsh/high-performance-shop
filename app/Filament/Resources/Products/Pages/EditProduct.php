@@ -88,7 +88,7 @@ class EditProduct extends EditRecord
             $this->createAttributes($record, $data['attributes']);
         }
 
-        if ($data['type'] === ProductType::Simple) {
+        if ($record->type === ProductType::Simple) {
             $defaultVariant = $record->defaultVariant;
 
             if ($record instanceof Product && is_null($data['sku']))
