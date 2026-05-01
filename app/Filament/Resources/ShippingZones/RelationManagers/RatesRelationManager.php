@@ -217,7 +217,7 @@ class RatesRelationManager extends RelationManager
                                     ->visible(static function (Get $get): bool {
                                         if ($get('type') === ConditionType::ItemsCount) return false;
 
-                                        if (in_array($get('operator'), [Operator::In, Operator::NotIn])) return false;
+                                        if (in_array($get('operator'), [Operator::In->value, Operator::NotIn->value])) return false;
 
                                         return true;
                                     }),
@@ -238,7 +238,7 @@ class RatesRelationManager extends RelationManager
                                     ->visible(static function (Get $get): bool {
                                         if ($get('type') === ConditionType::ItemsCount) return false;
 
-                                        if (!in_array($get('operator'), [Operator::In, Operator::NotIn])) return false;
+                                        if (!in_array($get('operator'), [Operator::In->value, Operator::NotIn->value])) return false;
 
                                         return true;
                                     }),
