@@ -8,7 +8,11 @@ use App\Http\Controllers\Api\V1\Auth\{
     VerifyController,
 };
 use App\Http\Controllers\Api\V1\Catalog\ProductCategoryController;
-use App\Http\Controllers\Api\V1\Sales\Cart\{CartController, CartItemController};
+use App\Http\Controllers\Api\V1\Sales\Cart\{
+    CartController,
+    CartItemController,
+    SetShippingAddressController,
+};
 use App\Http\Controllers\Api\V1\Sales\Wishlist\{WishlistController, WishlistItemController};
 use App\Http\Controllers\Api\V1\Customer\AddressController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +61,10 @@ Route::prefix('v1')->group(function () {
             });
 
         Route::apiResource('addresses', AddressController::class)->except('show');
+
+        Route::prefix('cart')->group(function () {
+            Route::post('shipping-address', SetShippingAddressController::class);
+        });
     });
 
     Route::middleware('auth.optional')->group(function () {
