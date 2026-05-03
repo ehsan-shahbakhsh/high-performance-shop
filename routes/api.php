@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\Sales\Cart\{
     CartController,
     CartItemController,
     SetShippingAddressController,
+    ListShippingMethodsController,
 };
 use App\Http\Controllers\Api\V1\Sales\Wishlist\{WishlistController, WishlistItemController};
 use App\Http\Controllers\Api\V1\Customer\AddressController;
@@ -64,6 +65,7 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('cart')->group(function () {
             Route::post('shipping-address', SetShippingAddressController::class);
+            Route::get('shipping-methods', ListShippingMethodsController::class);
         });
     });
 
