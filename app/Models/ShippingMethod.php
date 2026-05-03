@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Database\Factories\ShippingMethodFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
 class ShippingMethod extends Model
 {
@@ -41,6 +40,11 @@ class ShippingMethod extends Model
         'max_delivery_time' => 'integer',
         'position' => 'integer',
     ];
+
+    public function rates(): HasMany
+    {
+        return $this->hasMany(ShippingRate::class);
+    }
 
     public function carrier(): BelongsTo
     {
