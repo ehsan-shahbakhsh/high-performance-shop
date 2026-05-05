@@ -30,7 +30,7 @@ class ShippingService
                             });
                     });
             })
-            ->whereHas('locations', function (Builder $q) use ($address) {
+            ->whereHas('locations', static function (Builder $q) use ($address) {
                 $q->where('type', ShippingZoneLocationType::Include)
                     ->where(static function ($q) use ($address) {
                         $q->where(static function ($q) use ($address) {
@@ -64,9 +64,9 @@ class ShippingService
             ])
             ->where('is_active', true)
             ->whereRelation('carrier', 'is_active', true)
-            ->where(function (Builder $query) use ($cartTotalWeight) {
+            ->where(static function (Builder $query) use ($cartTotalWeight) {
                 $query->whereNull('max_weight')
-                    ->orWhere(function (Builder $query) use ($cartTotalWeight) {
+                    ->orWhere(static function (Builder $query) use ($cartTotalWeight) {
                         $query->whereNotNull('max_weight')
                             ->where('max_weight', '>=', $cartTotalWeight);
                     });
@@ -92,6 +92,31 @@ class ShippingService
         });
     }
 
+    public function isSupportedForAddress(ShippingMethod $method, Address $address, int $cartTotalWeight): bool
+    {
+        $method->loadMissing('carrier');
+
+        $availableZones = $this->getZonesForAddress($address);
+
+        if (!$method->is_active || !$method->carrier->is_active || $availableZones->isEmpty()) {
+            return false;
+        }
+
+        $zoneIds = $availableZones->pluck('id');
+
+        return ShippingMethod::query()
+            ->whereKey($method->id)
+            ->where(static function (Builder $query) use ($cartTotalWeight) {
+                $query->whereNull('max_weight')
+                    ->orWhere('max_weight', '>=', $cartTotalWeight);
+            })
+            ->whereHas('rates', static function ($query) use ($zoneIds) {
+                $query->whereIn('shipping_zone_id', $zoneIds)
+                    ->where('is_active', true);
+            })
+            ->exists();
+    }
+
     /**
      * @throws BusinessException
      */
@@ -102,6 +127,7 @@ class ShippingService
         $rate = $method->rates()
             ->whereIn('shipping_zone_id', $availableZones->pluck('id'))
             ->first();
+        // todo: check need to use best item for user or order by position or something what
 
         if (!$rate) {
             throw new BusinessException("متاسفانه سرویس {$method->name} برای آدرس شما فعال نیست.");
