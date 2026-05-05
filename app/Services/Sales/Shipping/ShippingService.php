@@ -63,6 +63,7 @@ class ShippingService
                     ->where('is_active', true),
             ])
             ->where('is_active', true)
+            ->whereRelation('carrier', 'is_active', true)
             ->where(function (Builder $query) use ($cartTotalWeight) {
                 $query->whereNull('max_weight')
                     ->orWhere(function (Builder $query) use ($cartTotalWeight) {
