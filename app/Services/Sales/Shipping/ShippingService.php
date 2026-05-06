@@ -125,9 +125,10 @@ class ShippingService
         $availableZones = $this->getZonesForAddress($address);
 
         $rate = $method->rates()
+            ->where('is_active', true)
             ->whereIn('shipping_zone_id', $availableZones->pluck('id'))
+            ->orderBy('position')
             ->first();
-        // todo: check need to use best item for user or order by position or something what
 
         if (!$rate) {
             throw new BusinessException("متاسفانه سرویس {$method->name} برای آدرس شما فعال نیست.");
