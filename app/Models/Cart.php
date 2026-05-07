@@ -76,6 +76,11 @@ class Cart extends Model
         return $this->belongsTo(Address::class, 'shipping_address_id');
     }
 
+    public function shippingMethod(): BelongsTo
+    {
+        return $this->belongsTo(ShippingMethod::class);
+    }
+
     public function isLocked(): bool
     {
         if (! $this->locked_at) {
