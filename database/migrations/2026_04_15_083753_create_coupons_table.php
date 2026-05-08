@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->foreignId('discount_id')->constrained()->cascadeOnDelete();
 
-            $table->string('code')->unique();
+            $table->string('code');
 
             $table->unsignedInteger('usage_limit')->nullable();
             $table->unsignedInteger('user_usage_limit')->nullable();
@@ -26,6 +26,12 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unsignedTinyInteger('unique_keeper')
+                ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
+
+            $table->unique(['code', 'unique_keeper']);
         });
     }
 
