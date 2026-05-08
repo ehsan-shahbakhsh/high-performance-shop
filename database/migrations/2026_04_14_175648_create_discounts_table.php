@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->boolean('is_automatic')->default(false);
 
             $table->enum('type', DiscountType::cases());
@@ -49,6 +49,12 @@ return new class extends Migration
             $table->unsignedInteger('used')->default(0);
 
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unsignedTinyInteger('unique_keeper')
+                ->virtualAs('IF(deleted_at IS NULL, 1, NULL)');
+
+            $table->unique(['name', 'unique_keeper']);
         });
     }
 

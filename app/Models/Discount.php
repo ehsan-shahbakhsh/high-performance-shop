@@ -11,11 +11,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Discount extends Model
 {
     /** @use HasFactory<DiscountFactory> */
     use HasFactory;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
