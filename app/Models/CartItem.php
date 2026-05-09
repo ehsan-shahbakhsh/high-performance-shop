@@ -22,11 +22,13 @@ class CartItem extends Model
         'product_variant_id',
         'quantity',
         'price_when_added',
+        'discount_total',
     ];
 
     protected $casts = [
         'quantity' => 'integer',
         'price_when_added' => 'integer',
+        'discount_total' => 'integer',
     ];
 
     public function cart(): BelongsTo

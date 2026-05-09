@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('quantity')->default(1);
 
             $table->unsignedBigInteger('price_when_added');
+            $table->unsignedBigInteger('discount_total')->default(0);
 
             $table->timestamps();
 
