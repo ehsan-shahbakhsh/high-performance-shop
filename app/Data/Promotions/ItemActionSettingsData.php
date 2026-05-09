@@ -10,12 +10,14 @@ use Spatie\LaravelData\Data;
 class ItemActionSettingsData extends Data
 {
     public function __construct(
-        public DiscountStrategy $strategy,
+        public ?DiscountStrategy $strategy = null,
 
         #[RequiredIf('strategy', DiscountStrategy::Specific)]
-        public ?int             $targetVariantId = null,
+        public ?int              $targetVariantId = null,
 
         #[Min(1)]
-        public ?int             $maxApplicationsPerOrder = null,
-    ) {}
+        public ?int              $maxApplicationsPerOrder = null,
+    )
+    {
+    }
 }
