@@ -27,6 +27,7 @@ class Discount extends Model
     protected $fillable = [
         'name',
         'is_automatic',
+        'scope',
         'type',
         'amount',
         'max_discount_amount',
