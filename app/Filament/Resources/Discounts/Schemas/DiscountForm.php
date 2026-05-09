@@ -189,6 +189,49 @@ class DiscountForm
                             ])
                             ->columns(2),
 
+                        Section::make('تنظیمات پیشرفته اعمال روی محصول (اختیاری)')
+                            ->visible(static fn(Get $get) => $get('scope') === DiscountScope::Item && in_array($get('type'), [DiscountType::Fixed->value, DiscountType::Percentage->value]))
+                            ->schema([
+                                Select::make('action_settings.item.strategy')
+                                    ->label('استراتژی اعمال روی سبد خرید')
+                                    ->helperText('اگر کاربر بیش از سقف مجاز، آیتمِ تخفیف‌دار در سبد داشت، تخفیف روی کدام موارد اعمال شود؟')
+                                    ->live()
+                                    ->options([
+                                        DiscountStrategy::Cheapest->value => DiscountStrategy::Cheapest->getLabel(),
+                                        DiscountStrategy::Expensive->value => DiscountStrategy::Expensive->getLabel(),
+                                        DiscountStrategy::Specific->value => 'یک محصول خاص (Cross-sell)',
+                                    ])
+                                    ->required(static fn(Get $get) => filled($get('action_settings.item.max_applications_per_order'))),
+
+                                Select::make('action_settings.item.target_variant_id')
+                                    ->label('انتخاب کالای هدیه (دقیق)')
+                                    ->searchable()
+                                    ->getSearchResultsUsing(static function (string $search) {
+                                        return ProductVariant::query()
+                                            ->with('product:id,name')
+                                            ->where('sku', 'like', "%$search%")
+                                            ->orWhereHas('product', static fn($q) => $q->where('name', 'like', "%$search%"))
+                                            ->limit(20)
+                                            ->get()
+                                            ->mapWithKeys(static fn($v) => [$v->id => "{$v->product->name} ({$v->sku})"]);
+                                    })
+                                    ->getOptionLabelUsing(static function ($value) {
+                                        return ProductVariant::with('product')->find($value)?->product->name;
+                                    })
+                                    ->visible(static fn(Get $get) => $get('action_settings.item.strategy') === DiscountStrategy::Specific)
+                                    ->required(static fn(Get $get) => $get('action_settings.item.strategy') === DiscountStrategy::Specific),
+
+                                TextInput::make('action_settings.item.max_applications_per_order')
+                                    ->label('حداکثر دفعات اعمال در هر سفارش')
+                                    ->numeric()
+                                    ->integer()
+                                    ->minValue(1)
+                                    ->step(1)
+                                    ->hintIcon(Heroicon::QuestionMarkCircle, 'این تخفیف روی چند عدد از این آیتم اعمال شود؟ (خالی گذاشتن به معنای اعمال روی تمام تعدادِ موجود در سبد خرید است)')
+                                    ->columnSpan(1),
+                            ])
+                            ->columns(2),
+
                         Grid::make(2)->schema([
                             TextInput::make('usage_limit')
                                 ->label('سقف کل استفاده')
