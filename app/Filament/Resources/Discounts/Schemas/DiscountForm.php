@@ -132,7 +132,7 @@ class DiscountForm
                         ]),
 
                         Fieldset::make('تنظیمات طرح یکی بخر یکی ببر')
-                            ->visible(static fn(Get $get) => $get('type') === DiscountType::BuyXGetY->value)
+                            ->visible(static fn(Get $get) => $get('scope') === DiscountScope::Item && $get('type') === DiscountType::BuyXGetY->value)
                             ->schema([
                                 TextInput::make('action_settings.bogo.buy_qty')
                                     ->label('تعداد خرید (X)')
@@ -177,6 +177,15 @@ class DiscountForm
                                     })
                                     ->visible(static fn(Get $get) => $get('action_settings.bogo.strategy') === DiscountStrategy::Specific)
                                     ->required(static fn(Get $get) => $get('action_settings.bogo.strategy') === DiscountStrategy::Specific),
+
+                                TextInput::make('action_settings.bogo.max_applications_per_order')
+                                    ->label('حداکثر دفعات اعمال در هر سفارش')
+                                    ->numeric()
+                                    ->integer()
+                                    ->minValue(1)
+                                    ->step(1)
+                                    ->hintIcon(Heroicon::QuestionMarkCircle, 'این تخفیف روی چند عدد از این آیتم اعمال شود؟ (خالی گذاشتن به معنای اعمال روی تمام تعدادِ موجود در سبد خرید است)')
+                                    ->columnSpan(1),
                             ])
                             ->columns(2),
 
