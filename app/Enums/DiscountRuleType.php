@@ -46,6 +46,7 @@ enum DiscountRuleType: string implements HasLabel, HasColor, HasIcon
             self::CartContainsBrand,
             self::UserId,
 //            self::UserGroup,
+            self::ShippingProvince,
             self::ShippingCity,
             self::PaymentMethod => DiscountRuleOperator::arrayOperators(),
 
