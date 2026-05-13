@@ -39,7 +39,7 @@ final class ShopTable
     {
         return TextColumn::make($name)
             ->label($label)
-            ->formatStateUsing(fn($state) => number_format($state) . ' تومان')
+            ->formatStateUsing(static fn($state) => number_format($state) . ' تومان')
             ->sortable()
             ->toggleable();
     }
@@ -50,7 +50,7 @@ final class ShopTable
             ->dateTime()
             ->sortable()
             ->label('تاریخ ایجاد')
-            ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
+            ->formatStateUsing(static fn($state) => verta($state)->formatDatetime())
             ->toggleable(isToggledHiddenByDefault: true);
     }
 
@@ -60,7 +60,7 @@ final class ShopTable
             ->dateTime()
             ->sortable()
             ->label('تاریخ آخرین بروزرسانی')
-            ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
+            ->formatStateUsing(static fn($state) => verta($state)->formatDatetime())
             ->toggleable(isToggledHiddenByDefault: true);
     }
 
@@ -70,7 +70,7 @@ final class ShopTable
             ->dateTime()
             ->sortable()
             ->label('تاریخ حذف')
-            ->formatStateUsing(fn($state) => verta($state)->formatDatetime())
+            ->formatStateUsing(static fn($state) => verta($state)->formatDatetime())
             ->toggleable(isToggledHiddenByDefault: true);
     }
 }
