@@ -9,7 +9,7 @@ use App\Enums\{DiscountConditionMatchType,
     DiscountType
 };
 use App\Filament\Components\ShopForm;
-use App\Models\{Brand, Product, ProductCategory, ProductVariant, User};
+use App\Models\{Brand, City, Product, ProductCategory, ProductVariant, Province, User};
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
@@ -351,6 +351,8 @@ class DiscountForm
                                                     DiscountRuleType::CartContainsCategory,
                                                     DiscountRuleType::CartContainsBrand,
                                                     DiscountRuleType::UserId,
+                                                    DiscountRuleType::ShippingProvince,
+                                                    DiscountRuleType::ShippingCity,
                                                 ])) {
                                                     $set('value_json_select', $state);
                                                 }
@@ -398,6 +400,8 @@ class DiscountForm
                                             DiscountRuleType::CartContainsCategory,
                                             DiscountRuleType::CartContainsBrand,
                                             DiscountRuleType::UserId,
+                                            DiscountRuleType::ShippingProvince,
+                                            DiscountRuleType::ShippingCity,
                                         ]))
                                         ->getSearchResultsUsing(static fn(string $search, Get $get) => match ($get('type')) {
                                             DiscountRuleType::CartContainsProduct => Product::query()
@@ -418,6 +422,14 @@ class DiscountForm
                                                 })
                                                 ->limit(20)
                                                 ->pluck('label', 'id'),
+                                            DiscountRuleType::ShippingProvince => Province::query()
+                                                ->where('name', 'like', "%{$search}%")
+                                                ->limit(20)->pluck('name', 'id'),
+                                            DiscountRuleType::ShippingCity => City::query()
+                                                ->join('provinces as p', 'p.id', '=', 'cities.province_id')
+                                                ->selectRaw("cities.id, CONCAT(cities.name, ' (', p.name, ')') as label")
+                                                ->where('cities.name', 'like', "%{$search}%")
+                                                ->pluck('label', 'id'),
                                             default => [],
                                         })
                                         ->getOptionLabelsUsing(static fn(array $values, Get $get) => match ($get('type')) {
@@ -427,6 +439,12 @@ class DiscountForm
                                             DiscountRuleType::UserId => User::query()
                                                 ->whereIn('id', $values)
                                                 ->selectRaw("id, CONCAT(CONCAT_WS(' ', first_name, last_name), ' (', COALESCE(mobile, email), ')') as label")
+                                                ->pluck('label', 'id'),
+                                            DiscountRuleType::ShippingProvince => Province::query()->findMany($values)->pluck('name', 'id'),
+                                            DiscountRuleType::ShippingCity => City::query()
+                                                ->join('provinces as p', 'p.id', '=', 'cities.province_id')
+                                                ->whereIn('cities.id', $values)
+                                                ->selectRaw("cities.id, CONCAT(cities.name, ' (', p.name, ')') as label")
                                                 ->pluck('label', 'id'),
                                             default => [],
                                         })
