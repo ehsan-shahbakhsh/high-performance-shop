@@ -9,7 +9,7 @@ use App\Enums\{DiscountConditionMatchType,
     DiscountType
 };
 use App\Filament\Components\ShopForm;
-use App\Models\{Brand, City, Product, ProductCategory, ProductVariant, Province, User};
+use App\Models\{Brand, City, Product, ProductCategory, ProductVariant, Province, ShippingMethod, User};
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
@@ -353,6 +353,7 @@ class DiscountForm
                                                     DiscountRuleType::UserId,
                                                     DiscountRuleType::ShippingProvince,
                                                     DiscountRuleType::ShippingCity,
+                                                    DiscountRuleType::ShippingMethod,
                                                 ])) {
                                                     $set('value_json_select', $state);
                                                 }
@@ -402,6 +403,7 @@ class DiscountForm
                                             DiscountRuleType::UserId,
                                             DiscountRuleType::ShippingProvince,
                                             DiscountRuleType::ShippingCity,
+                                            DiscountRuleType::ShippingMethod,
                                         ]))
                                         ->getSearchResultsUsing(static fn(string $search, Get $get) => match ($get('type')) {
                                             DiscountRuleType::CartContainsProduct => Product::query()
@@ -430,6 +432,9 @@ class DiscountForm
                                                 ->selectRaw("cities.id, CONCAT(cities.name, ' (', p.name, ')') as label")
                                                 ->where('cities.name', 'like', "%{$search}%")
                                                 ->pluck('label', 'id'),
+                                            DiscountRuleType::ShippingMethod => ShippingMethod::query()
+                                                ->where('name', 'like', "%{$search}%")
+                                                ->pluck('name', 'id'),
                                             default => [],
                                         })
                                         ->getOptionLabelsUsing(static fn(array $values, Get $get) => match ($get('type')) {
@@ -446,6 +451,7 @@ class DiscountForm
                                                 ->whereIn('cities.id', $values)
                                                 ->selectRaw("cities.id, CONCAT(cities.name, ' (', p.name, ')') as label")
                                                 ->pluck('label', 'id'),
+                                            DiscountRuleType::ShippingMethod => ShippingMethod::query()->findMany($values)->pluck('name', 'id'),
                                             default => [],
                                         })
                                         ->columnSpanFull()
