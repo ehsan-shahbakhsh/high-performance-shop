@@ -27,6 +27,7 @@ class Cart extends Model
         'user_id',
         'shipping_address_id',
         'shipping_method_id',
+        'coupon_id',
         'type',
         'status',
         'meta',
@@ -79,6 +80,11 @@ class Cart extends Model
     public function shippingMethod(): BelongsTo
     {
         return $this->belongsTo(ShippingMethod::class);
+    }
+
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
     }
 
     public function isLocked(): bool
