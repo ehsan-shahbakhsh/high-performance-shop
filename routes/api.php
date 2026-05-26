@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\Sales\Cart\{
     SetShippingAddressController,
     ListShippingMethodsController,
     SelectShippingMethodController,
+    ApplyCouponController,
 };
 use App\Http\Controllers\Api\V1\Sales\Wishlist\{WishlistController, WishlistItemController};
 use App\Http\Controllers\Api\V1\Customer\AddressController;
@@ -68,6 +69,7 @@ Route::prefix('v1')->group(function () {
             Route::post('shipping-address', SetShippingAddressController::class);
             Route::get('shipping-methods', ListShippingMethodsController::class);
             Route::post('shipping-method', SelectShippingMethodController::class);
+            Route::post('coupon', ApplyCouponController::class);
         });
     });
 
