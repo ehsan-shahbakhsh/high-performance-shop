@@ -50,6 +50,7 @@ class AdminPanelProvider extends PanelProvider
                 'مارکتینگ و فروش',
                 'مدیریت مناطق',
                 'مدیریت ارسال',
+                'تنظیمات فروشگاه',
             ])
             ->middleware([
                 EncryptCookies::class,
