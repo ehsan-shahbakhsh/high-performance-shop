@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\Sales\Cart\{
     ListShippingMethodsController,
     SelectShippingMethodController,
     ApplyCouponController,
+    RemoveCouponController,
 };
 use App\Http\Controllers\Api\V1\Sales\Wishlist\{WishlistController, WishlistItemController};
 use App\Http\Controllers\Api\V1\Customer\AddressController;
@@ -70,6 +71,7 @@ Route::prefix('v1')->group(function () {
             Route::get('shipping-methods', ListShippingMethodsController::class);
             Route::post('shipping-method', SelectShippingMethodController::class);
             Route::post('coupon', ApplyCouponController::class);
+            Route::delete('coupon', RemoveCouponController::class);
         });
     });
 
