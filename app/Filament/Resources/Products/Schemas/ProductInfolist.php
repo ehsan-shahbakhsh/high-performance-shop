@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Products\Schemas;
 use App\Models\Product;
 use Filament\Support\Icons\Heroicon;
 use Filament\Infolists\Components\{IconEntry, ImageEntry, RepeatableEntry, SpatieMediaLibraryImageEntry, TextEntry};
-use Filament\Schemas\Components\{Grid, Group, Section, Tabs, Tabs\Tab};
+use Filament\Schemas\Components\{Fieldset, Grid, Group, Section, Tabs, Tabs\Tab};
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\TextSize;
 
@@ -13,6 +13,8 @@ class ProductInfolist
 {
     public static function configure(Schema $schema): Schema
     {
+        $defaultVariant = $schema->getRecord()->defaultVariant;
+
         return $schema
             ->components([
                 Grid::make(['default' => 1, 'lg' => 3])
@@ -65,6 +67,28 @@ class ProductInfolist
                                         Tab::make('مشخصات فنی')
                                             ->icon(Heroicon::Wrench)
                                             ->schema([
+                                                Fieldset::make('ابعاد و وزن بسته‌بندی')
+                                                    ->schema([
+                                                        TextEntry::make('weight')
+                                                            ->label('وزن')
+                                                            ->getStateUsing($defaultVariant->weight ? number_format($defaultVariant->weight) . ' گرم' : '-')
+                                                            ->badge()
+                                                            ->color('warning'),
+
+                                                        TextEntry::make('length')
+                                                            ->label('طول')
+                                                            ->getStateUsing($defaultVariant->length ? $defaultVariant->length . ' سانتی‌متر' : '-'),
+
+                                                        TextEntry::make('width')
+                                                            ->label('عرض')
+                                                            ->getStateUsing($defaultVariant->width ? $defaultVariant->width . ' سانتی‌متر' : '-'),
+
+                                                        TextEntry::make('height')
+                                                            ->label('ارتفاع')
+                                                            ->getStateUsing($defaultVariant->height ? $defaultVariant->height . ' سانتی‌متر' : '-'),
+                                                    ])
+                                                    ->columns(4),
+
                                                 TextEntry::make('slug')
                                                     ->label('نامک (Slug)')
                                                     ->url(static fn($record) => url("/products/{$record->slug}"), true)
