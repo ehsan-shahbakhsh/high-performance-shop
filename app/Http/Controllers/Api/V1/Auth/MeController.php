@@ -20,7 +20,7 @@ class MeController extends Controller
         description: "این اندپوینت اطلاعات کاربری که توکن معتبر دارد را برمی‌گرداند.",
         summary: "دریافت اطلاعات پروفایل کاربر فعلی",
         security: [["sanctum" => []]],
-        tags: ["Profile"],
+        tags: ["Authentication"],
         responses: [
             new OA\Response(
                 response: Response::HTTP_OK,
@@ -51,7 +51,7 @@ class MeController extends Controller
                         new OA\Property(property: 'code', type: 'integer', example: Response::HTTP_UNAUTHORIZED),
                         new OA\Property(property: 'message', type: 'string', example: 'لطفاً ابتدا وارد حساب کاربری شوید.', nullable: true),
                         new OA\Property(property: 'data', default: null),
-                        new OA\Property(property: 'meta', type: 'object', default: null, nullable: true),
+                        new OA\Property(property: 'meta', default: null),
                         new OA\Property(property: 'errors', type: 'array', items: new OA\Items(type: 'string'), nullable: true),
                         new OA\Property(property: 'error_code', type: 'string', nullable: true),
                     ]
