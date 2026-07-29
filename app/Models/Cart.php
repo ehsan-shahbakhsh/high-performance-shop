@@ -28,6 +28,7 @@ class Cart extends Model
         'shipping_address_id',
         'shipping_method_id',
         'coupon_id',
+        'payment_method_id',
         'type',
         'status',
         'meta',
@@ -80,6 +81,11 @@ class Cart extends Model
     public function shippingMethod(): BelongsTo
     {
         return $this->belongsTo(ShippingMethod::class);
+    }
+
+    public function paymentMethod(): BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 
     public function coupon(): BelongsTo
