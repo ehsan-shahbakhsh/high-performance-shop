@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\V1\Sales\Cart\{
     ApplyCouponController,
     RemoveCouponController,
     SetPaymentMethodController,
+    CartSummaryController,
 };
 use App\Http\Controllers\Api\V1\Sales\Wishlist\{WishlistController, WishlistItemController};
 use App\Http\Controllers\Api\V1\Customer\AddressController;
@@ -74,6 +75,7 @@ Route::prefix('v1')->group(function () {
             Route::post('coupon', ApplyCouponController::class);
             Route::delete('coupon', RemoveCouponController::class);
             Route::post('payment-method', SetPaymentMethodController::class);
+            Route::get('summary', CartSummaryController::class);
         });
     });
 
