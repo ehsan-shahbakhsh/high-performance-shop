@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\v1\Sales\Cart;
+namespace App\Http\Requests\Api\V1\Sales\Cart;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;

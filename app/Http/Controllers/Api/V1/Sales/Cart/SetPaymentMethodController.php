@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Sales\Cart;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\v1\Sales\Cart\SetPaymentMethodRequest;
+use App\Http\Requests\Api\V1\Sales\Cart\SetPaymentMethodRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Cart;
 use Symfony\Component\HttpFoundation\Response;
