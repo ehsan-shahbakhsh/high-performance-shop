@@ -97,6 +97,13 @@ class ProductVariant extends Model implements HasMedia
         return $this->belongsTo(Product::class);
     }
 
+    protected function promotionDiscount(): CastAttribute
+    {
+        return CastAttribute::make(
+            get: fn() => $this->active_sale_price > 0 ? max(0, $this->price - $this->active_sale_price) : 0,
+        );
+    }
+
     protected function activeSalePrice(): CastAttribute
     {
         return CastAttribute::make(
