@@ -71,21 +71,21 @@ class ProductInfolist
                                                     ->schema([
                                                         TextEntry::make('weight')
                                                             ->label('وزن')
-                                                            ->getStateUsing($defaultVariant->weight ? number_format($defaultVariant->weight) . ' گرم' : '-')
+                                                            ->getStateUsing($defaultVariant?->weight ? number_format($defaultVariant->weight) . ' گرم' : '-')
                                                             ->badge()
                                                             ->color('warning'),
 
                                                         TextEntry::make('length')
                                                             ->label('طول')
-                                                            ->getStateUsing($defaultVariant->length ? $defaultVariant->length . ' سانتی‌متر' : '-'),
+                                                            ->getStateUsing($defaultVariant?->length ? $defaultVariant->length . ' سانتی‌متر' : '-'),
 
                                                         TextEntry::make('width')
                                                             ->label('عرض')
-                                                            ->getStateUsing($defaultVariant->width ? $defaultVariant->width . ' سانتی‌متر' : '-'),
+                                                            ->getStateUsing($defaultVariant?->width ? $defaultVariant->width . ' سانتی‌متر' : '-'),
 
                                                         TextEntry::make('height')
                                                             ->label('ارتفاع')
-                                                            ->getStateUsing($defaultVariant->height ? $defaultVariant->height . ' سانتی‌متر' : '-'),
+                                                            ->getStateUsing($defaultVariant?->height ? $defaultVariant->height . ' سانتی‌متر' : '-'),
                                                     ])
                                                     ->columns(4),
 
