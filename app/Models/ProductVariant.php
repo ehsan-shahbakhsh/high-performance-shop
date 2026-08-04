@@ -97,10 +97,31 @@ class ProductVariant extends Model implements HasMedia
         return $this->belongsTo(Product::class);
     }
 
+    protected function activeSalePrice(): CastAttribute
+    {
+        return CastAttribute::make(
+            get: function () {
+                if (is_null($this->sale_price)) {
+                    return null;
+                }
+
+                $now = now();
+                if ($this->sale_start && $now->lt($this->sale_start)) {
+                    return null;
+                }
+                if ($this->sale_end && $now->gt($this->sale_end)) {
+                    return null;
+                }
+
+                return $this->sale_price;
+            }
+        );
+    }
+
     protected function finalPrice(): CastAttribute
     {
         return CastAttribute::make(
-            get: fn() => $this->sale_price ?? $this->price,
+            get: fn() => $this->active_sale_price ?? $this->price,
         );
     }
 
