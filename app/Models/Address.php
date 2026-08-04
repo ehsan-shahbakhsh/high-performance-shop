@@ -40,4 +40,35 @@ class Address extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    public function toSnapshotArray(): array
+    {
+        return [
+            'recipient' => [
+                'first_name' => $this->recipient_first_name,
+                'last_name' => $this->recipient_last_name,
+                'mobile' => $this->recipient_mobile,
+            ],
+
+            'location' => [
+                'province_id' => $this->province_id,
+                'province_name' => $this->province?->name,
+                'city_id' => $this->city_id,
+                'city_name' => $this->city?->name,
+            ],
+
+            'address' => [
+                'title' => $this->title,
+                'address_line' => $this->address_line,
+                'plaque' => $this->plaque,
+                'unit' => $this->unit,
+                'postal_code' => $this->postal_code,
+            ],
+
+            'coordinates' => [
+                'latitude' => $this->latitude,
+                'longitude' => $this->longitude,
+            ],
+        ];
+    }
 }
